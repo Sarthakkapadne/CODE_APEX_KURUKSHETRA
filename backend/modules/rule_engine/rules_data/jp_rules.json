@@ -14,7 +14,7 @@
       "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "antibacterial on skin", "whitening active"],
       "severity": "violation",
       "expected_requirement": "Quasi-Drug (Iyakubugaihin) pre-market approval required from MHLW/PMDA for active therapeutic, medicinal, or pharmacological claims.",
-      "explanation": "Japanese law strictly delineates Cosmetics (mild action only) from Quasi-drugs and Pharmaceuticals. Therapeutic claims are strictly prohibited for cosmetics and require years of clinical data for Quasi-drug approval.",
+      "explanation": "Japanese law strictly delineates Cosmetics from Quasi-drugs and Pharmaceuticals. Therapeutic claims are strictly prohibited for cosmetics.",
       "fix_suggestion": "Tone down claims to basic skin moisturizing, cleansing, or beautifying expressions permitted under MHLW Notification No. 1339."
     },
     {
@@ -24,10 +24,11 @@
       "statute_citation": "PMD Act Article 61 / Consumer Affairs Agency Act",
       "title": "Mandatory Japanese Language Labeling & Licensed In-Country Caretaker (MAH)",
       "condition_type": "mandatory_field",
+      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "personal_care", "haircare", "body"],
       "required_field": "japanese_labeling_mah",
       "severity": "violation",
       "expected_requirement": "Label in Japanese language with name and address of the licensed Marketing Authorization Holder (Seizouhanbaigyou).",
-      "explanation": "Imported cosmetics and goods cannot be sold in Japan with English-only labels. An authorized Japanese entity holding a primary distributor license must attach a compliant Japanese label.",
+      "explanation": "Imported cosmetics cannot be sold in Japan with English-only labels. An authorized Japanese entity holding a primary distributor license must attach a compliant Japanese label.",
       "fix_suggestion": "Partner with a licensed Japanese import distributor (MAH) to attach mandatory Japanese legal labels upon arrival."
     },
     {

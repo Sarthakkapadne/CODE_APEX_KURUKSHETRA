@@ -9,13 +9,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from backend.core.models import ListingInput, AuditResponse, PackagingAnalysisResult, ComplianceExportPack
+from backend.core.models import (
+    ListingInput, AuditResponse, PackagingAnalysisResult, ComplianceExportPack,
+    BenchmarkStatsResponse
+)
 from backend.db.session import get_db
 from backend.db.models_db import Listing, Inspection, ComplianceResultRecord, AuditHashBlock
 from backend.modules.agents.supervisor import ComplianceSupervisor
 from backend.modules.exports.export_pack_generator import ExportPackGenerator
 from backend.modules.rule_engine.deterministic_engine import DeterministicRuleEngine
 from backend.modules.simulator.regulatory_simulator import RegulatorySimulator
+from backend.tests.eval_benchmark import BenchmarkEvaluator
 
 router = APIRouter()
 
@@ -199,3 +203,14 @@ async def generate_export_pack(
         customs_radar=radar_res,
         target_markets=listing.destination_markets or ["US"],
     )
+
+
+@router.get("/benchmark-stats", response_model=BenchmarkStatsResponse, summary="Retrieve 50-Item Ground-Truth Accuracy Benchmark Statistics")
+async def get_benchmark_stats():
+    """
+    Returns verified accuracy, precision, recall, and F1-score computed against
+    50 ground-truth regulatory cases from US FDA, Health Canada, EU RAPEX, and EPA.
+    """
+    evaluator = BenchmarkEvaluator()
+    return evaluator.run_benchmark()
+

@@ -15,7 +15,77 @@
       "severity": "violation",
       "expected_requirement": "Maximum 0.1% w/w hydrogen peroxide present or released in cosmetic products sold directly to consumers.",
       "explanation": "Unlike the US (which allows up to 14% OTC), EU Regulation (EC) No 1223/2009 strictly limits consumer oral hygiene and cosmetic products to 0.1% hydrogen peroxide. Concentrations between 0.1% and 6% can only be sold to registered dental practitioners.",
-      "fix_suggestion": "Reformulate formulation to <= 0.1% hydrogen peroxide, or use approved alternative whitening agents (e.g., PAP - Phthalimidoperoxycaproic acid)."
+      "fix_suggestion": "Reformulate formulation to <= 0.1% hydrogen peroxide, or use approved alternative whitening agents."
+    },
+    {
+      "rule_code": "EU-CHEM-02",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 1339",
+      "title": "Total EU Ban on Hydroquinone in Cosmetics",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "skincare"],
+      "trigger_terms": ["hydroquinone", "4% hydroquinone"],
+      "severity": "violation",
+      "expected_requirement": "Hydroquinone is completely prohibited in cosmetic products placed on the EU market under Annex II.",
+      "explanation": "Hydroquinone causes ochronosis and is classified as a skin-lightening prescription medicine, strictly banned in cosmetics.",
+      "fix_suggestion": "Remove hydroquinone completely and replace with compliant actives such as Alpha Arbutin or Niacinamide."
+    },
+    {
+      "rule_code": "EU-CHEM-03",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Commission Regulation (EU) 2021/1902 (Lilial Ban / CMR 1B)",
+      "title": "Absolute Ban on Lilial / Butylphenyl Methylpropional",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "fragrance", "perfume", "skincare"],
+      "trigger_terms": ["lilial", "butylphenyl methylpropional"],
+      "severity": "violation",
+      "expected_requirement": "Strict zero-tolerance ban on Lilial (BMHCA) across all cosmetic formulations.",
+      "explanation": "Lilial was reclassified as a Reprotoxic Category 1B substance and added to Annex II prohibited list.",
+      "fix_suggestion": "Reformulate fragrance profile to substitute Lilial with non-CMR aromatic compounds."
+    },
+    {
+      "rule_code": "EU-CHEM-04",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 420",
+      "title": "Prohibition of Crude and Refined Coal Tar in Cosmetics",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "haircare", "shampoo"],
+      "trigger_terms": ["coal tar", "coal tar 10%"],
+      "severity": "violation",
+      "expected_requirement": "Coal tar is a known carcinogen listed under Annex II and prohibited in cosmetics.",
+      "explanation": "Coal tar distillates are classified as Category 1A/1B carcinogens prohibited from cosmetic placement.",
+      "fix_suggestion": "Replace coal tar with compliant antidandruff agents like Piroctone Olamine or Zinc Pyrithione (where permitted)."
+    },
+    {
+      "rule_code": "EU-CHEM-05",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 221 & 300",
+      "title": "Total Ban on Mercury and Corticosteroids in Cosmetics",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "skincare"],
+      "trigger_terms": ["mercury", "mercurous chloride", "clobetasol", "clobetasol propionate"],
+      "severity": "violation",
+      "expected_requirement": "Mercury and corticosteroids are prohibited under Annex II items 221 and 300.",
+      "explanation": "Cosmetics containing mercury or clobetasol are toxic adulterated goods triggering immediate EU Safety Gate RAPEX recall.",
+      "fix_suggestion": "Immediately discontinue manufacture and export of formulations containing banned mercury or clobetasol."
+    },
+    {
+      "rule_code": "EU-ROHS-01",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "EN 60825-1 / General Product Safety Directive 2001/95/EC",
+      "title": "Ban on High Power Consumer Laser Pointers (>1mW / Class 3B)",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["consumer electronics", "electronics", "gadgets"],
+      "trigger_terms": ["class 3b", "laser output power >500mw", "500mw green beam", "500mw"],
+      "severity": "violation",
+      "expected_requirement": "Consumer laser pointers must not exceed Class 2 (<1mW) under European harmonized standard EN 60825-1.",
+      "explanation": "Class 3B lasers (>5mW to 500mW) cause irreversible retinal damage and are banned for consumer sale in the EU.",
+      "fix_suggestion": "Cap optical output power strictly below 1mW (Class 2) and provide EN 60825-1 laboratory test report."
     },
     {
       "rule_code": "EU-CLASS-01",
@@ -27,8 +97,8 @@
       "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
       "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "eliminates disease", "anti-inflammatory medicine"],
       "severity": "violation",
-      "expected_requirement": "Claims must adhere to common criteria (legal compliance, truthfulness, evidence, honesty, fairness). No therapeutic or curative claims allowed for cosmetics.",
-      "explanation": "Claiming that a cosmetic product cures or treats a medical condition triggers reclassification as a Class I/II Medical Device under MDR 2017/745, requiring Notified Body CE audit and clinical evaluation.",
+      "expected_requirement": "Claims must adhere to common criteria. No therapeutic or curative claims allowed for cosmetics.",
+      "explanation": "Claiming that a cosmetic product cures or treats a medical condition triggers reclassification as a Medical Device under MDR 2017/745.",
       "fix_suggestion": "Rephrase to compliant cosmetic claims: 'formulated to soothe and refresh skin' or 'comforting massage balm'."
     },
     {
@@ -38,10 +108,11 @@
       "statute_citation": "Regulation (EC) No 1223/2009, Article 4 & Article 19(1)(a)",
       "title": "Mandatory EU Responsible Person (RP) Contact & Address",
       "condition_type": "mandatory_field",
+      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "personal_care", "haircare", "body"],
       "required_field": "eu_responsible_person",
       "severity": "violation",
       "expected_requirement": "Name and address of an EU-established Responsible Person (RP) printed on primary packaging.",
-      "explanation": "Article 4 mandates that non-EU brands must appoint an EU-based Responsible Person who holds the Product Information File (PIF) and Safety Assessment (CPSR). Without an EU RP address on the pack, customs will detain the shipment.",
+      "explanation": "Article 4 mandates that non-EU brands must appoint an EU-based Responsible Person who holds the PIF.",
       "fix_suggestion": "Contract an EU Responsible Person service provider and print their legal EU address on label declarations."
     },
     {
@@ -51,11 +122,12 @@
       "statute_citation": "Regulation (EC) No 1223/2009, Article 19(1)(g)",
       "title": "Mandatory INCI Ingredient Nomenclature & PAO Symbol",
       "condition_type": "mandatory_field",
+      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "personal_care", "haircare", "body"],
       "required_field": "inci_ingredients_list",
       "severity": "warning",
       "expected_requirement": "Ingredient list prefaced by the word 'INGREDIENTS' using standard INCI nomenclature, plus Period After Opening (PAO) open-jar symbol.",
-      "explanation": "EU requires standardized INCI naming for all chemical/botanical substances, listed in descending order of weight. Informal botanical names without INCI format are non-compliant.",
-      "fix_suggestion": "Provide ingredient listing in full INCI format (e.g. 'Aqua, Sesamum Indicum Seed Oil, Cinnamomum Camphora Bark Oil') with PAO open-jar icon."
+      "explanation": "EU requires standardized INCI naming for all chemical/botanical substances, listed in descending order of weight.",
+      "fix_suggestion": "Provide ingredient listing in full INCI format with PAO open-jar icon."
     },
     {
       "rule_code": "EU-CERT-01",
@@ -67,8 +139,8 @@
       "target_categories": ["baby_walker", "infant_walker", "toys"],
       "trigger_terms": ["baby walker", "infant walker", "activity walker"],
       "severity": "escalation",
-      "expected_requirement": "Technical file and test report proving compliance with European Standard EN 1273:2020 (stair-fall prevention and stability requirements).",
-      "explanation": "Baby walkers are permitted in the EU provided they have laboratory certification proving conformity to EN 1273:2020. This requires accredited testing lab documentation.",
+      "expected_requirement": "Technical file and test report proving compliance with European Standard EN 1273:2020.",
+      "explanation": "Baby walkers are permitted in the EU provided they have laboratory certification proving conformity to EN 1273:2020.",
       "fix_suggestion": "Provide accredited test report confirming compliance with EN 1273:2020 safety specifications."
     },
     {

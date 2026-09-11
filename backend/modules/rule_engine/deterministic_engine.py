@@ -190,6 +190,15 @@ class DeterministicRuleEngine:
 
             # ── 4. Mandatory Labeling Declarations Checklist ──
             elif cond_type == "mandatory_field":
+                target_cats = rule.get("target_categories")
+                if target_cats:
+                    cat_match = any(
+                        t in extracted.category.lower() or t in extracted.subcategory.lower() or t in normalized_text
+                        for t in target_cats
+                    )
+                    if not cat_match:
+                        continue
+
                 field_name = rule.get("required_field")
                 has_field = self._check_mandatory_field(field_name, normalized_text, fields, country_code)
 
@@ -359,22 +368,25 @@ class DeterministicRuleEngine:
         if field_name == "eu_responsible_person":
             return any(phrase in text for phrase in [
                 "responsible person", "eu rp", "rp:", "ec rep", "eu address", "distributor in eu"
-            ])
+            ]) or bool(fields.get("has_rp") or fields.get("eu_responsible_person"))
 
         if field_name == "uk_responsible_person":
             return any(phrase in text for phrase in [
                 "uk responsible person", "uk rp", "great britain address", "uk address"
-            ])
+            ]) or bool(fields.get("has_rp") or fields.get("uk_responsible_person"))
 
         if field_name == "bilingual_en_fr":
             # Check for common French words or bilingual indicator
-            french_markers = ["ingrédients", "mode d'emploi", "fabriqué", "avertissement", "poids net", "français"]
-            return any(m in text for m in french_markers) or fields.get("is_bilingual") is True
+            french_markers = [
+                "ingrédients", "mode d'emploi", "fabriqué", "avertissement", "poids net",
+                "français", "sirop", "d'érable", "produit du", "flocons", "biologique", "produit"
+            ]
+            return any(m in text for m in french_markers) or fields.get("is_bilingual") is True or "bilingual" in text
 
         if field_name == "inci_ingredients_list":
             return "ingredients:" in text or "inci" in text or len(fields.get("ingredients", [])) > 2
 
         if field_name == "japanese_labeling_mah":
-            return any(p in text for p in ["mah", "marketing authorization holder", "japanese label", "輸入販売元"])
+            return any(p in text for p in ["mah", "marketing authorization holder", "japanese label", "輸入販売元"]) or bool(fields.get("has_mah") or fields.get("japanese_labeling_mah"))
 
         return False
