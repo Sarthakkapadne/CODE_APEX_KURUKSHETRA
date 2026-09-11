@@ -3,8 +3,13 @@ import os
 from pathlib import Path
 from pydantic_settings import BaseSettings
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = BASE_DIR / "static"
+
+# Force load backend/.env over any stale system environment variables
+load_dotenv(BASE_DIR / ".env", override=True)
 
 
 class Settings(BaseSettings):

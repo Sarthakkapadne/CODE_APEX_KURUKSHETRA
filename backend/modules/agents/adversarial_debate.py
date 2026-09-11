@@ -123,15 +123,22 @@ class AdversarialDebateEngine:
                 f"Full Listing Text:\n{description[:800]}"
             )
 
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=DEBATE_SYSTEM_PROMPT,
-                    temperature=0.3,
-                    response_mime_type="application/json"
-                ),
-            )
+            response = None
+            for model_name in ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-flash-latest"]:
+                try:
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            system_instruction=DEBATE_SYSTEM_PROMPT,
+                            temperature=0.3,
+                            response_mime_type="application/json"
+                        ),
+                    )
+                    if response and response.text:
+                        break
+                except Exception:
+                    continue
 
             if response and response.text:
                 data = json.loads(response.text.strip())
