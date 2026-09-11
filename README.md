@@ -148,3 +148,21 @@ py -3.10 -m backend.tests.test_pipeline
   *A: No. It only corrects claims-level overclaiming (substituting disease cures with compliant structure/function language). Safety certifications, baby walker bans, and hazmat shipping are strictly escalated to human review — never auto-resolved.*
 
 ---
+
+## 🔮 Future Scope & Enterprise Roadmap
+
+While the core MVP and complete end-to-end multi-agent co-pilot are fully operational today, the following modules are slated for the post-hackathon enterprise roadmap:
+
+1. **Automated Customs Broker EDI Integration**:
+   - Direct integration with CBP ACE (Automated Commercial Environment) and EU UCC CDS (Customs Decisions System) for pre-cleared electronic entry filing.
+2. **Enterprise ERP & Marketplace Bi-Directional Webhooks**:
+   - Real-time catalog compliance synchronization across SAP, Oracle NetSuite, and multi-channel feed managers (ChannelAdvisor, Sellbrite).
+   - Automated listing pause triggers when a high-severity regulatory shock broadcast is received.
+3. **Expanded Multi-Language Regulatory Dictionaries**:
+   - Extending the Rosetta Stone packaging OCR engine to support direct dual-language packaging generation for Spanish (COFEPRIS), Arabic (SFDA), and Korean (MFDS).
+4. **Supply Chain Traceability & Chain of Custody**:
+   - Integration with GS1 Digital Link 2D Barcodes and physical RFID batch passports for full farm-to-border tracking of organic and botanicals.
+
+---
+
+**Built with ❤️ for Kurukshetra Hackathon 2026**
