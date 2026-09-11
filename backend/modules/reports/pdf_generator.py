@@ -251,32 +251,76 @@ class ComplianceReportGenerator:
 
         story.append(Spacer(1, 14))
 
-        # ── Adversarial Debate & Consensus Verdict ──
-        if audit_data.debate:
-            story.append(Paragraph("ADVERSARIAL INSPECTION DEBATE SUMMARY", h2_style))
-            story.append(Paragraph(f"<b>Debate Topic:</b> {audit_data.debate.debate_topic}", subtitle_style))
+        # ── Customs Seizure Radar & Threat Assessment ──
+        if audit_data.customs_radar:
+            story.append(Paragraph("CUSTOMS SEIZURE RADAR & PORT-OF-ENTRY DETENTION RISK", h2_style))
             story.append(Spacer(1, 4))
 
-            debate_rows = []
-            for turn in audit_data.debate.turns:
-                spk_color = "#DC2626" if turn.speaker == "Customs Inspector" else ("#0284C7" if turn.speaker == "Seller Advocate" else "#16A34A")
-                debate_rows.append([
-                    Paragraph(f"<font color='{spk_color}'><b>{turn.speaker}</b></font><br/><font size='7'>{turn.role_title}</font>", cell_style),
-                    Paragraph(f"{turn.argument}<br/><b>Citing:</b> {', '.join(turn.cited_rules)}", cell_style)
-                ])
+            radar = audit_data.customs_radar
+            th_color = "#DC2626" if "CRITICAL" in radar.threat_level else ("#D97706" if "ELEVATED" in radar.threat_level else "#16A34A")
 
-            debate_table = Table(debate_rows, colWidths=[130, 410])
-            debate_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#FAFAFA")),
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#E2E8F0")),
+            radar_rows = [
+                [
+                    Paragraph("<b>Seizure Probability:</b>", cell_bold),
+                    Paragraph(f"<font color='{th_color}'><b>{radar.seizure_probability_pct:.1f}%</b> ({radar.threat_level.replace('_', ' ')})</font>", cell_bold),
+                    Paragraph("<b>Financial Exposure:</b>", cell_bold),
+                    Paragraph(f"<b>${radar.estimated_financial_exposure_usd:,.2f} USD</b>", cell_bold)
+                ],
+                [
+                    Paragraph("<b>Enforcement Agencies:</b>", cell_bold),
+                    Paragraph(", ".join(radar.target_enforcement_agencies), cell_style),
+                    Paragraph("<b>Demurrage & Penalties:</b>", cell_bold),
+                    Paragraph(f"Demurrage: ${radar.breakdown_fees.get('port_demurrage_quarantine_usd', 0):,.0f} | Fines: ${radar.breakdown_fees.get('statutory_civil_penalties_usd', 0):,.0f}", cell_style)
+                ]
+            ]
+            radar_table = Table(radar_rows, colWidths=[110, 160, 110, 160])
+            radar_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
+                ('BOX', (0, 0), (-1, -1), 1, colors.HexColor("#CBD5E1")),
                 ('PADDING', (0, 0), (-1, -1), 5),
-                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
             ]))
-            story.append(debate_table)
-            story.append(Spacer(1, 8))
+            story.append(radar_table)
+            story.append(Spacer(1, 6))
 
-            story.append(Paragraph(f"<b>Consensus Arbiter Verdict:</b> {audit_data.debate.consensus_verdict}", cell_bold))
-            story.append(Spacer(1, 14))
+            if radar.simulated_notice:
+                sn = radar.simulated_notice
+                story.append(Paragraph(
+                    f"<b>Simulated Notice:</b> {sn.form_type} (Ref: {sn.notice_id})<br/>"
+                    f"<b>Issuing Authority:</b> {sn.issuing_officer}, {sn.issuing_port}<br/>"
+                    f"<b>Grounds:</b> {sn.grounds_for_action}<br/>"
+                    f"<b>Cited Statutes:</b> {', '.join(sn.cited_statutes)}",
+                    cell_style
+                ))
+            story.append(Spacer(1, 12))
+
+        # ── Dynamic HS Code & Tariff Arbitrage ──
+        if audit_data.hs_tariff:
+            hs = audit_data.hs_tariff
+            story.append(Paragraph("DYNAMIC HS CODE & TARIFF ARBITRAGE ADVISORY", h2_style))
+            story.append(Spacer(1, 4))
+
+            hs_rows = [
+                [
+                    Paragraph("<b>Declared HS Code:</b>", cell_bold),
+                    Paragraph(f"{hs.declared_hs_code} — {hs.declared_hs_description}", cell_style),
+                    Paragraph("<b>Duty Rate:</b>", cell_bold),
+                    Paragraph(hs.declared_duty_rate, cell_style)
+                ],
+                [
+                    Paragraph("<b>Involuntary Reclassification:</b>", cell_bold),
+                    Paragraph(f"<font color='#DC2626'><b>{hs.reclassified_hs_code}</b></font> — {hs.reclassified_hs_description}", cell_style),
+                    Paragraph("<b>Remediation Savings:</b>", cell_bold),
+                    Paragraph(f"<font color='#16A34A'><b>${hs.total_arbitrage_savings_usd:,.2f} USD</b></font>", cell_bold)
+                ]
+            ]
+            hs_table = Table(hs_rows, colWidths=[110, 200, 90, 140])
+            hs_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
+                ('BOX', (0, 0), (-1, -1), 1, colors.HexColor("#CBD5E1")),
+                ('PADDING', (0, 0), (-1, -1), 5),
+            ]))
+            story.append(hs_table)
+            story.append(Spacer(1, 12))
 
         # ── Trade Economics & Market Expansion Ranking ──
         if audit_data.trade_economics:

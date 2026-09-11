@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import {
   Scale, MessageSquare, Sparkles, TrendingUp,
-  RotateCcw, CheckCircle2, AlertOctagon, Terminal
+  RotateCcw, CheckCircle2, AlertOctagon, Terminal, ShieldAlert
 } from 'lucide-react';
 import Header from '../components/Header';
 import ListingInput from '../components/ListingInput';
 import ComplianceMatrix from '../components/ComplianceMatrix';
-import AdversarialDebatePanel from '../components/AdversarialDebatePanel';
+import CustomsSeizureRadar from '../components/CustomsSeizureRadar';
+import HSTariffArbitrageCard from '../components/HSTariffArbitrageCard';
+import GroundTruthAccuracyBadge from '../components/GroundTruthAccuracyBadge';
 import RemediationDiffView from '../components/RemediationDiffView';
 import TradeEconomicsAdvisor from '../components/TradeEconomicsAdvisor';
 import HashVerificationModal from '../components/HashVerificationModal';
@@ -30,7 +32,7 @@ export default function HomePage() {
   const [auditData, setAuditData] = useState<AuditResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPdfLoading, setIsPdfLoading] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'matrix' | 'debate' | 'remediation' | 'economics'>('matrix');
+  const [activeTab, setActiveTab] = useState<'matrix' | 'customs_radar' | 'remediation' | 'economics'>('matrix');
 
   // Modals
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
@@ -114,7 +116,12 @@ export default function HomePage() {
             <div className="flex space-x-2">
               {[
                 { id: 'matrix', label: 'Compliance Matrix', icon: Scale, badge: auditData?.overall_verdict },
-                { id: 'debate', label: 'Adversarial Debate Room', icon: Terminal, badge: 'Live Demo' },
+                { 
+                  id: 'customs_radar', 
+                  label: 'Customs Seizure Radar & HTS', 
+                  icon: ShieldAlert, 
+                  badge: auditData?.customs_radar?.threat_level ? auditData.customs_radar.threat_level.replace(/_/g, ' ') : 'Live' 
+                },
                 { id: 'remediation', label: 'Compliant Rewrite & Diffs', icon: Sparkles, badge: auditData?.remediation?.diff_items.length ? `${auditData.remediation.diff_items.length} Fixes` : null },
                 { id: 'economics', label: 'Trade Economics Advisor', icon: TrendingUp, badge: 'Ranked Entry' },
               ].map(tab => {
@@ -146,9 +153,9 @@ export default function HomePage() {
             </div>
 
             {auditData && (
-              <div className="hidden lg:flex items-center space-x-2 text-xs text-slate-400">
+              <div className="hidden lg:flex items-center space-x-3 text-xs text-slate-400">
                 <span className="font-mono text-[11px] text-slate-500">Inspection: {auditData.inspection_id}</span>
-                <span className="text-emerald-400 font-semibold">● Live Audit Grounded</span>
+                <GroundTruthAccuracyBadge accuracy={auditData.accuracy_index} />
               </div>
             )}
           </div>
@@ -168,10 +175,15 @@ export default function HomePage() {
                   />
                 )}
 
-                {activeTab === 'debate' && (
-                  <AdversarialDebatePanel
-                    debate={auditData.debate}
-                  />
+                {activeTab === 'customs_radar' && (
+                  <div>
+                    <CustomsSeizureRadar
+                      radar={auditData.customs_radar}
+                    />
+                    <HSTariffArbitrageCard
+                      hsTariff={auditData.hs_tariff}
+                    />
+                  </div>
                 )}
 
                 {activeTab === 'remediation' && (

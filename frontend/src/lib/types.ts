@@ -38,20 +38,61 @@ export interface ComplianceCheckResult {
   fix_suggestion?: string;
 }
 
-export interface DebateTurn {
-  round_number: number;
-  speaker: string;
-  role_title: string;
-  argument: string;
-  cited_rules: string[];
-  risk_level: 'high' | 'medium' | 'low' | 'neutral';
+export interface CBPNoticeOfAction {
+  notice_id: string;
+  form_type: string;
+  issuing_port: string;
+  issuing_officer: string;
+  target_consignee: string;
+  action_type: string;
+  grounds_for_action: string;
+  cited_statutes: string[];
+  response_deadline_days: number;
+  estimated_civil_penalty_usd: number;
+  potential_forfeiture_risk: string;
 }
 
-export interface AdversarialDebateResult {
-  debate_topic: string;
-  turns: DebateTurn[];
-  consensus_verdict: string;
-  binding_remediations: string[];
+export interface CustomsSeizureRadarResult {
+  seizure_probability_pct: number;
+  threat_level: 'CRITICAL_SEIZURE_RISK' | 'ELEVATED_DETENTION_RISK' | 'MODERATE_CUSTOMS_HOLD' | 'LOW_FRICTION_CLEAR';
+  primary_detention_triggers: string[];
+  estimated_financial_exposure_usd: number;
+  breakdown_fees: {
+    inventory_risk_usd?: number;
+    port_demurrage_quarantine_usd?: number;
+    statutory_civil_penalties_usd?: number;
+  };
+  target_enforcement_agencies: string[];
+  simulated_notice?: CBPNoticeOfAction;
+  seizure_avoidance_directives: string[];
+}
+
+export interface HSTariffArbitrageResult {
+  declared_hs_code: string;
+  declared_hs_description: string;
+  reclassified_hs_code: string;
+  reclassified_hs_description: string;
+  is_misclassified: boolean;
+  declared_duty_rate: string;
+  reclassified_duty_rate: string;
+  de_minimis_disqualified: boolean;
+  potential_tariff_difference_per_1000_units: number;
+  broker_clearance_fee_impact: number;
+  total_arbitrage_savings_usd: number;
+  remediation_action: string;
+}
+
+export interface GroundTruthAccuracyIndex {
+  composite_accuracy_score: number;
+  trust_grade: string;
+  statutory_alignment_score: number;
+  extraction_fidelity_score: number;
+  verbatim_statutory_proofs: Array<{
+    citation: string;
+    title: string;
+    government_source: string;
+    verbatim_law: string;
+  }>;
 }
 
 export interface DiffItem {
@@ -96,7 +137,10 @@ export interface AuditResponse {
   extracted_attributes: ExtractedAttributes;
   matrix: Record<string, ComplianceCheckResult[]>;
   summary_by_country: Record<string, { pass: number; warning: number; violation: number; escalation: number }>;
-  debate?: AdversarialDebateResult;
+  customs_radar?: CustomsSeizureRadarResult;
+  hs_tariff?: HSTariffArbitrageResult;
+  accuracy_index?: GroundTruthAccuracyIndex;
+  debate?: any;
   remediation?: RemediationResult;
   trade_economics: TradeEconomicsItem[];
   citations: string[];

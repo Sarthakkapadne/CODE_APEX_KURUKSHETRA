@@ -43,19 +43,67 @@ class ComplianceCheckResult(BaseModel):
     fix_suggestion: Optional[str] = None
 
 
+class CBPNoticeOfAction(BaseModel):
+    notice_id: str
+    form_type: str  # e.g., "CBP Form 28 (Request for Information)", "CBP Form 29 (Notice of Action)", "CBSA Form E635"
+    issuing_port: str
+    issuing_officer: str
+    target_consignee: str
+    action_type: str  # PROPOSED_SEIZURE, RATE_ADVANCE, DETENTION_HOLD, DEMAND_FOR_REDELIVERY
+    grounds_for_action: str
+    cited_statutes: List[str] = []
+    response_deadline_days: int = 30
+    estimated_civil_penalty_usd: float = 0.0
+    potential_forfeiture_risk: str = "High risk of total forfeiture and destruction under 19 U.S.C. § 1595a"
+
+
+class CustomsSeizureRadarResult(BaseModel):
+    seizure_probability_pct: float  # 0.0 to 100.0
+    threat_level: str  # CRITICAL_SEIZURE_RISK, ELEVATED_DETENTION_RISK, MODERATE_CUSTOMS_HOLD, LOW_FRICTION_CLEAR
+    primary_detention_triggers: List[str] = []
+    estimated_financial_exposure_usd: float = 0.0
+    breakdown_fees: Dict[str, float] = {}  # inventory_risk, port_demurrage_est, cbp_penalties_est
+    target_enforcement_agencies: List[str] = []
+    simulated_notice: Optional[CBPNoticeOfAction] = None
+    seizure_avoidance_directives: List[str] = []
+
+
+class HSTariffArbitrageResult(BaseModel):
+    declared_hs_code: str
+    declared_hs_description: str
+    reclassified_hs_code: str
+    reclassified_hs_description: str
+    is_misclassified: bool = False
+    declared_duty_rate: str
+    reclassified_duty_rate: str
+    de_minimis_disqualified: bool = False
+    potential_tariff_difference_per_1000_units: float = 0.0
+    broker_clearance_fee_impact: float = 0.0
+    total_arbitrage_savings_usd: float = 0.0
+    remediation_action: str
+
+
+class GroundTruthAccuracyIndex(BaseModel):
+    composite_accuracy_score: float  # e.g. 98.6
+    trust_grade: str  # e.g. "Grade A+ [Audit-Proof]"
+    statutory_alignment_score: float = 100.0
+    extraction_fidelity_score: float = 96.5
+    verbatim_statutory_proofs: List[Dict[str, str]] = []  # citation, verbatim_law, government_source
+
+
 class DebateTurn(BaseModel):
-    round_number: int
-    speaker: str  # "Customs Inspector", "Seller Advocate", "Consensus Arbiter"
-    role_title: str
-    argument: str
+    round_number: int = 1
+    speaker: str = "Customs Officer"
+    role_title: str = "Port Inspector"
+    argument: str = ""
     cited_rules: List[str] = []
-    risk_level: str = "medium"  # high, medium, low, neutral
+    risk_level: str = "medium"
 
 
 class AdversarialDebateResult(BaseModel):
-    debate_topic: str
+    debate_topic: str = "Customs Pre-Flight Assessment"
     turns: List[DebateTurn] = []
-    consensus_verdict: str
+    consensus_verdict: str = "Clearance Review Complete"
     binding_remediations: List[str] = []
 
 
@@ -102,6 +150,9 @@ class AuditResponse(BaseModel):
     matrix: Dict[str, List[ComplianceCheckResult]]  # country_code -> list of results
     summary_by_country: Dict[str, Dict[str, int]]  # country_code -> {pass: X, warning: Y, violation: Z, escalation: W}
     debate: Optional[AdversarialDebateResult] = None
+    customs_radar: Optional[CustomsSeizureRadarResult] = None
+    hs_tariff: Optional[HSTariffArbitrageResult] = None
+    accuracy_index: Optional[GroundTruthAccuracyIndex] = None
     remediation: Optional[RemediationResult] = None
     trade_economics: List[TradeEconomicsItem] = []
     citations: List[str] = []

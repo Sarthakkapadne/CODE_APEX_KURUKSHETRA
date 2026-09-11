@@ -12,16 +12,19 @@ from typing import Dict, List, Any, Optional
 from backend.core.config import get_settings
 from backend.core.models import (
     ListingInput, AuditResponse, ComplianceCheckResult, ExtractedAttributes,
-    AdversarialDebateResult, RemediationResult, TradeEconomicsItem
+    RemediationResult, TradeEconomicsItem, CustomsSeizureRadarResult,
+    HSTariffArbitrageResult, GroundTruthAccuracyIndex
 )
 from backend.core.hash_chain import ComplianceHashChain
 from backend.modules.rule_engine.deterministic_engine import DeterministicRuleEngine
+from backend.modules.rule_engine.accuracy_evaluator import AccuracyEvaluator
 from backend.modules.agents.attribute_extractor import AttributeExtractorAgent
 from backend.modules.agents.classification_mismatch import ClassificationMismatchDetector
-from backend.modules.agents.adversarial_debate import AdversarialDebateEngine
+from backend.modules.agents.customs_risk_radar import CustomsRiskRadar
 from backend.modules.agents.remediation_rewriter import RemediationRewriterAgent
 from backend.modules.agents.escalation_handler import EscalationHandler
 from backend.modules.economics.trade_advisor import TradeEconomicsAdvisor
+from backend.modules.economics.hs_tariff_engine import HSTariffEngine
 from backend.modules.simulator.regulatory_simulator import RegulatorySimulator
 
 
@@ -36,7 +39,9 @@ class ComplianceSupervisor:
         self.simulator = simulator or RegulatorySimulator()
         self.extractor = AttributeExtractorAgent()
         self.mismatch_detector = ClassificationMismatchDetector()
-        self.debate_engine = AdversarialDebateEngine()
+        self.customs_radar = CustomsRiskRadar()
+        self.hs_tariff_engine = HSTariffEngine()
+        self.accuracy_evaluator = AccuracyEvaluator()
         self.rewriter = RemediationRewriterAgent()
         self.escalation_handler = EscalationHandler()
         self.economics_advisor = TradeEconomicsAdvisor()
@@ -138,17 +143,29 @@ class ComplianceSupervisor:
         else:
             overall_verdict = "COMPLIANT"
 
-        # 6. Adversarial Inspection Debate (Customs Inspector vs Seller Advocate)
+        # 6. Customs Seizure Risk Radar & Simulated Notice of Action (replaces old debate)
         critical_violations = [f for f in all_findings if f.status in ["violation", "escalation", "warning"]]
-        debate_result: AdversarialDebateResult = await self.debate_engine.run_debate(
-            title=listing.title,
-            description=listing.description,
+        customs_radar_result: CustomsSeizureRadarResult = self.customs_radar.evaluate_seizure_risk(
+            listing=listing,
             extracted=extracted,
             violations=critical_violations,
             target_markets=target_markets,
         )
 
-        # 7. Remediation / Auto-Rewrite Engine
+        # 7. Dynamic HS Code & Tariff Arbitrage Engine
+        hs_tariff_result: HSTariffArbitrageResult = self.hs_tariff_engine.evaluate_hs_classification(
+            listing=listing,
+            extracted=extracted,
+            violations=critical_violations,
+        )
+
+        # 8. Ground-Truth Verification Index (GTVI) Evaluator
+        accuracy_index: GroundTruthAccuracyIndex = self.accuracy_evaluator.evaluate_accuracy(
+            extracted=extracted,
+            findings=all_findings,
+        )
+
+        # 9. Remediation / Auto-Rewrite Engine
         remediation_result: RemediationResult = await self.rewriter.rewrite(
             title=listing.title,
             description=listing.description,
@@ -157,14 +174,14 @@ class ComplianceSupervisor:
             target_markets=target_markets,
         )
 
-        # 8. Trade Economics Advisor (De minimis, VAT/GST OSS, Market Entry Ranking)
+        # 10. Trade Economics Advisor (De minimis, VAT/GST OSS, Market Entry Ranking)
         trade_economics: List[TradeEconomicsItem] = self.economics_advisor.evaluate_markets(
             target_markets=target_markets,
             product_price_usd=float(listing.price or 29.99),
             category=extracted.category,
         )
 
-        # 9. Cryptographic Hash Chain Generation (SHA-256 Tamper-Evident Ledger)
+        # 11. Cryptographic Hash Chain Generation (SHA-256 Tamper-Evident Ledger)
         citations_list = sorted(list(citations_set))
         raw_matrix_list = [r.dict() for r in all_findings]
 
@@ -191,7 +208,10 @@ class ComplianceSupervisor:
             extracted_attributes=extracted,
             matrix=matrix,
             summary_by_country=summary_by_country,
-            debate=debate_result,
+            customs_radar=customs_radar_result,
+            hs_tariff=hs_tariff_result,
+            accuracy_index=accuracy_index,
+            debate=None,
             remediation=remediation_result,
             trade_economics=trade_economics,
             citations=citations_list,
