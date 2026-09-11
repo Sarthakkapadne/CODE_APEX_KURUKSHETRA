@@ -201,7 +201,7 @@
       } else {
         openDrawer();
         if (!currentAudit && !isAuditing) {
-          triggerAudit();
+          renderPreScanView();
         }
       }
     });
@@ -244,8 +244,11 @@
           <span class="lx-seller-ribbon-origin">Origin: 🇮🇳 ${authenticatedSeller.originCountry}</span>
         </div>
 
-        <div class="lx-product-title-row">
+        <div class="lx-product-title-row" style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
           <span class="lx-product-title-text" id="lx-drawer-title">Detecting product listing...</span>
+          <button id="lx-btn-rescan" style="display:none; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38BDF8; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0;">
+            🔄 Re-Scan
+          </button>
         </div>
         <div class="lx-market-chips">
           <span class="lx-market-chip lx-active">🇺🇸 US</span>
@@ -253,6 +256,7 @@
           <span class="lx-market-chip lx-active">🇬🇧 UK</span>
           <span class="lx-market-chip lx-active">🇨🇦 CA</span>
           <span class="lx-market-chip lx-active">🇯🇵 JP</span>
+          <span class="lx-market-chip lx-active">🇦🇺 AU</span>
         </div>
       </div>
 
@@ -265,12 +269,7 @@
       </div>
 
       <div class="lx-drawer-body" id="lx-drawer-body">
-        <div style="text-align:center; padding: 40px 20px; color: #94A3B8;">
-          <p>Click <strong>Run Audit</strong> to evaluate this product against US, EU, UK, CA, and Japan cross-border trade laws.</p>
-          <button class="lx-btn-primary" id="lx-btn-trigger-audit" style="margin: 16px auto; max-width: 240px;">
-            ⚡ Run Pre-Flight Audit
-          </button>
-        </div>
+        <!-- Rendered by renderPreScanView() -->
       </div>
 
       <div class="lx-drawer-footer" id="lx-drawer-footer">
@@ -285,6 +284,9 @@
     // Bind Close Event
     drawer.querySelector("#lx-close-btn").addEventListener("click", closeDrawer);
 
+    // Bind Re-Scan Event
+    drawer.querySelector("#lx-btn-rescan")?.addEventListener("click", triggerAudit);
+
     // Bind Tab Switching Events
     const tabBtns = drawer.querySelectorAll(".lx-tab-btn");
     tabBtns.forEach((btn) => {
@@ -296,8 +298,67 @@
       });
     });
 
-    // Bind Trigger Button
-    drawer.querySelector("#lx-btn-trigger-audit")?.addEventListener("click", triggerAudit);
+    // Initialize in Pre-Scan State (Does NOT scan automatically!)
+    renderPreScanView();
+  }
+
+  /**
+   * Pre-Scan Idle View with Explicit "Start Compliance Scan" Button
+   */
+  function renderPreScanView() {
+    const drawerBody = document.querySelector("#lx-drawer-body");
+    if (!drawerBody) return;
+
+    const listingData = scrapeListingData();
+    const drawerTitle = document.querySelector("#lx-drawer-title");
+    if (drawerTitle) {
+      drawerTitle.innerText = listingData.title || "Ready to Inspect";
+    }
+
+    drawerBody.innerHTML = `
+      <div style="padding: 24px 16px; text-align: center;">
+        <div style="width: 58px; height: 58px; margin: 0 auto 16px; background: rgba(16, 185, 129, 0.12); border: 2px solid #10B981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px;">
+          🛡️
+        </div>
+        <div style="font-size: 16px; font-weight: 700; color: #F8FAFC; margin-bottom: 6px;">
+          Listing Inspection Ready
+        </div>
+        <p style="font-size: 12px; color: #94A3B8; line-height: 1.5; margin: 0 auto 18px; max-width: 320px;">
+          Listing metadata is detected on this page. Click <strong>Start Compliance Scan</strong> below to execute full cross-border verification.
+        </p>
+
+        <!-- Preview Card -->
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px; text-align: left; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #64748B; margin-bottom: 8px;">
+            <span style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Source Platform</span>
+            <span style="background: rgba(56, 189, 248, 0.15); color: #38BDF8; padding: 2px 8px; border-radius: 9999px; font-weight: 600; font-size: 10px;">
+              Amazon PDP
+            </span>
+          </div>
+          <div style="font-size: 13px; font-weight: 600; color: #F1F5F9; line-height: 1.4; margin-bottom: 10px;">
+            ${listingData.title ? (listingData.title.slice(0, 85) + (listingData.title.length > 85 ? '...' : '')) : 'Product Title Ready'}
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: #94A3B8; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
+            <div><strong>Origin:</strong> 🇮🇳 ${authenticatedSeller.originCountry || 'India'}</div>
+            <div><strong>Price:</strong> $${listingData.price || '29.99'} USD</div>
+            <div><strong>ASIN:</strong> <span style="font-family: monospace; color: #38BDF8;">${listingData.asin || 'Detected'}</span></div>
+            <div><strong>Status:</strong> <span style="color: #F59E0B; font-weight: 600;">Idle (Awaiting Scan)</span></div>
+          </div>
+        </div>
+
+        <!-- THE DEDICATED START SCAN BUTTON -->
+        <button class="lx-btn-primary" id="lx-btn-start-scan" style="width: 100%; padding: 14px; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35); cursor: pointer; border-radius: 10px;">
+          <span>⚡</span>
+          <span>Start Compliance Scan</span>
+        </button>
+
+        <div style="font-size: 11px; color: #64748B; margin-top: 12px;">
+          🔒 Scanning will not start until you click this button.
+        </div>
+      </div>
+    `;
+
+    drawerBody.querySelector("#lx-btn-start-scan")?.addEventListener("click", triggerAudit);
   }
 
   function updateHeaderSellerInfo() {
@@ -367,6 +428,8 @@
 
         if (response && response.success && response.audit) {
           currentAudit = response.audit;
+          const rescanBtn = document.querySelector("#lx-btn-rescan");
+          if (rescanBtn) rescanBtn.style.display = "block";
           updatePillVerdict(currentAudit);
           renderActiveTab();
           updateDeepLink(currentAudit.inspection_id);
@@ -405,9 +468,9 @@
 
   function updatePillVerdict(audit) {
     const pill = document.querySelector("#lexport-pill");
-    if (!pill) return;
+    if (!pill || !audit) return;
 
-    const verdict = audit.overall_verdict;
+    const verdict = audit.calculated_verdict || audit.verdict || "COMPLIANT";
     const radarPct = audit.customs_radar?.seizure_probability_pct || 0;
 
     if (verdict === "IMPORT_PROHIBITED") {
@@ -430,7 +493,11 @@
    */
   function renderActiveTab() {
     const drawerBody = document.querySelector("#lx-drawer-body");
-    if (!drawerBody || !currentAudit) return;
+    if (!drawerBody) return;
+    if (!currentAudit) {
+      renderPreScanView();
+      return;
+    }
 
     if (activeTab === "radar") {
       renderRadarTab(drawerBody);
@@ -752,6 +819,9 @@
         pill.querySelector(".lx-pill-label").innerText = "LexPort Audit";
       }
       currentAudit = null;
+      const rescanBtn = document.querySelector("#lx-btn-rescan");
+      if (rescanBtn) rescanBtn.style.display = "none";
+      renderPreScanView();
     }
   }, 1500);
 
