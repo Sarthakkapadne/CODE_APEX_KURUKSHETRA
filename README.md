@@ -148,4 +148,3 @@ py -3.10 -m backend.tests.test_pipeline
   *A: No. It only corrects claims-level overclaiming (substituting disease cures with compliant structure/function language). Safety certifications, baby walker bans, and hazmat shipping are strictly escalated to human review — never auto-resolved.*
 
 ---
-*Built with ❤️ for KURUKSHETRA / Smart India Hackathon 2026.*
