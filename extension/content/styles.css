@@ -1,0 +1,681 @@
+/* ==========================================================================
+   LexPort Chrome Extension — Content Script & Drawer Styles
+   Scoped entirely to prevent interference with host marketplace styles
+   ========================================================================== */
+
+:root {
+  --lx-bg-base: #0B132B;
+  --lx-bg-card: #1C2541;
+  --lx-bg-hover: #263352;
+  --lx-text-primary: #F8FAFC;
+  --lx-text-secondary: #94A3B8;
+  --lx-text-muted: #64748B;
+  --lx-accent-green: #10B981;
+  --lx-accent-amber: #F59E0B;
+  --lx-accent-red: #EF4444;
+  --lx-accent-blue: #3B82F6;
+  --lx-border: rgba(255, 255, 255, 0.12);
+  --lx-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   Floating Compliance Pill
+   -------------------------------------------------------------------------- */
+#lexport-pill {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999990;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--lx-border);
+  border-radius: 9999px;
+  color: var(--lx-text-primary);
+  font-family: var(--lx-font);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.15);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#lexport-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.3);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+#lexport-pill .lx-icon-shield {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+#lexport-pill .lx-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lx-accent-green);
+  box-shadow: 0 0 8px var(--lx-accent-green);
+}
+
+#lexport-pill.lx-status-auditing .lx-status-dot {
+  background: var(--lx-accent-amber);
+  box-shadow: 0 0 8px var(--lx-accent-amber);
+  animation: lx-pulse 1.5s infinite;
+}
+
+#lexport-pill.lx-status-warning .lx-status-dot {
+  background: var(--lx-accent-amber);
+  box-shadow: 0 0 8px var(--lx-accent-amber);
+}
+
+#lexport-pill.lx-status-violation .lx-status-dot,
+#lexport-pill.lx-status-prohibited .lx-status-dot {
+  background: var(--lx-accent-red);
+  box-shadow: 0 0 8px var(--lx-accent-red);
+}
+
+@keyframes lx-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+/* --------------------------------------------------------------------------
+   Drawer Backdrop Overlay
+   -------------------------------------------------------------------------- */
+#lexport-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9999998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#lexport-drawer-backdrop.lx-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Slide-Out Audit Drawer
+   -------------------------------------------------------------------------- */
+#lexport-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 540px;
+  max-width: 95vw;
+  height: 100vh;
+  background: var(--lx-bg-base);
+  color: var(--lx-text-primary);
+  font-family: var(--lx-font);
+  z-index: 9999999;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -15px 0 35px rgba(0, 0, 0, 0.6);
+  border-left: 1px solid var(--lx-border);
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+#lexport-drawer * {
+  box-sizing: border-box;
+}
+
+#lexport-drawer.lx-open {
+  transform: translateX(0);
+}
+
+/* Drawer Header */
+.lx-drawer-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--lx-border);
+  background: rgba(28, 37, 65, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lx-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lx-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+
+.lx-brand-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--lx-accent-green);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.lx-seller-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 5px 10px;
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.lx-seller-ribbon-origin {
+  color: #10B981;
+}
+
+.lx-close-btn {
+  background: none;
+  border: none;
+  color: var(--lx-text-secondary);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.lx-close-btn:hover {
+  color: var(--lx-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lx-product-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lx-product-title-text {
+  font-size: 13px;
+  color: var(--lx-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.lx-market-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lx-market-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--lx-bg-card);
+  color: var(--lx-text-secondary);
+  border: 1px solid var(--lx-border);
+}
+
+.lx-market-chip.lx-active {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #60A5FA;
+}
+
+/* Navigation Tabs */
+.lx-nav-tabs {
+  display: flex;
+  background: rgba(15, 23, 42, 0.6);
+  border-bottom: 1px solid var(--lx-border);
+  overflow-x: auto;
+}
+
+.lx-tab-btn {
+  flex: 1;
+  min-width: 90px;
+  padding: 12px 10px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--lx-text-secondary);
+  font-family: var(--lx-font);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.lx-tab-btn:hover {
+  color: var(--lx-text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.lx-tab-btn.lx-active {
+  color: var(--lx-accent-green);
+  border-bottom-color: var(--lx-accent-green);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+/* Drawer Content Body */
+.lx-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Custom Scrollbar */
+.lx-drawer-body::-webkit-scrollbar {
+  width: 6px;
+}
+.lx-drawer-body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+.lx-drawer-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+.lx-drawer-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   Tab 1: Radar & Findings
+   -------------------------------------------------------------------------- */
+.lx-radar-card {
+  background: var(--lx-bg-card);
+  border: 1px solid var(--lx-border);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.lx-gauge-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.lx-gauge-svg {
+  transform: rotate(-90deg);
+}
+
+.lx-gauge-bg {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.lx-gauge-fill {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lx-gauge-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.lx-gauge-subtext {
+  font-size: 9px;
+  color: var(--lx-text-muted);
+  text-transform: uppercase;
+}
+
+.lx-radar-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lx-threat-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: fit-content;
+}
+
+.lx-threat-badge.lx-threat-low {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--lx-accent-green);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.lx-threat-badge.lx-threat-high {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--lx-accent-red);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.lx-financial-exposure {
+  font-size: 12px;
+  color: var(--lx-text-secondary);
+}
+
+.lx-exposure-val {
+  color: var(--lx-accent-red);
+  font-weight: 700;
+}
+
+/* Simulated Notice Alert */
+.lx-notice-box {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 12px;
+}
+
+.lx-notice-header {
+  font-weight: 700;
+  color: var(--lx-accent-red);
+  margin-bottom: 4px;
+}
+
+/* Findings List */
+.lx-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--lx-text-muted);
+  margin-bottom: 10px;
+}
+
+.lx-findings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lx-finding-item {
+  background: var(--lx-bg-card);
+  border: 1px solid var(--lx-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.lx-finding-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lx-finding-code {
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.lx-finding-citation {
+  font-size: 11px;
+  color: #60A5FA;
+  font-family: monospace;
+}
+
+.lx-finding-reason {
+  color: var(--lx-text-secondary);
+  line-height: 1.4;
+}
+
+.lx-finding-fix {
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 2px solid var(--lx-accent-green);
+  padding: 6px 10px;
+  border-radius: 0 4px 4px 0;
+  color: #A7F3D0;
+  font-size: 11px;
+}
+
+/* --------------------------------------------------------------------------
+   Tab 2: 1-Click Remediation
+   -------------------------------------------------------------------------- */
+.lx-remediation-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.lx-btn-primary {
+  flex: 1;
+  background: #10B981;
+  color: #064E3B;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: var(--lx-font);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.lx-btn-primary:hover {
+  background: #059669;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.lx-btn-secondary {
+  background: var(--lx-bg-card);
+  color: var(--lx-text-primary);
+  border: 1px solid var(--lx-border);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: var(--lx-font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.lx-btn-secondary:hover {
+  background: var(--lx-bg-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.lx-bullet-card {
+  background: var(--lx-bg-card);
+  border: 1px solid var(--lx-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.lx-bullet-num {
+  font-weight: 700;
+  color: var(--lx-accent-green);
+  margin-right: 6px;
+}
+
+/* Visual Flash on In-Page DOM Replacement */
+.lx-dom-replaced {
+  animation: lx-dom-glow 2s ease-out;
+  position: relative;
+}
+
+@keyframes lx-dom-glow {
+  0% { outline: 3px solid #10B981; background: rgba(16, 185, 129, 0.2); }
+  100% { outline: 3px solid transparent; background: transparent; }
+}
+
+/* --------------------------------------------------------------------------
+   Tab 3: Documents Matrix
+   -------------------------------------------------------------------------- */
+.lx-doc-item {
+  background: var(--lx-bg-card);
+  border: 1px solid var(--lx-border);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.lx-doc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lx-doc-name {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.lx-doc-auth {
+  font-size: 11px;
+  color: #60A5FA;
+}
+
+.lx-doc-action {
+  font-size: 11px;
+  color: var(--lx-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Tab 4: Barcode & Economics
+   -------------------------------------------------------------------------- */
+.lx-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.lx-stat-box {
+  background: var(--lx-bg-card);
+  border: 1px solid var(--lx-border);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.lx-stat-label {
+  font-size: 11px;
+  color: var(--lx-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.lx-stat-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--lx-accent-green);
+}
+
+/* --------------------------------------------------------------------------
+   Tab 5: Ground-Truth Benchmark Proof
+   -------------------------------------------------------------------------- */
+.lx-benchmark-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.lx-benchmark-big-stat {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--lx-accent-green);
+  margin: 6px 0;
+}
+
+.lx-metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 14px;
+}
+
+.lx-metrics-table th, .lx-metrics-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--lx-border);
+  text-align: left;
+}
+
+.lx-metrics-table th {
+  color: var(--lx-text-muted);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Drawer Footer & Web Cockpit Deep Link
+   -------------------------------------------------------------------------- */
+.lx-drawer-footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--lx-border);
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.lx-btn-cockpit {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #60A5FA;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.lx-btn-cockpit:hover {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93C5FD;
+  border-color: rgba(59, 130, 246, 0.7);
+  transform: translateY(-1px);
+}
