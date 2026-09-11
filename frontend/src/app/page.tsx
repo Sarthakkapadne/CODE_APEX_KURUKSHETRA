@@ -24,13 +24,14 @@ import { runComplianceAudit, scrapeListingUrl, downloadPdfReport } from '../lib/
 
 export default function HomePage() {
   const [currentInput, setCurrentInput] = useState<ListingInputType>({
-    title: '',
-    description: '',
-    brand_name: '',
-    price: 0,
-    country_of_origin: '',
+    title: CASE_PRESETS[0].title,
+    description: CASE_PRESETS[0].description,
+    brand_name: CASE_PRESETS[0].brand_name,
+    price: CASE_PRESETS[0].price,
+    country_of_origin: CASE_PRESETS[0].country_of_origin,
     destination_markets: ['US', 'EU', 'UK', 'CA', 'JP', 'AU'],
   });
+
 
   const [auditData, setAuditData] = useState<AuditResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);

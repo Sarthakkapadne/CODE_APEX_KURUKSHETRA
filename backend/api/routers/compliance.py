@@ -161,6 +161,75 @@ async def list_inspections(db: AsyncSession = Depends(get_db)):
     ]
 
 
+@router.get("/inspections/{inspection_id}", summary="Get full inspection details by ID")
+async def get_inspection_by_id(inspection_id: str, db: AsyncSession = Depends(get_db)):
+    stmt = select(Inspection).where(Inspection.id == inspection_id)
+    res = await db.execute(stmt)
+    inspection = res.scalars().first()
+    if not inspection:
+        raise HTTPException(status_code=404, detail="Inspection not found")
+
+    listing_stmt = select(Listing).where(Listing.id == inspection.listing_id)
+    listing_res = await db.execute(listing_stmt)
+    listing = listing_res.scalars().first()
+
+    results_stmt = select(ComplianceResultRecord).where(ComplianceResultRecord.inspection_id == inspection_id)
+    results_res = await db.execute(results_stmt)
+    results = results_res.scalars().all()
+
+    hash_stmt = select(AuditHashBlock).where(AuditHashBlock.inspection_id == inspection_id)
+    hash_res = await db.execute(hash_stmt)
+    hash_block = hash_res.scalars().first()
+
+    return {
+        "inspection": {
+            "id": inspection.id,
+            "listing_id": inspection.listing_id,
+            "timestamp_utc": inspection.timestamp_utc,
+            "rule_engine_version": inspection.rule_engine_version,
+            "compliance_hash": inspection.compliance_hash,
+            "prev_hash": inspection.prev_hash,
+            "overall_verdict": inspection.overall_verdict,
+            "destination_markets": json.loads(inspection.destination_markets or "[]"),
+            "extracted_attributes": json.loads(inspection.extracted_attributes_json or "{}"),
+            "summary": inspection.summary,
+        },
+        "listing": {
+            "id": listing.id if listing else None,
+            "title": listing.title if listing else None,
+            "description": listing.description if listing else None,
+            "brand_name": listing.brand_name if listing else None,
+            "category": listing.category if listing else None,
+            "price": listing.price if listing else None,
+            "currency": listing.currency if listing else None,
+            "country_of_origin": listing.country_of_origin if listing else None,
+            "source_url": listing.source_url if listing else None,
+        } if listing else None,
+        "results": [
+            {
+                "country_code": r.country_code,
+                "category": r.category,
+                "check_code": r.check_code,
+                "status": r.status,
+                "trust_tier": r.trust_tier,
+                "rule_citation": r.rule_citation,
+                "extracted_value": r.extracted_value,
+                "expected_requirement": r.expected_requirement,
+                "explanation": r.explanation,
+                "fix_suggestion": r.fix_suggestion,
+            }
+            for r in results
+        ],
+        "hash_block": {
+            "block_index": hash_block.block_index if hash_block else None,
+            "compliance_hash": hash_block.compliance_hash if hash_block else None,
+            "prev_hash": hash_block.prev_hash if hash_block else None,
+            "timestamp_utc": hash_block.timestamp_utc if hash_block else None,
+        } if hash_block else None,
+    }
+
+
+
 @router.post("/ocr-scan", response_model=PackagingAnalysisResult, summary="Multi-Modal Packaging Vision OCR & Rosetta Stone Translation")
 async def scan_packaging_label(
     payload: dict,
