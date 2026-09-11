@@ -59,6 +59,18 @@
       "estimated_duty_rate": "Avg 5-8% plus combined GST/HST on almost all parcels",
       "entry_friction_rank": 5,
       "recommendation_summary": "Highest friction market for small cross-border sellers. Lowest de minimis threshold ($20 CAD for non-US/MX goods) triggers tax, CBSA carrier handling fees, and mandatory English/French bilingual labeling."
+    },
+    "AU": {
+      "country_code": "AU",
+      "country_name": "Australia",
+      "de_minimis_threshold": 1000.0,
+      "de_minimis_currency": "AUD (~$650 USD)",
+      "vat_gst_rate": "10% Australian GST (collected by marketplace for low value goods)",
+      "simplification_scheme": "Simplified GST Law for Low Value Imported Goods (LVIG under $1,000 AUD)",
+      "customs_complexity_score": 3,
+      "estimated_duty_rate": "0% duty under $1,000 AUD (Duty-free entry)",
+      "entry_friction_rank": 3,
+      "recommendation_summary": "Very attractive expansion market. High $1,000 AUD customs duty de minimis threshold allows seamless duty-free entry for consumer e-commerce orders, with 10% GST handled directly by marketplaces."
     }
   }
 }

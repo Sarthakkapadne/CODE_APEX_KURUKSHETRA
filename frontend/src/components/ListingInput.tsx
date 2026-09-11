@@ -16,6 +16,7 @@ const AVAILABLE_MARKETS = [
   { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', standard: 'OPSS / UKCA / GB BPR' },
   { code: 'CA', name: 'Canada', flag: '🇨🇦', standard: 'Health Canada / CCPSA' },
   { code: 'JP', name: 'Japan', flag: '🇯🇵', standard: 'PMDA / PSE / METI' },
+  { code: 'AU', name: 'Australia', flag: '🇦🇺', standard: 'TGA / ACCC / ABF' },
 ];
 
 export default function ListingInput({ onAudit, isLoading, onScrape }: ListingInputProps) {
@@ -159,7 +160,7 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
           {AVAILABLE_MARKETS.map(market => {
             const isChecked = selectedMarkets.includes(market.code);
             return (

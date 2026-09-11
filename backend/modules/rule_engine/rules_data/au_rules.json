@@ -1,0 +1,48 @@
+{
+  "country_code": "AU",
+  "country_name": "Australia",
+  "regulatory_bodies": ["TGA (Therapeutic Goods Administration)", "ACCC", "Australian Border Force (ABF)"],
+  "rules": [
+    {
+      "rule_code": "AU-CHEM-01",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Poisons Standard (SUSMP) Schedule 4 / Therapeutic Goods Act 1989",
+      "title": "TGA Prescription-Only Classification for Hydroquinone > 2%",
+      "condition_type": "concentration_limit",
+      "ingredient_name": "hydroquinone",
+      "max_concentration": 2.0,
+      "severity": "violation",
+      "expected_requirement": "Hydroquinone concentrations exceeding 2.0% are classified as Schedule 4 Prescription Only Medicines and cannot be sold OTC in Australia.",
+      "explanation": "Australian Therapeutic Goods Administration strictly restricts hydroquinone in cosmetics. Over 2% requires an Australian Register of Therapeutic Goods (ARTG) inclusion and prescription dispensation.",
+      "fix_suggestion": "Cap hydroquinone concentration at <= 2.0% or register as a prescription medicine on the ARTG."
+    },
+    {
+      "rule_code": "AU-LBL-01",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Competition and Consumer Act 2010 - Consumer Protection Notice No. 1 of 2020",
+      "title": "Mandatory Australian INCI Ingredient Labeling Standard",
+      "condition_type": "mandatory_field",
+      "required_field": "ingredients",
+      "severity": "violation",
+      "expected_requirement": "All cosmetic ingredients must be clearly listed on the product container or packaging using INCI nomenclature in descending order of volume/weight.",
+      "explanation": "ACCC mandatory standard for cosmetics ingredient labeling requires complete disclosure of all ingredients on retail packaging.",
+      "fix_suggestion": "Provide a complete list of ingredients in descending order of prominence using standard INCI names."
+    },
+    {
+      "rule_code": "AU-CLAIM-01",
+      "category": "Claim Wording",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Therapeutic Goods Advertising Code (No. 2) 2018, Section 9",
+      "title": "Prohibited Therapeutic Disease Treatment Claims",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "skincare", "wellness"],
+      "trigger_terms": ["cures arthritis", "cures cancer", "treats eczema", "medicinal cure", "therapeutic cure"],
+      "severity": "violation",
+      "expected_requirement": "Therapeutic representations cannot be made on cosmetic goods without formal TGA ARTG registration.",
+      "explanation": "Claiming to cure or treat arthritis or serious medical conditions reclassifies the cosmetic as an unapproved therapeutic good under Australian federal law.",
+      "fix_suggestion": "Change curative claims to soothing or cosmetic structure/function claims, or secure ARTG inclusion."
+    }
+  ]
+}

@@ -23,12 +23,15 @@ class DeterministicRuleEngine:
         self.load_rules()
 
     def load_rules(self) -> None:
-        """Load all country rule databases into memory."""
-        for country in ["US", "EU", "UK", "CA", "JP"]:
-            file_path = self.rules_dir / f"{country.lower()}_rules.json"
-            if file_path.exists():
+        """Load all country rule databases dynamically from rules_dir."""
+        for file_path in self.rules_dir.glob("*_rules.json"):
+            try:
                 with open(file_path, "r", encoding="utf-8") as f:
-                    self._rules_cache[country] = json.load(f)
+                    data = json.load(f)
+                    country_code = data.get("country_code") or file_path.stem.split("_")[0].upper()
+                    self._rules_cache[country_code.upper()] = data
+            except Exception as e:
+                pass
 
     def set_simulation_override(self, simulation_id: str, is_active: bool) -> None:
         """Toggle a simulated regulatory change."""
