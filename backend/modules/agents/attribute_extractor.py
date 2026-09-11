@@ -156,21 +156,20 @@ class AttributeExtractorAgent:
             if ing in lower:
                 ingredients.append(ing)
 
-        # Extract percentages
-        pct_matches = re.findall(r'(\d+(?:\.\d+)?)\s*%\s*(?:w\/w\s*)?([a-zA-Z\s]{3,20})', lower)
-        for val_str, name in pct_matches:
+        # Extract percentages: "X% ingredient" OR "ingredient X%"
+        pct_matches1 = re.findall(r'(\d+(?:\.\d+)?)\s*%\s*(?:w\/w\s*)?([a-zA-Z\s]{3,20})', lower)
+        for val_str, name in pct_matches1:
             try:
-                name_clean = name.strip()
-                concentrations[name_clean] = float(val_str)
+                concentrations[name.strip()] = float(val_str)
             except Exception:
                 pass
 
-        if "hydrogen peroxide" in ingredients and "hydrogen peroxide" not in concentrations:
-            if "whitening" in lower:
-                concentrations["hydrogen peroxide"] = 10.0
-
-        if "camphor" in ingredients and "camphor" not in concentrations:
-            concentrations["camphor"] = 5.0
+        pct_matches2 = re.findall(r'([a-zA-Z\s]{3,20})\s*(\d+(?:\.\d+)?)\s*%', lower)
+        for name, val_str in pct_matches2:
+            try:
+                concentrations[name.strip()] = float(val_str)
+            except Exception:
+                pass
 
         # Extract claims
         trigger_phrases = [

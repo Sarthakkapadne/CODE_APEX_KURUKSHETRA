@@ -232,42 +232,23 @@ class RemediationRewriterAgent:
 
         # Check for mandatory labeling additions
         if "country_of_origin" in extracted.missing_required_fields:
-            compliant_desc += "\n\n• Origin: Made in India (Manufactured under Good Manufacturing Practices)."
+            origin = "Origin Declared"
+            compliant_desc += f"\n\n• Mandatory Marking: Country of Origin specified on container."
             diffs.append(DiffItem(
                 original_phrase="[Missing Country of Origin]",
-                compliant_phrase="Made in India",
+                compliant_phrase="Country of Origin Declaration",
                 reason="Added mandatory Country of Origin marking under 19 U.S.C. § 1304.",
                 severity="medium"
             ))
 
-        # Build ready-to-paste bullets
-        if "cream" in compliant_title.lower() or "balm" in compliant_title.lower():
-            bullets = [
-                "SOOTHING JOINT & MUSCLE COMFORT: Traditional Ayurvedic blend formulated to soothe tired joints and muscles during daily massage.",
-                "TIME-HONORED BOTANICALS: Infused with natural Sesame Seed Oil, Eucalyptus, and Camphor (<3% concentration compliant with global standards).",
-                "NON-GREASY ABSORPTION: Fast-absorbing topical balm suitable for knees, lower back, and elbows.",
-                "LEGAL COMPLIANCE: 100% cosmetic topical preparation. Contains no unapproved pharmaceuticals. Made in India."
-            ]
-        elif "cutting board" in compliant_title.lower() or "spray" in compliant_title.lower():
-            bullets = [
-                "PREMIUM SUSTAINABLE BAMBOO: Knife-friendly, durable organic surface designed for everyday kitchen prep.",
-                "ODOR & STAIN RESISTANT: Naturally conditioned finish resists stains and odor-causing bacteria on the wood surface.",
-                "EPA TREATED ARTICLE COMPLIANT: Surface treated solely to preserve and protect the cutting board itself.",
-                "EASY CARE & MAINTENANCE: Wash with warm soapy water; pre-seasoned with food-grade mineral oil."
-            ]
-        elif "walker" in compliant_title.lower():
-            bullets = [
-                "STABILITY & MOBILITY AID: Multi-directional activity center designed for infant developmental movement.",
-                "CPSC & EN CERTIFIED: Conforms to US ASTM F977-18 and European BS EN 1273:2020 safety stair-fall standards.",
-                "MARKET RESTRICTION NOTICE: EXCLUSIVELY AVAILABLE FOR US & UK MARKETS. Not offered or shipped to Canada per CCPSA Schedule 2.",
-                "ADJUSTABLE HEIGHT: 3 height positions with wipe-clean padded seat."
-            ]
-        else:
-            bullets = [
-                "PREMIUM QUALITY DESIGN: Engineered with high-grade components for reliable everyday use.",
-                "GLOBAL REGULATORY COMPLIANCE: Adheres to applicable consumer safety standards and labeling rules.",
-                "MANUFACTURER WARRANTY: Backed by 1-year product warranty and dedicated customer support."
-            ]
+        # Build dynamic ready-to-paste bullets based on actual product
+        clean_name = compliant_title.split("-")[0].strip()
+        bullets = [
+            f"PRODUCT AUTHENTICITY & QUALITY: Premium {clean_name} crafted to meet international commercial standards.",
+            f"TARGETED FORMULATION: Carefully selected components designed for safe, effective, and compliant everyday use.",
+            f"REGULATORY ASSURANCE: Formulated and labeled in strict adherence to destination-market packaging and consumer protection guidelines.",
+            f"TRANSPARENT INGREDIENT/SPEC DISCLOSURE: Full technical disclosures provided in compliance with applicable consumer safety regulations."
+        ]
 
         # Populate escalation checklist
         for v in violations:

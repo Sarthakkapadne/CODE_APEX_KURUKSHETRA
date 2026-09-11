@@ -17,7 +17,7 @@ from typing import Dict, Any, List, Tuple
 from datetime import datetime, timezone
 
 from backend.core.models import (
-    ListingInput, ExtractedAttributes, BenchmarkStatsResponse
+    ListingInput, ExtractedAttributes, BenchmarkStatsResponse, ComplianceCheckResult
 )
 from backend.modules.rule_engine.deterministic_engine import DeterministicRuleEngine
 from backend.modules.rule_engine.barcode_validator import BarcodeValidator
@@ -101,9 +101,19 @@ class BenchmarkEvaluator:
                     if r.check_code == "CA-BAN-01":
                         is_prohibited = True
 
-        # Barcode violation trigger
+        # Barcode validation
         if barcode_res.raw_barcode and not barcode_res.is_valid_gs1:
-            is_prohibited = False
+            violations_found.append(ComplianceCheckResult(
+                check_code="BARCODE-INVALID",
+                country_code="ALL",
+                category="Mandatory Labeling",
+                status="violation",
+                trust_tier="Tier 1 Deterministic",
+                rule_citation="GS1 General Specifications Section 5.1",
+                extracted_value=barcode_res.raw_barcode,
+                expected_requirement="Valid GS1 Modulo-10 Checksum",
+                explanation="Barcode checksum failed Modulo-10 validation."
+            ))
 
         # Determine calculated verdict
         if is_prohibited:

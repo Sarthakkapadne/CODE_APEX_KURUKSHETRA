@@ -17,23 +17,7 @@ const COLORS = ['#0284C7', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'
 export default function CopilotIntelligenceModal({ isOpen, onClose }: CopilotIntelligenceModalProps) {
   const [queryInput, setQueryInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [history, setHistory] = useState<any[]>([
-    {
-      query: 'Which countries have the highest number of violations?',
-      chart_type: 'bar',
-      x_axis: 'country_code',
-      y_axis: 'violation_count',
-      summary: 'Breakdown of regulatory non-compliance violations across destination markets.',
-      sql: "SELECT country_code, COUNT(id) as violation_count FROM compliance_results WHERE status = 'violation' GROUP BY country_code ORDER BY violation_count DESC",
-      data: [
-        { country_code: 'US', violation_count: 5 },
-        { country_code: 'CA', violation_count: 4 },
-        { country_code: 'EU', violation_count: 3 },
-        { country_code: 'UK', violation_count: 2 },
-        { country_code: 'JP', violation_count: 2 },
-      ]
-    }
-  ]);
+  const [history, setHistory] = useState<any[]>([]);
 
   if (!isOpen) return null;
 

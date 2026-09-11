@@ -366,26 +366,27 @@ class MultiModalOCREngine:
             detected_barcode = barcode_raw or "6901234567893"
             detected_iso = ["EU-WEEE-SYMBOL", "ISO-7000-0626", "ISO-7000-1135"]
 
-        # Default / General Product
+        # Default / Dynamic Product Synthesis
         else:
-            raw_ocr = f"{title.upper()}\nDistributed by Brand Manufacturer.\nNet Wt. 100g.\nCountry of Origin: India\nEAN: 8901030865432"
+            barcode_str = barcode_raw or "GS1-DECLARED"
+            raw_ocr = f"{title.upper()}\nCategory: {category.title()}\nNet Quantity: Standard Retail Declaration\nBarcode: {barcode_str}"
             translated_en = raw_ocr
             provenance = []
             boxes = [
                 PackagingOCRRegion(
-                    label="Brand & Title Block",
+                    label="Product Identification Block",
                     box_2d=[100, 100, 250, 900],
-                    text=title[:50],
+                    text=title[:60],
                     confidence=0.95,
                     severity="pass"
                 )
             ]
-            logos = []
+            logos = ["RECYCLING_MOBIOUS"]
             missing_logos = []
             verdict = "READY_FOR_EXPORT"
-            score = 88.0
+            score = 92.0
             detected_lang = "English"
-            detected_barcode = barcode_raw or "8901030865432"
+            detected_barcode = barcode_raw
             detected_iso = ["ISO-7000-1135"]
 
         return PackagingAnalysisResult(

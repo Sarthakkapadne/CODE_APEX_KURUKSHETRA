@@ -5,11 +5,17 @@
     "description": "Fast acting herbal relief balm. Formulated with camphor 5.5%, wintergreen oil, and menthol to permanently cure arthritis and chronic joint inflammation.",
     "category": "Cosmetics",
     "country_of_origin": "India",
-    "destination_markets": ["CA", "US"],
+    "destination_markets": [
+      "CA",
+      "US"
+    ],
     "barcode_raw": "8901030865432",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["CA-CHEM-01", "US-DRUG-01"],
-    "statutory_citation": "Health Canada Cosmetic Ingredient Hotlist / 21 CFR § 201.128",
+    "expected_violation_codes": [
+      "CA-CHEM-01",
+      "US-DRUG-01"
+    ],
+    "statutory_citation": "Health Canada Cosmetic Ingredient Hotlist / 21 CFR \u00a7 201.128",
     "case_notes": "Health Canada prohibits camphor concentrations above 3.0% in cosmetics; US FDA considers 'cure arthritis' an unapproved new drug claim."
   },
   {
@@ -18,10 +24,15 @@
     "description": "Professional dental whitening accelerator strips with 10% hydrogen peroxide. Direct to consumer home whitening kit.",
     "category": "Cosmetics",
     "country_of_origin": "China",
-    "destination_markets": ["EU", "UK"],
+    "destination_markets": [
+      "EU",
+      "UK"
+    ],
     "barcode_raw": "6901234567893",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EU-CHEM-01"],
+    "expected_violation_codes": [
+      "EU-CHEM-01"
+    ],
     "statutory_citation": "Regulation (EC) No 1223/2009 Annex III/12",
     "case_notes": "EU cosmetic regulations cap hydrogen peroxide at 0.1% for OTC retail; up to 6% only for registered dental practitioners."
   },
@@ -31,10 +42,14 @@
     "description": "Adjustable height activity baby walker with rubber wheels and music activity tray for infants learning to stand and move.",
     "category": "Children's Products",
     "country_of_origin": "China",
-    "destination_markets": ["CA"],
+    "destination_markets": [
+      "CA"
+    ],
     "barcode_raw": "6909876543217",
     "expected_verdict": "IMPORT_PROHIBITED",
-    "expected_violation_codes": ["CA-BAN-01"],
+    "expected_violation_codes": [
+      "CA-BAN-01"
+    ],
     "statutory_citation": "Canada Consumer Product Safety Act (CCPSA) Schedule 2 Item 2",
     "case_notes": "Baby walkers are strictly prohibited from manufacture, import, or sale under Canadian federal criminal law."
   },
@@ -44,11 +59,15 @@
     "description": "Eco-friendly cutting board treated with nano-silver antibacterial coating. Eliminates 99.9% of MRSA, E. coli, and airborne viruses.",
     "category": "Kitchenware",
     "country_of_origin": "India",
-    "destination_markets": ["US"],
+    "destination_markets": [
+      "US"
+    ],
     "barcode_raw": "8902030812345",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EPA-PEST-01"],
-    "statutory_citation": "FIFRA 7 U.S.C. § 136 / 40 CFR § 152.15",
+    "expected_violation_codes": [
+      "EPA-PEST-01"
+    ],
+    "statutory_citation": "FIFRA 7 U.S.C. \u00a7 136 / 40 CFR \u00a7 152.15",
     "case_notes": "Public health antimicrobial claims on treated articles trigger mandatory EPA pesticide registration."
   },
   {
@@ -57,10 +76,16 @@
     "description": "Intense bleaching treatment cream with 4% hydroquinone and kojic acid for rapid hyperpigmentation removal.",
     "category": "Cosmetics",
     "country_of_origin": "Nigeria",
-    "destination_markets": ["EU", "US"],
+    "destination_markets": [
+      "EU",
+      "US"
+    ],
     "barcode_raw": "6151234567890",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EU-CHEM-02", "US-DRUG-01"],
+    "expected_violation_codes": [
+      "EU-CHEM-02",
+      "US-DRUG-01"
+    ],
     "statutory_citation": "Regulation (EC) No 1223/2009 Annex II Item 1339 / FDA OTC CARES Act",
     "case_notes": "Hydroquinone is completely prohibited in EU cosmetics; prescription-only in the United States."
   },
@@ -70,8 +95,11 @@
     "description": "True wireless earbuds with ENC microphones, USB-C fast charging case containing 1200mAh lithium-ion cell.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU"],
-    "barcode_raw": "6901234567893",
+    "destination_markets": [
+      "US",
+      "EU"
+    ],
+    "barcode_raw": "6901234567892",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "FCC 47 CFR Part 15 / Directives 2014/53/EU & 2011/65/EU",
@@ -83,8 +111,14 @@
     "description": "100% Pure Organic Argania Spinosa Kernel Oil. Nourishes dry hair and moisturizes skin. Cold pressed in Morocco, bottled in India. Net 100 ml / 3.38 fl oz.",
     "category": "Cosmetics",
     "country_of_origin": "Morocco",
-    "destination_markets": ["US", "EU", "UK", "CA", "JP"],
-    "barcode_raw": "6111000123456",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK",
+      "CA",
+      "JP"
+    ],
+    "barcode_raw": "6111000123454",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "FD&C Act / EC 1223/2009 / Health Canada Cosmetic Regs",
@@ -96,11 +130,16 @@
     "description": "Steroid-free herbal ointment designed to treat and eradicate eczema, psoriasis, and dermatitis lesions within 7 days.",
     "category": "Cosmetics",
     "country_of_origin": "USA",
-    "destination_markets": ["US", "CA"],
+    "destination_markets": [
+      "US",
+      "CA"
+    ],
     "barcode_raw": "012345678905",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-DRUG-01"],
-    "statutory_citation": "21 U.S.C. § 321(g)(1)(B) / 21 CFR § 201.128",
+    "expected_violation_codes": [
+      "US-DRUG-01"
+    ],
+    "statutory_citation": "21 U.S.C. \u00a7 321(g)(1)(B) / 21 CFR \u00a7 201.128",
     "case_notes": "Claiming to treat eczema and psoriasis categorizes product as an unapproved drug under FDA regulations."
   },
   {
@@ -109,11 +148,14 @@
     "description": "Portable battery charger with PD 65W output, multi-port fast charging for laptops and smartphones.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["EU", "US"],
-    "barcode_raw": "6905554443332",
+    "destination_markets": [
+      "EU",
+      "US"
+    ],
+    "barcode_raw": "6905554443331",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
-    "statutory_citation": "UN Manual of Tests Part III § 38.3 / IATA DGR",
+    "statutory_citation": "UN Manual of Tests Part III \u00a7 38.3 / IATA DGR",
     "case_notes": "Compliant consumer power bank subject to standard UN 38.3 test summary carrier verification."
   },
   {
@@ -122,10 +164,15 @@
     "description": "Luxury floral fragrance with top notes of jasmine and lily of the valley. Contains butylphenyl methylpropional (Lilial) 1.5%.",
     "category": "Cosmetics",
     "country_of_origin": "France",
-    "destination_markets": ["EU", "UK"],
+    "destination_markets": [
+      "EU",
+      "UK"
+    ],
     "barcode_raw": "3001234567899",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EU-CHEM-03"],
+    "expected_violation_codes": [
+      "EU-CHEM-03"
+    ],
     "statutory_citation": "Commission Regulation (EU) 2021/1902 (Lilial Ban / CMR 1B)",
     "case_notes": "Lilial (BMHCA) was classified as reproductive toxicant CMR 1B and strictly banned in EU/UK cosmetics as of March 2022."
   },
@@ -135,11 +182,15 @@
     "description": "High carbon German DIN 1.4116 stainless steel kitchen knives with ergonomic pakkawood handles. Food grade certified.",
     "category": "Kitchenware",
     "country_of_origin": "Germany",
-    "destination_markets": ["US", "EU", "CA"],
-    "barcode_raw": "4001234567892",
+    "destination_markets": [
+      "US",
+      "EU",
+      "CA"
+    ],
+    "barcode_raw": "4001234567891",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
-    "statutory_citation": "Regulation (EC) No 1935/2004 / FDA 21 CFR § 174",
+    "statutory_citation": "Regulation (EC) No 1935/2004 / FDA 21 CFR \u00a7 174",
     "case_notes": "Compliant food contact articles with standard stainless steel metallurgical composition."
   },
   {
@@ -148,8 +199,11 @@
     "description": "Natural beechwood sensory rattle toy with smooth organic beeswax finish for teething infants 3-12 months.",
     "category": "Children's Products",
     "country_of_origin": "Vietnam",
-    "destination_markets": ["US", "EU"],
-    "barcode_raw": "8931234567895",
+    "destination_markets": [
+      "US",
+      "EU"
+    ],
+    "barcode_raw": "8931234567897",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "CPSIA ASTM F963-23 / EN 71-1, 2, 3",
@@ -161,21 +215,29 @@
     "description": "Kills toenail fungus and destroys trichophyton dermatophytes in 48 hours with pharmaceutical strength.",
     "category": "Cosmetics",
     "country_of_origin": "India",
-    "destination_markets": ["US", "CA"],
+    "destination_markets": [
+      "US",
+      "CA"
+    ],
     "barcode_raw": "8901234567891",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-DRUG-01"],
+    "expected_violation_codes": [
+      "US-DRUG-01"
+    ],
     "statutory_citation": "21 CFR Part 333 Subpart C (OTC Antifungal Drug Products)",
     "case_notes": "Antifungal treatment claims mandate registration under FDA OTC monograph system."
   },
   {
     "id": "GT-014",
     "title": "Bilingual Canadian Maple Syrup Grade A Amber 250ml",
-    "description": "Pure 100% organic Canadian maple syrup. Sirop d'érable pur à 100%. Product of Quebec / Produit du Québec. 250 ml / 8.45 fl oz.",
+    "description": "Pure 100% organic Canadian maple syrup. Sirop d'\u00e9rable pur \u00e0 100%. Product of Quebec / Produit du Qu\u00e9bec. 250 ml / 8.45 fl oz.",
     "category": "Food Contact",
     "country_of_origin": "Canada",
-    "destination_markets": ["CA", "US"],
-    "barcode_raw": "7541234567891",
+    "destination_markets": [
+      "CA",
+      "US"
+    ],
+    "barcode_raw": "7541234567899",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "Consumer Packaging and Labelling Regulations (C.R.C., c. 417)",
@@ -187,11 +249,17 @@
     "description": "Tactical green beam laser pointer pen for astronomy and presentation. Class 3B laser output power >500mW.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["EU", "UK", "US"],
+    "destination_markets": [
+      "EU",
+      "UK",
+      "US"
+    ],
     "barcode_raw": "6901112223334",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EU-ROHS-01"],
-    "statutory_citation": "FDA 21 CFR § 1040.10 / EN 60825-1 (Laser Safety)",
+    "expected_violation_codes": [
+      "EU-ROHS-01"
+    ],
+    "statutory_citation": "FDA 21 CFR \u00a7 1040.10 / EN 60825-1 (Laser Safety)",
     "case_notes": "Laser pointers exceeding 1mW (Class 2) or 5mW (Class 3R) are banned for consumer sale in EU and UK."
   },
   {
@@ -200,8 +268,12 @@
     "description": "Daily antioxidant face serum with 20% L-Ascorbic Acid, Ferulic Acid, and Vitamin E. Manufactured in certified cGMP facility. Net 30ml / 1 fl oz.",
     "category": "Cosmetics",
     "country_of_origin": "South Korea",
-    "destination_markets": ["US", "EU", "UK"],
-    "barcode_raw": "8801234567897",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "barcode_raw": "8801234567893",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "FDA MoCRA / Regulation (EC) No 1223/2009",
@@ -213,8 +285,12 @@
     "description": "Waterproof IP68 fitness tracker with optical heart rate sensor, sleep analysis, and Bluetooth 5.0 synchronization.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU", "JP"],
-    "barcode_raw": "6909998887776",
+    "destination_markets": [
+      "US",
+      "EU",
+      "JP"
+    ],
+    "barcode_raw": "6909998887775",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "FCC Part 15 / CE RED Directive / MIC Radio Law",
@@ -226,24 +302,32 @@
     "description": "Clinical grade wrist monitor designed to diagnose hypertension and detect cardiac arrhythmias.",
     "category": "Consumer Electronics",
     "country_of_origin": "Taiwan",
-    "destination_markets": ["US"],
+    "destination_markets": [
+      "US"
+    ],
     "barcode_raw": "4711234567894",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-DRUG-01"],
-    "statutory_citation": "FD&C Act § 510(k) / 21 CFR Part 870",
+    "expected_violation_codes": [
+      "US-DRUG-01"
+    ],
+    "statutory_citation": "FD&C Act \u00a7 510(k) / 21 CFR Part 870",
     "case_notes": "Marketing a wearable to diagnose medical disease classifies it as a Class II medical device requiring 510(k) clearance."
   },
   {
     "id": "GT-019",
     "title": "Cast Iron Skillet Pre-Seasoned 10-Inch",
-    "description": "Heavy-duty pre-seasoned cast iron skillet for cooking, baking, and sautéing on induction, gas, and oven.",
+    "description": "Heavy-duty pre-seasoned cast iron skillet for cooking, baking, and saut\u00e9ing on induction, gas, and oven.",
     "category": "Kitchenware",
     "country_of_origin": "USA",
-    "destination_markets": ["US", "CA", "EU"],
+    "destination_markets": [
+      "US",
+      "CA",
+      "EU"
+    ],
     "barcode_raw": "012345678912",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
-    "statutory_citation": "FDA 21 CFR § 174 / LFGB § 30, 31",
+    "statutory_citation": "FDA 21 CFR \u00a7 174 / LFGB \u00a7 30, 31",
     "case_notes": "Traditional cookware article compliant with US and international food contact safety statutes."
   },
   {
@@ -252,10 +336,14 @@
     "description": "Super soft 12-inch plush teddy bear toy with decorative glued button eyes for newborn infants.",
     "category": "Children's Products",
     "country_of_origin": "China",
-    "destination_markets": ["US"],
+    "destination_markets": [
+      "US"
+    ],
     "barcode_raw": "6901234567800",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-TOY-01"],
+    "expected_violation_codes": [
+      "US-TOY-01"
+    ],
     "statutory_citation": "16 CFR Part 1501 (Small Parts Hazard for Children Under 3)",
     "case_notes": "Detachable plastic eyes on infant plush toys present fatal aspiration and choking hazard under CPSC."
   },
@@ -265,11 +353,16 @@
     "description": "Infused with Redensyl, Bhringraj, and Minoxidil 5% to permanently reverse male pattern alopecia and regrow dormant follicles.",
     "category": "Cosmetics",
     "country_of_origin": "India",
-    "destination_markets": ["US", "EU"],
+    "destination_markets": [
+      "US",
+      "EU"
+    ],
     "barcode_raw": "8901234999992",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-DRUG-01"],
-    "statutory_citation": "21 CFR § 310.527 / FDA Warning Letter MARCS-CMS 591244",
+    "expected_violation_codes": [
+      "US-DRUG-01"
+    ],
+    "statutory_citation": "21 CFR \u00a7 310.527 / FDA Warning Letter MARCS-CMS 591244",
     "case_notes": "Hair regrowth claims and prescription actives like Minoxidil classify the product as an unapproved drug."
   },
   {
@@ -278,11 +371,15 @@
     "description": "Leakproof sports bottle with volumetric measurement marks, one-click flip lid, and food-grade silicone seal.",
     "category": "Kitchenware",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU", "UK"],
-    "barcode_raw": "6903332221115",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "barcode_raw": "6903332221119",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
-    "statutory_citation": "FDA 21 CFR § 177.1240 / Regulation (EU) No 10/2011",
+    "statutory_citation": "FDA 21 CFR \u00a7 177.1240 / Regulation (EU) No 10/2011",
     "case_notes": "Tritan co-polyester food contact compliance verified without prohibited bisphenol compounds."
   },
   {
@@ -291,11 +388,14 @@
     "description": "Intensive nighttime facial moisturizer with micro-encapsulated Retinol 1.0%, niacinamide, and hyaluronic acid. 50ml jar.",
     "category": "Cosmetics",
     "country_of_origin": "Germany",
-    "destination_markets": ["EU", "US"],
-    "barcode_raw": "4001234567809",
+    "destination_markets": [
+      "EU",
+      "US"
+    ],
+    "barcode_raw": "4001234567808",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
-    "statutory_citation": "EU SCCS/1643/22 Retinol Opinion / 21 CFR § 700",
+    "statutory_citation": "EU SCCS/1643/22 Retinol Opinion / 21 CFR \u00a7 700",
     "case_notes": "Compliant cosmetic anti-aging cream within European Scientific Committee on Consumer Safety guidelines."
   },
   {
@@ -304,8 +404,11 @@
     "description": "Compact lightweight microfiber bath towels for gym, camping, and swimming. Includes breathable mesh carrying pouch.",
     "category": "Apparel",
     "country_of_origin": "Vietnam",
-    "destination_markets": ["US", "EU"],
-    "barcode_raw": "8931234567802",
+    "destination_markets": [
+      "US",
+      "EU"
+    ],
+    "barcode_raw": "8931234567804",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "16 CFR Part 303 (Textile Fiber Products Identification Act)",
@@ -317,8 +420,11 @@
     "description": "Rechargeable bug zapper racket featuring 3000V electric mesh to zap flies and mosquitoes on contact.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["US", "CA"],
-    "barcode_raw": "6908887776663",
+    "destination_markets": [
+      "US",
+      "CA"
+    ],
+    "barcode_raw": "6908887776664",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "EPA FIFRA Pest Control Device / FCC Part 15",
@@ -330,11 +436,16 @@
     "description": "Organic herbal infusion with cinnamon, bitter melon, and gymnema sylvestre to eliminate insulin dependence and treat diabetes.",
     "category": "Supplements",
     "country_of_origin": "India",
-    "destination_markets": ["US", "CA"],
+    "destination_markets": [
+      "US",
+      "CA"
+    ],
     "barcode_raw": "8901234888887",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-DRUG-01"],
-    "statutory_citation": "21 U.S.C. § 343(r)(6) / DSHEA Disease Claims Prohibition",
+    "expected_violation_codes": [
+      "US-DRUG-01"
+    ],
+    "statutory_citation": "21 U.S.C. \u00a7 343(r)(6) / DSHEA Disease Claims Prohibition",
     "case_notes": "Dietary supplements making disease treatment/prevention claims violate DSHEA and FD&C Act."
   },
   {
@@ -343,8 +454,11 @@
     "description": "PTFE, PFOA, lead, and cadmium free ceramic nonstick cookware for healthy everyday kitchen cooking.",
     "category": "Kitchenware",
     "country_of_origin": "Italy",
-    "destination_markets": ["EU", "US"],
-    "barcode_raw": "8001234567896",
+    "destination_markets": [
+      "EU",
+      "US"
+    ],
+    "barcode_raw": "8001234567897",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "Regulation (EC) No 1935/2004 / California Prop 65",
@@ -356,10 +470,15 @@
     "description": "Inflatable swimming pool float ring decorated with high pigment decorative paint trims containing 1500ppm lead.",
     "category": "Children's Products",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU"],
+    "destination_markets": [
+      "US",
+      "EU"
+    ],
     "barcode_raw": "6901234000001",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-TOY-02"],
+    "expected_violation_codes": [
+      "US-TOY-02"
+    ],
     "statutory_citation": "16 CFR Part 1303 (Ban of Lead-Containing Paint >90ppm)",
     "case_notes": "Federal limit for total lead content in paint and surface coatings on children's toys is 90 ppm."
   },
@@ -369,11 +488,15 @@
     "description": "100% Platinum food grade silicone airtight zip lock bags for freezer meal prep and sous vide cooking.",
     "category": "Kitchenware",
     "country_of_origin": "South Korea",
-    "destination_markets": ["US", "EU", "CA"],
-    "barcode_raw": "8809876543211",
+    "destination_markets": [
+      "US",
+      "EU",
+      "CA"
+    ],
+    "barcode_raw": "8809876543213",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
-    "statutory_citation": "FDA 21 CFR § 177.2600 / German LFGB § 31",
+    "statutory_citation": "FDA 21 CFR \u00a7 177.2600 / German LFGB \u00a7 31",
     "case_notes": "Platinum cured silicone meeting volatile organic compound thresholds and food migration limits."
   },
   {
@@ -382,10 +505,14 @@
     "description": "Bed linens coated with nano-copper compounds guaranteed to kill SARS-CoV-2 and eliminate all bacterial pathogens.",
     "category": "Apparel",
     "country_of_origin": "Pakistan",
-    "destination_markets": ["US"],
+    "destination_markets": [
+      "US"
+    ],
     "barcode_raw": "8961234567892",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EPA-PEST-01"],
+    "expected_violation_codes": [
+      "EPA-PEST-01"
+    ],
     "statutory_citation": "FIFRA Section 12(a)(1)(A) (Unregistered Pesticide Distribution)",
     "case_notes": "Explicit public health pathogen eradication claims on textiles classify the item as an unregistered pesticide."
   },
@@ -395,8 +522,13 @@
     "description": "Reinforced nylon braided USB-C to USB-C charging cord supporting Power Delivery 100W (20V/5A) fast charging.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU", "UK", "JP"],
-    "barcode_raw": "6907776665558",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK",
+      "JP"
+    ],
+    "barcode_raw": "6907776665553",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "USB-IF Compliance / RoHS Directive 2011/65/EU",
@@ -408,10 +540,15 @@
     "description": "High potency coal tar topical solution 10% formulated to strip scalp plaque and eradicate chronic psoriasis.",
     "category": "Cosmetics",
     "country_of_origin": "India",
-    "destination_markets": ["EU", "CA"],
+    "destination_markets": [
+      "EU",
+      "CA"
+    ],
     "barcode_raw": "8901234777771",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EU-CHEM-04"],
+    "expected_violation_codes": [
+      "EU-CHEM-04"
+    ],
     "statutory_citation": "Regulation (EC) No 1223/2009 Annex II Item 420 (Crude Coal Tar Ban)",
     "case_notes": "Crude and refined coal tar extracts are carcinogens listed in EU Cosmetic Regulation Annex II banned list."
   },
@@ -421,8 +558,12 @@
     "description": "100% Pure Lavandula Angustifolia Essential Oil for diffusers, relaxation, and topical dilution. Dropper cap, amber glass bottle.",
     "category": "Cosmetics",
     "country_of_origin": "France",
-    "destination_markets": ["US", "EU", "UK"],
-    "barcode_raw": "3009876543214",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "barcode_raw": "3009876543212",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "CLP Regulation (EC) No 1272/2008 / IFRA Standards",
@@ -434,10 +575,14 @@
     "description": "Mobile wheeled training walker device allowing sitting non-walking infants to propel themselves across floors.",
     "category": "Children's Products",
     "country_of_origin": "USA",
-    "destination_markets": ["CA"],
+    "destination_markets": [
+      "CA"
+    ],
     "barcode_raw": "012345678929",
     "expected_verdict": "IMPORT_PROHIBITED",
-    "expected_violation_codes": ["CA-BAN-01"],
+    "expected_violation_codes": [
+      "CA-BAN-01"
+    ],
     "statutory_citation": "CCPSA Schedule 2 Item 2 Baby Walkers",
     "case_notes": "Health Canada strict liability prohibition applies to baby walker kits, frames, and complete units."
   },
@@ -447,8 +592,12 @@
     "description": "Ergonomic 2.4GHz wireless esports mouse with rechargeable lithium battery, RGB backlighting, and PTFE glides.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU", "JP"],
-    "barcode_raw": "6901234567817",
+    "destination_markets": [
+      "US",
+      "EU",
+      "JP"
+    ],
+    "barcode_raw": "6901234567816",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "FCC SDoC / CE EMC / TELEC Giteki",
@@ -460,11 +609,16 @@
     "description": "Gradual gray coverage cream formulated with lead acetate 1.0% to darken gray hair over consecutive applications.",
     "category": "Cosmetics",
     "country_of_origin": "Mexico",
-    "destination_markets": ["US", "CA"],
+    "destination_markets": [
+      "US",
+      "CA"
+    ],
     "barcode_raw": "7501234567897",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-CHEM-01"],
-    "statutory_citation": "FDA Final Rule 83 FR 54665 (Lead Acetate Ban in Hair Dyes / 21 CFR § 73.2396)",
+    "expected_violation_codes": [
+      "US-CHEM-01"
+    ],
+    "statutory_citation": "FDA Final Rule 83 FR 54665 (Lead Acetate Ban in Hair Dyes / 21 CFR \u00a7 73.2396)",
     "case_notes": "FDA repealed color additive authorization for lead acetate due to neurodevelopmental toxicity risks."
   },
   {
@@ -473,8 +627,13 @@
     "description": "Double wall vacuum insulated travel tumbler made from 18/8 food grade 304 stainless steel. Keeps drinks hot 6 hours.",
     "category": "Kitchenware",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU", "UK", "CA"],
-    "barcode_raw": "6904443332228",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK",
+      "CA"
+    ],
+    "barcode_raw": "6904443332220",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "FDA Food Contact Notification / Regulation (EC) No 1935/2004",
@@ -486,21 +645,32 @@
     "description": "Intense whitening hydro-lotion enriched with active mercurous chloride and clobetasol propionate for rapid melanin destruction.",
     "category": "Cosmetics",
     "country_of_origin": "Pakistan",
-    "destination_markets": ["US", "EU", "CA", "UK"],
+    "destination_markets": [
+      "US",
+      "EU",
+      "CA",
+      "UK"
+    ],
     "barcode_raw": "8969876543213",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-CHEM-02", "EU-CHEM-05"],
-    "statutory_citation": "21 CFR § 700.13 (Mercury in Cosmetics) / Minamata Convention",
+    "expected_violation_codes": [
+      "US-CHEM-02",
+      "EU-CHEM-05"
+    ],
+    "statutory_citation": "21 CFR \u00a7 700.13 (Mercury in Cosmetics) / Minamata Convention",
     "case_notes": "Mercury in cosmetics is federally banned above 1 ppm; potent corticosteroids like clobetasol require prescription drug approval."
   },
   {
     "id": "GT-039",
     "title": "Bilingual Canadian Organic Rolled Oats 1kg",
-    "description": "100% Whole grain gluten-free Canadian rolled oats. Flocons d'avoine entière biologique du Canada. Certified Ecocert. 1 kg (2.2 lbs).",
+    "description": "100% Whole grain gluten-free Canadian rolled oats. Flocons d'avoine enti\u00e8re biologique du Canada. Certified Ecocert. 1 kg (2.2 lbs).",
     "category": "Food Contact",
     "country_of_origin": "Canada",
-    "destination_markets": ["CA", "US"],
-    "barcode_raw": "7549876543212",
+    "destination_markets": [
+      "CA",
+      "US"
+    ],
+    "barcode_raw": "7549876543219",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "Canada Safe Food for Canadians Act / FDA Food Safety Modernization Act",
@@ -512,8 +682,13 @@
     "description": "Bluetooth 5.2 over-ear headphones with hybrid active noise cancellation, 40mm dynamic drivers, and 30-hour battery life.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU", "UK", "JP"],
-    "barcode_raw": "6901234567824",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK",
+      "JP"
+    ],
+    "barcode_raw": "6901234567823",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "FCC / CE / RoHS 3 / TELEC",
@@ -525,11 +700,15 @@
     "description": "Deep mildew cleaning gel designed to eradicate toxic black mold spores, bacteria, and staphylococcus pathogens permanently.",
     "category": "Kitchenware",
     "country_of_origin": "China",
-    "destination_markets": ["US"],
+    "destination_markets": [
+      "US"
+    ],
     "barcode_raw": "6901234567831",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EPA-PEST-01"],
-    "statutory_citation": "FIFRA Section 3 / 40 CFR § 152.15",
+    "expected_violation_codes": [
+      "EPA-PEST-01"
+    ],
+    "statutory_citation": "FIFRA Section 3 / 40 CFR \u00a7 152.15",
     "case_notes": "Claims of destroying and killing fungal spores and mold make this an unregistered chemical pesticide under EPA rules."
   },
   {
@@ -538,8 +717,12 @@
     "description": "Tear-free hypoallergenic baby wash with organic chamomile extract and aloe vera. Gentle cleansing for sensitive infant skin. 250 ml / 8.4 fl oz.",
     "category": "Cosmetics",
     "country_of_origin": "Germany",
-    "destination_markets": ["EU", "UK", "US"],
-    "barcode_raw": "4009876543219",
+    "destination_markets": [
+      "EU",
+      "UK",
+      "US"
+    ],
+    "barcode_raw": "4009876543211",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "EC 1223/2009 / MoCRA / ISO 22716 GMP",
@@ -551,10 +734,15 @@
     "description": "Yellow rubber squeeze duck bath toy manufactured with polyvinyl chloride plasticized with 80,000 ppm di-(2-ethylhexyl) phthalate.",
     "category": "Children's Products",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU"],
+    "destination_markets": [
+      "US",
+      "EU"
+    ],
     "barcode_raw": "6901234567848",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-TOY-03"],
+    "expected_violation_codes": [
+      "US-TOY-03"
+    ],
     "statutory_citation": "16 CFR Part 1307 / REACH Annex XVII Entry 51",
     "case_notes": "Federal regulations restrict DEHP and related ortho-phthalates to no more than 0.1% (1000 ppm) in children's toys."
   },
@@ -564,11 +752,15 @@
     "description": "Compact nesting camp cookware kit including non-stick pot, frying pan, kettle, and BPA-free serving bowls for hiking.",
     "category": "Kitchenware",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU", "CA"],
-    "barcode_raw": "6901234567855",
+    "destination_markets": [
+      "US",
+      "EU",
+      "CA"
+    ],
+    "barcode_raw": "6901234567854",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
-    "statutory_citation": "FDA 21 CFR § 175.300 (Resinous and Polymeric Coatings)",
+    "statutory_citation": "FDA 21 CFR \u00a7 175.300 (Resinous and Polymeric Coatings)",
     "case_notes": "Compliant outdoor cooking gear with hard-anodized oxidation layer."
   },
   {
@@ -577,11 +769,17 @@
     "description": "Cures chronic clinical insomnia and replaces prescription sedatives with 10mg melatonin and 25mg cannabidiol per gummy.",
     "category": "Supplements",
     "country_of_origin": "USA",
-    "destination_markets": ["US", "EU", "CA"],
+    "destination_markets": [
+      "US",
+      "EU",
+      "CA"
+    ],
     "barcode_raw": "012345678936",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["US-DRUG-01"],
-    "statutory_citation": "21 U.S.C. § 321(g)(1) / FDA Warning Letters on CBD and Melatonin",
+    "expected_violation_codes": [
+      "US-DRUG-01"
+    ],
+    "statutory_citation": "21 U.S.C. \u00a7 321(g)(1) / FDA Warning Letters on CBD and Melatonin",
     "case_notes": "Claiming to cure clinical insomnia combined with non-compliant food additive CBD triggers unapproved drug enforcement."
   },
   {
@@ -590,7 +788,11 @@
     "description": "First harvest stone ground organic Uji matcha green tea powder. Product of Kyoto, Japan. Vacuum sealed tin. Net Wt. 30g / 1.05 oz.",
     "category": "Food Contact",
     "country_of_origin": "Japan",
-    "destination_markets": ["US", "EU", "CA"],
+    "destination_markets": [
+      "US",
+      "EU",
+      "CA"
+    ],
     "barcode_raw": "4901234567894",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
@@ -603,10 +805,14 @@
     "description": "Wheeled seated frame supporting child so their feet reach floor to move about unassisted while playing with musical steering wheel.",
     "category": "Children's Products",
     "country_of_origin": "China",
-    "destination_markets": ["CA"],
+    "destination_markets": [
+      "CA"
+    ],
     "barcode_raw": "6901234567862",
     "expected_verdict": "IMPORT_PROHIBITED",
-    "expected_violation_codes": ["CA-BAN-01"],
+    "expected_violation_codes": [
+      "CA-BAN-01"
+    ],
     "statutory_citation": "CCPSA Schedule 2 Item 2 (Baby Walkers Criminal Prohibition)",
     "case_notes": "Any device meeting the statutory definition of baby walker is prohibited from Canadian import regardless of alternative naming."
   },
@@ -616,8 +822,12 @@
     "description": "Sonic vibrating facial brush with ultra-soft silicone bristles, 5 speed intensities, and magnetic inductive charging dock.",
     "category": "Consumer Electronics",
     "country_of_origin": "China",
-    "destination_markets": ["US", "EU", "UK"],
-    "barcode_raw": "6901234567879",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "barcode_raw": "6901234567878",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "FCC Part 15 / CE EMC / RoHS 3",
@@ -629,10 +839,14 @@
     "description": "Industrial surface antimicrobial spray that eradicates hepatitis B, tuberculosis, and norovirus without EPA establishment registration.",
     "category": "Kitchenware",
     "country_of_origin": "China",
-    "destination_markets": ["US"],
+    "destination_markets": [
+      "US"
+    ],
     "barcode_raw": "6901234567886",
     "expected_verdict": "REMEDIATION_REQUIRED",
-    "expected_violation_codes": ["EPA-PEST-01"],
+    "expected_violation_codes": [
+      "EPA-PEST-01"
+    ],
     "statutory_citation": "FIFRA Section 12(a)(1)(A) (Unregistered Antimicrobial Pesticides)",
     "case_notes": "Hospital pathogen kill claims require rigorous EPA product performance data and active registration number."
   },
@@ -642,8 +856,13 @@
     "description": "Breathable pre-washed GOTS certified organic cotton muslin blankets for swaddling, nursing cover, and stroller shade. 120 x 120 cm.",
     "category": "Children's Products",
     "country_of_origin": "India",
-    "destination_markets": ["US", "EU", "UK", "CA"],
-    "barcode_raw": "8901030865432",
+    "destination_markets": [
+      "US",
+      "EU",
+      "UK",
+      "CA"
+    ],
+    "barcode_raw": "8901030865435",
     "expected_verdict": "COMPLIANT",
     "expected_violation_codes": [],
     "statutory_citation": "CPSC 16 CFR Part 1610 (Standard for the Flammability of Clothing Textiles)",

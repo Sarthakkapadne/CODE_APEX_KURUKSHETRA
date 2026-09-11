@@ -318,24 +318,35 @@ class DeterministicRuleEngine:
         return results
 
     def _match_any_term(self, text: str, terms: List[str]) -> Optional[str]:
+        negation_prefixes = ["free from", "free of", "without", "no ", "non-", "zero ", "0% "]
         for term in terms:
-            # Word boundary regex search
             pattern = r'\b' + re.escape(term.lower()) + r'\b'
-            if re.search(pattern, text):
+            for match in re.finditer(pattern, text):
+                start = match.start()
+                # Check preceding 30 characters for negation
+                preceding_text = text[max(0, start - 30):start].lower()
+                if any(neg in preceding_text for neg in negation_prefixes):
+                    continue  # Negated claim, not a violation
                 return term
         return None
 
     def _find_ingredient_concentration(
         self, extracted: ExtractedAttributes, text: str, ing_name: str
     ) -> Optional[float]:
-        # First check extracted chemical concentrations dict
+        # Check if explicitly negated as zero / free
+        ing_lower = ing_name.lower()
+        if any(f"{ing_lower} free" in text or f"free of {ing_lower}" in text or f"no {ing_lower}" in text for _ in [1]):
+            return 0.0
+
+        # Check extracted chemical concentrations dict
         for k, v in extracted.chemical_concentrations.items():
-            if ing_name in k.lower():
+            if ing_lower in k.lower():
                 return float(v)
 
-        # Regex fallback: "X% hydrogen peroxide" or "hydrogen peroxide X%"
-        pattern1 = rf'(\d+(?:\.\d+)?)\s*%\s*(?:w\/w\s*)?{re.escape(ing_name)}'
-        pattern2 = rf'{re.escape(ing_name)}\s*(\d+(?:\.\d+)?)\s*%'
+        # Regex: "X% ingredient" or "ingredient X%" or "X percent"
+        pattern1 = rf'(\d+(?:\.\d+)?)\s*%\s*(?:w\/w\s*)?{re.escape(ing_lower)}'
+        pattern2 = rf'{re.escape(ing_lower)}\s*(\d+(?:\.\d+)?)\s*%'
+        pattern3 = rf'(\d+(?:\.\d+)?)\s*(?:percent|pct)\s*(?:w\/w\s*)?{re.escape(ing_lower)}'
 
         m1 = re.search(pattern1, text)
         if m1:
@@ -345,12 +356,9 @@ class DeterministicRuleEngine:
         if m2:
             return float(m2.group(1))
 
-        # Check if ingredient is mentioned without exact percentage
-        if ing_name in text or any(ing_name in i.lower() for i in extracted.ingredients):
-            # If teeth whitening or high strength is mentioned, assume default test concentration
-            if "whitening" in text or "bleach" in text:
-                return 10.0  # Common OTC whitening concentration in US
-            return 0.5
+        m3 = re.search(pattern3, text)
+        if m3:
+            return float(m3.group(1))
 
         return None
 
