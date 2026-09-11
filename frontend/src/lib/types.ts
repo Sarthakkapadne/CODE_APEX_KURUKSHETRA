@@ -227,6 +227,7 @@ export interface AuditResponse {
   trade_economics: TradeEconomicsItem[];
   citations: string[];
   is_hash_valid: boolean;
+  required_documents?: RequiredDocumentItem[];
 }
 
 export interface PresetListing {
@@ -239,4 +240,16 @@ export interface PresetListing {
   currency: string;
   country_of_origin: string;
   source_url?: string;
+}
+
+export interface RequiredDocumentItem {
+  id: string;
+  country_code: string;
+  title: string;
+  category?: string;
+  is_mandatory: boolean;
+  citation: string;
+  description: string;
+  governing_agency?: string;
+  status?: 'verified' | 'missing' | 'in_review';
 }
