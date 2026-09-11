@@ -141,7 +141,17 @@ export default function CustomsSeizureRadar({ radar }: CustomsSeizureRadarProps)
                 </span>
               </div>
               <div className="flex justify-between items-center py-1.5">
-                <span className="text-slate-600 dark:text-slate-400">CBP Civil Penalties (19 U.S.C. § 1592):</span>
+                <span className="text-slate-600 dark:text-slate-400">
+                  {radar.simulated_notice?.form_type.includes('CBSA')
+                    ? 'CBSA AMPS Monetary Penalties:'
+                    : radar.simulated_notice?.form_type.includes('EU')
+                    ? 'EU Customs Administrative Penalties:'
+                    : radar.simulated_notice?.form_type.includes('Border Force')
+                    ? 'HMRC Civil Penalties (CEMA 1979):'
+                    : radar.simulated_notice?.form_type.includes('Japan')
+                    ? 'Japan Customs Act Penalties:'
+                    : 'Statutory Civil Penalties (19 U.S.C. § 1592):'}
+                </span>
                 <span className="font-semibold text-red-600 dark:text-red-400">
                   ${(radar.breakdown_fees.statutory_civil_penalties_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </span>
@@ -274,7 +284,7 @@ export default function CustomsSeizureRadar({ radar }: CustomsSeizureRadarProps)
                     Statutory Response Window: {radar.simulated_notice.response_deadline_days} Days
                   </span>
                   <span className="text-amber-800 dark:text-amber-300 text-[11px]">
-                    Failure to furnish verified compliance documentation or export notice within the response deadline will result in total forfeiture and physical destruction under 19 U.S.C. § 1595a.
+                    Failure to furnish verified compliance documentation or export notice within the response deadline will result in total forfeiture and physical destruction under {radar.simulated_notice.cited_statutes[0] || 'applicable customs regulations'}.
                   </span>
                 </div>
               </div>

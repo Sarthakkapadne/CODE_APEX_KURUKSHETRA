@@ -30,6 +30,18 @@
     }
   });
 
+  function detectDefaultMarkets(url) {
+    const u = (url || window.location.href).toLowerCase();
+    if (u.includes("amazon.ca")) return ["CA"];
+    if (u.includes("amazon.co.uk")) return ["UK"];
+    if (u.includes("amazon.de") || u.includes("amazon.fr") || u.includes("amazon.es") || u.includes("amazon.it") || u.includes("amazon.nl") || u.includes("amazon.eu")) return ["EU"];
+    if (u.includes("amazon.co.jp")) return ["JP"];
+    if (u.includes("amazon.com.au")) return ["AU"];
+    return ["US"];
+  }
+
+  let selectedMarkets = detectDefaultMarkets(window.location.href);
+
   /**
    * 1. Detect platform & scrape listing metadata
    */
@@ -167,7 +179,7 @@
       price: price || 29.99,
       currency: currency || "USD",
       country_of_origin: authenticatedSeller.originCountry || "India",
-      destination_markets: ["US", "EU", "UK", "CA", "JP"],
+      destination_markets: selectedMarkets.length ? [...selectedMarkets] : ["US"],
       source_url: url,
       image_url: imageUrl || undefined,
       barcode_raw: barcodeRaw || undefined,
@@ -251,12 +263,12 @@
           </button>
         </div>
         <div class="lx-market-chips">
-          <span class="lx-market-chip lx-active">🇺🇸 US</span>
-          <span class="lx-market-chip lx-active">🇪🇺 EU</span>
-          <span class="lx-market-chip lx-active">🇬🇧 UK</span>
-          <span class="lx-market-chip lx-active">🇨🇦 CA</span>
-          <span class="lx-market-chip lx-active">🇯🇵 JP</span>
-          <span class="lx-market-chip lx-active">🇦🇺 AU</span>
+          <span class="lx-market-chip ${selectedMarkets.includes('US') ? 'lx-active' : ''}" data-market="US" style="cursor:pointer;" title="Click to toggle US compliance review">🇺🇸 US</span>
+          <span class="lx-market-chip ${selectedMarkets.includes('EU') ? 'lx-active' : ''}" data-market="EU" style="cursor:pointer;" title="Click to toggle EU compliance review">🇪🇺 EU</span>
+          <span class="lx-market-chip ${selectedMarkets.includes('UK') ? 'lx-active' : ''}" data-market="UK" style="cursor:pointer;" title="Click to toggle UK compliance review">🇬🇧 UK</span>
+          <span class="lx-market-chip ${selectedMarkets.includes('CA') ? 'lx-active' : ''}" data-market="CA" style="cursor:pointer;" title="Click to toggle Canada compliance review">🇨🇦 CA</span>
+          <span class="lx-market-chip ${selectedMarkets.includes('JP') ? 'lx-active' : ''}" data-market="JP" style="cursor:pointer;" title="Click to toggle Japan compliance review">🇯🇵 JP</span>
+          <span class="lx-market-chip ${selectedMarkets.includes('AU') ? 'lx-active' : ''}" data-market="AU" style="cursor:pointer;" title="Click to toggle Australia compliance review">🇦🇺 AU</span>
         </div>
       </div>
 
@@ -286,6 +298,26 @@
 
     // Bind Re-Scan Event
     drawer.querySelector("#lx-btn-rescan")?.addEventListener("click", triggerAudit);
+
+    // Bind Market Chips Toggle Events
+    const marketChips = drawer.querySelectorAll(".lx-market-chip");
+    marketChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const m = chip.getAttribute("data-market");
+        if (selectedMarkets.includes(m)) {
+          if (selectedMarkets.length > 1) {
+            selectedMarkets = selectedMarkets.filter((x) => x !== m);
+            chip.classList.remove("lx-active");
+          }
+        } else {
+          selectedMarkets.push(m);
+          chip.classList.add("lx-active");
+        }
+        if (currentAudit) {
+          triggerAudit();
+        }
+      });
+    });
 
     // Bind Tab Switching Events
     const tabBtns = drawer.querySelectorAll(".lx-tab-btn");
@@ -513,11 +545,16 @@
   }
 
   function renderRadarTab(container) {
-    const radar = currentAudit.customs_radar || { seizure_probability_pct: 78, threat_level: "ELEVATED_DETENTION_RISK" };
+    const radar = currentAudit.customs_radar || {
+      seizure_probability_pct: 0,
+      threat_level: "LOW_FRICTION_CLEAR",
+      estimated_financial_exposure_usd: 0,
+      breakdown_fees: {}
+    };
     const pct = Math.round(radar.seizure_probability_pct || 0);
     const circumference = 2 * Math.PI * 34;
     const offset = circumference - (pct / 100) * circumference;
-    const strokeColor = pct >= 70 ? "#EF4444" : pct >= 40 ? "#F59E0B" : "#10B981";
+    const strokeColor = pct >= 60 ? "#EF4444" : pct >= 30 ? "#F59E0B" : "#10B981";
 
     const allFindings = [];
     if (currentAudit.matrix) {
@@ -529,6 +566,12 @@
         });
       });
     }
+
+    const exposureVal = radar.estimated_financial_exposure_usd || 0;
+    const fees = radar.breakdown_fees || {};
+    const subtextHtml = exposureVal > 0
+      ? `Includes $${(fees.inventory_risk_usd || 0).toLocaleString()} inventory at risk + $${(fees.port_demurrage_quarantine_usd || 0).toLocaleString()} demurrage + $${(fees.statutory_civil_penalties_usd || 0).toLocaleString()} statutory penalties.`
+      : `Zero customs hold exposure detected. Product pre-cleared for cross-border export.`;
 
     container.innerHTML = `
       <div class="lx-radar-card">
@@ -544,14 +587,14 @@
           </div>
         </div>
         <div class="lx-radar-details">
-          <div class="lx-threat-badge ${pct >= 50 ? 'lx-threat-high' : 'lx-threat-low'}">
-            ${(radar.threat_level || "EVALUATED").replace(/_/g, " ")}
+          <div class="lx-threat-badge ${pct >= 40 ? 'lx-threat-high' : 'lx-threat-low'}">
+            ${(radar.threat_level || "LOW FRICTION CLEAR").replace(/_/g, " ")}
           </div>
           <div class="lx-financial-exposure">
-            Est. Financial Exposure: <span class="lx-exposure-val">$${(radar.estimated_financial_exposure_usd || 4950).toLocaleString()}</span>
+            Est. Financial Exposure: <span class="lx-exposure-val">$${exposureVal.toLocaleString()}</span>
           </div>
           <div style="font-size: 11px; color: #94A3B8;">
-            Includes inventory at risk + $2,800 demurrage + CBP 19 U.S.C. § 1592 civil penalties.
+            ${subtextHtml}
           </div>
         </div>
       </div>
@@ -559,8 +602,8 @@
       ${
         radar.simulated_notice ? `
         <div class="lx-notice-box">
-          <div class="lx-notice-header">🚨 ${radar.simulated_notice.form_type || 'CBP Form 29 (Notice of Action)'}</div>
-          <div style="margin-bottom: 4px;"><strong>Issuing Port:</strong> ${radar.simulated_notice.issuing_port || 'Port of Los Angeles / Long Beach'}</div>
+          <div class="lx-notice-header">🚨 ${radar.simulated_notice.form_type}</div>
+          <div style="margin-bottom: 4px;"><strong>Issuing Port:</strong> ${radar.simulated_notice.issuing_port}</div>
           <div>${radar.simulated_notice.grounds_for_action}</div>
         </div>
         ` : ''
@@ -570,7 +613,7 @@
         <div class="lx-section-title">Statutory Violations & Citations (${allFindings.length})</div>
         <div class="lx-findings-list">
           ${
-            allFindings.map((f) => `
+            allFindings.length ? allFindings.map((f) => `
               <div class="lx-finding-item">
                 <div class="lx-finding-top">
                   <span class="lx-finding-code">[${f.country}] ${f.check_code}</span>
@@ -579,7 +622,11 @@
                 <div class="lx-finding-reason">${f.explanation}</div>
                 ${f.fix_suggestion ? `<div class="lx-finding-fix">💡 Fix: ${f.fix_suggestion}</div>` : ''}
               </div>
-            `).join("")
+            `).join("") : `
+              <div style="padding: 16px; text-align: center; color: #10B981; font-weight: 600; font-size: 13px;">
+                ✓ 100% Compliant: Zero statutory violations detected in selected markets.
+              </div>
+            `
           }
         </div>
       </div>
@@ -588,13 +635,17 @@
 
   function renderRemediationTab(container) {
     const remediation = currentAudit.remediation || {};
-    const bullets = remediation.amazon_bullets || [
-      "Botanical Soothing Extract: Formulated with Centella Asiatica to hydrate and support skin elasticity.",
-      "Gentle Everyday Hydration: Absorbs smoothly into skin without harsh synthetic additives.",
-      "Dual Volume Labeling: Compliant with 16 CFR § 500.6 net quantity standards.",
-      "Third-Party Quality Verified: Manufactured in accordance with current Good Manufacturing Practices (cGMP).",
-      "Safety Disclaimed: For cosmetic use only. Discontinue use if irritation occurs."
-    ];
+    const listing = scrapeListingData();
+    const cleanTitle = listing.title && listing.title.length > 5 ? listing.title.slice(0, 45) : "Export Listing";
+    const bullets = (remediation.amazon_bullets && remediation.amazon_bullets.length)
+      ? remediation.amazon_bullets
+      : [
+          `Premium Quality Formulation: Built to meet strict cross-border export standards for ${cleanTitle}.`,
+          "Compliant Regulatory Labeling: Verified against destination packaging declarations and origin requirements.",
+          "Consumer Safety Disclaimers: Formulated and labeled in compliance with commercial consumer safety guidance.",
+          "Authentic Sourced Ingredients: Fully traced supply chain verified against country prohibited substance codices.",
+          "Pre-Flight Cleared: Clean structure and function claims optimized for compliant Amazon marketplace listing."
+        ];
 
     container.innerHTML = `
       <div class="lx-remediation-actions">
@@ -726,7 +777,7 @@
   function renderEconomicsTab(container) {
     const hs = currentAudit.hs_tariff || {};
     const barcode = currentAudit.barcode_analysis || {};
-    const savings = hs.total_arbitrage_savings_usd || 1950;
+    const savings = hs.total_arbitrage_savings_usd || 0;
 
     container.innerHTML = `
       <div class="lx-stats-grid">
@@ -736,7 +787,7 @@
         </div>
         <div class="lx-stat-box">
           <div class="lx-stat-label">Reclassified HS Code</div>
-          <div class="lx-stat-val" style="color: #60A5FA;">${hs.reclassified_hs_code || '3304.99'}</div>
+          <div class="lx-stat-val" style="color: #60A5FA;">${hs.reclassified_hs_code || hs.original_hs_code || 'Standard HTS'}</div>
         </div>
       </div>
 
@@ -744,13 +795,13 @@
         <div class="lx-section-title">GS1 Barcode Modulo-10 Check</div>
         <div class="lx-doc-item">
           <div class="lx-doc-header">
-            <span class="lx-doc-name">${barcode.raw_barcode || '8901234567890'}</span>
+            <span class="lx-doc-name">${barcode.raw_barcode || 'No Barcode Scraped'}</span>
             <span class="lx-brand-badge" style="background:${barcode.is_valid_gs1 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}; color:${barcode.is_valid_gs1 ? '#10B981' : '#EF4444'};">
-              ${barcode.is_valid_gs1 ? '✓ GS1 VALID' : 'CHECK REJECTED'}
+              ${barcode.is_valid_gs1 ? '✓ GS1 VALID' : (barcode.raw_barcode ? 'CHECK REJECTED' : 'NOT DETECTED')}
             </span>
           </div>
           <div style="font-size: 12px; color: #94A3B8;">
-            <strong>Type:</strong> ${barcode.barcode_type || 'EAN-13'} | <strong>Country:</strong> ${barcode.country_of_registration || 'India (GS1 India Prefix 890)'}
+            <strong>Type:</strong> ${barcode.barcode_type || 'Standard GTIN'} | <strong>Country:</strong> ${barcode.country_of_registration || 'Declared Origin'}
           </div>
         </div>
       </div>

@@ -159,6 +159,7 @@
       "statute_citation": "16 CFR § 500.6 / Fair Packaging and Labeling Act (FPLA)",
       "title": "Net Quantity Dual Unit Declaration (US Customary & Metric)",
       "condition_type": "mandatory_field",
+      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "food", "grocery", "supplements", "liquids", "consumables", "personal care", "wellness"],
       "required_field": "net_quantity_dual",
       "severity": "warning",
       "expected_requirement": "Net quantity must be declared in both US Customary units (fl oz, oz, lb) and Metric units (ml, g).",
