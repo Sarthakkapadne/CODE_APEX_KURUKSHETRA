@@ -147,7 +147,7 @@ class AttributeExtractorAgent:
             power_source = "battery"
             battery_type = "lithium_ion"
 
-        # Extract potential ingredients
+        # Extract potential ingredients and their associated concentrations
         known_ingredients = [
             "hydrogen peroxide", "camphor", "menthol", "sesame oil", "eucalyptus oil",
             "turmeric", "ashwagandha", "ginger", "clove oil", "salicylic acid", "retinol"
@@ -155,21 +155,38 @@ class AttributeExtractorAgent:
         for ing in known_ingredients:
             if ing in lower:
                 ingredients.append(ing)
+                # Check for percentage associated with this known ingredient (e.g., "Camphor (5.0%)", "Camphor 5%", "5% Camphor")
+                m_after = re.search(rf'{re.escape(ing)}[\s:(\[\-]*(\d+(?:\.\d+)?)\s*%', lower)
+                m_before = re.search(rf'(\d+(?:\.\d+)?)\s*%\s*(?:w\/w\s*)?[\s)\]:]*{re.escape(ing)}', lower)
+                if m_after:
+                    try:
+                        concentrations[ing] = float(m_after.group(1))
+                    except Exception:
+                        pass
+                elif m_before:
+                    try:
+                        concentrations[ing] = float(m_before.group(1))
+                    except Exception:
+                        pass
 
-        # Extract percentages: "X% ingredient" OR "ingredient X%"
+        # Extract other potential percentages: "X% ingredient" OR "ingredient X%"
         pct_matches1 = re.findall(r'(\d+(?:\.\d+)?)\s*%\s*(?:w\/w\s*)?([a-zA-Z\s]{3,20})', lower)
         for val_str, name in pct_matches1:
-            try:
-                concentrations[name.strip()] = float(val_str)
-            except Exception:
-                pass
+            clean_name = name.strip()
+            if clean_name not in concentrations:
+                try:
+                    concentrations[clean_name] = float(val_str)
+                except Exception:
+                    pass
 
-        pct_matches2 = re.findall(r'([a-zA-Z\s]{3,20})\s*(\d+(?:\.\d+)?)\s*%', lower)
+        pct_matches2 = re.findall(r'([a-zA-Z\s]{3,20})[\s:(\[\-]*(\d+(?:\.\d+)?)\s*%', lower)
         for name, val_str in pct_matches2:
-            try:
-                concentrations[name.strip()] = float(val_str)
-            except Exception:
-                pass
+            clean_name = name.strip()
+            if clean_name not in concentrations:
+                try:
+                    concentrations[clean_name] = float(val_str)
+                except Exception:
+                    pass
 
         # Extract claims
         trigger_phrases = [

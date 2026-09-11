@@ -92,7 +92,7 @@ async def run_compliance_audit(
             prev_hash=audit_res.prev_hash,
             overall_verdict=audit_res.overall_verdict,
             destination_markets=json.dumps(audit_res.destination_markets),
-            extracted_attributes_json=json.dumps(audit_res.extracted_attributes.dict()),
+            extracted_attributes_json=json.dumps(audit_res.extracted_attributes.model_dump() if hasattr(audit_res.extracted_attributes, 'model_dump') else audit_res.extracted_attributes.dict()),
             summary=f"{audit_res.overall_verdict} (Risk: {audit_res.customs_radar.threat_level if audit_res.customs_radar else 'N/A'})",
         )
         db.add(db_inspection)

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Sparkles, Globe, Link2, FileText, Check, Loader2, ArrowRight } from 'lucide-react';
+import { Sparkles, Globe, Link2, FileText, Check, Loader2, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { ListingInput as ListingInputType, PresetListing } from '../lib/types';
 import { CASE_PRESETS } from '../lib/presets';
 
@@ -24,6 +24,8 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
   const [selectedPresetId, setSelectedPresetId] = useState<string>(CASE_PRESETS[0].id);
   const [urlInput, setUrlInput] = useState<string>(CASE_PRESETS[0].source_url || '');
   const [isScraping, setIsScraping] = useState<boolean>(false);
+  const [scrapedPreview, setScrapedPreview] = useState<any | null>(null);
+  const [scrapeError, setScrapeError] = useState<string | null>(null);
 
   // Form state initialized with default preset
   const [title, setTitle] = useState(CASE_PRESETS[0].title);
@@ -33,7 +35,6 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
   const [countryOfOrigin, setCountryOfOrigin] = useState(CASE_PRESETS[0].country_of_origin);
   const [selectedMarkets, setSelectedMarkets] = useState<string[]>(['US', 'EU', 'UK', 'CA', 'JP', 'AU']);
 
-
   const handleSelectPreset = (preset: PresetListing) => {
     setSelectedPresetId(preset.id);
     setTitle(preset.title);
@@ -41,6 +42,8 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
     setBrandName(preset.brand_name);
     setPrice(preset.price);
     setCountryOfOrigin(preset.country_of_origin);
+    setScrapedPreview(null);
+    setScrapeError(null);
     if (preset.source_url) setUrlInput(preset.source_url);
   };
 
@@ -61,18 +64,22 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
   const handleScrapeUrl = async () => {
     if (!urlInput.trim()) return;
     setIsScraping(true);
+    setScrapeError(null);
     try {
       const data = await onScrape(urlInput.trim());
-      if (data) {
-        if (data.title) setTitle(data.title);
+      if (data && data.title) {
+        setTitle(data.title);
         if (data.description) setDescription(data.description);
         if (data.brand_name) setBrandName(data.brand_name);
         if (data.price) setPrice(data.price);
         if (data.country_of_origin) setCountryOfOrigin(data.country_of_origin);
-        setActiveTab('text');
+        setScrapedPreview(data);
+      } else {
+        setScrapeError('No product metadata could be extracted from this URL. Please verify the URL or enter details manually.');
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setScrapeError(e.message || 'Scraping failed. Marketplace anti-bot shields may be active.');
     } finally {
       setIsScraping(false);
     }
@@ -253,6 +260,77 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
             <p className="text-[11px] text-slate-500">
               Extracts DOM metadata, bullet points, and pricing using automated stealth scrapers with intelligent schema fallback.
             </p>
+
+            {/* Scraped Result Card */}
+            {scrapedPreview && (
+              <div className="p-4 rounded-xl bg-slate-900 border border-emerald-500/40 space-y-3 animate-fadeIn">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Listing Successfully Fetched
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                    {scrapedPreview.scrape_method || 'LIVE_FETCH'}
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-white">{scrapedPreview.title}</h4>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-400">
+                    <span>Brand: <strong className="text-slate-200">{scrapedPreview.brand_name}</strong></span>
+                    <span>Price: <strong className="text-slate-200">${Number(scrapedPreview.price).toFixed(2)}</strong></span>
+                    <span>Origin: <strong className="text-slate-200">{scrapedPreview.country_of_origin}</strong></span>
+                    <span>Category: <strong className="text-slate-200">{scrapedPreview.category_hint}</strong></span>
+                  </div>
+                </div>
+
+                {scrapedPreview.description && (
+                  <p className="text-xs text-slate-400 line-clamp-3 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800 whitespace-pre-line">
+                    {scrapedPreview.description}
+                  </p>
+                )}
+
+                <div className="flex items-center gap-3 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onAudit({
+                        title: scrapedPreview.title,
+                        description: scrapedPreview.description,
+                        brand_name: scrapedPreview.brand_name,
+                        price: Number(scrapedPreview.price),
+                        country_of_origin: scrapedPreview.country_of_origin,
+                        destination_markets: selectedMarkets,
+                        source_url: urlInput,
+                      });
+                    }}
+                    disabled={isLoading}
+                    className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Run Multi-Market Compliance Audit</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('text')}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg text-xs transition-colors"
+                  >
+                    Edit in Form ➔
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Error Notice */}
+            {scrapeError && (
+              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-2.5 text-xs text-rose-300">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+                <div>
+                  <div className="font-bold">Scraping Notice</div>
+                  <div>{scrapeError}</div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

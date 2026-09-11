@@ -343,10 +343,10 @@ class DeterministicRuleEngine:
             if ing_lower in k.lower():
                 return float(v)
 
-        # Regex: "X% ingredient" or "ingredient X%" or "X percent"
-        pattern1 = rf'(\d+(?:\.\d+)?)\s*%\s*(?:w\/w\s*)?{re.escape(ing_lower)}'
-        pattern2 = rf'{re.escape(ing_lower)}\s*(\d+(?:\.\d+)?)\s*%'
-        pattern3 = rf'(\d+(?:\.\d+)?)\s*(?:percent|pct)\s*(?:w\/w\s*)?{re.escape(ing_lower)}'
+        # Regex: "X% ingredient" or "ingredient (X%)" or "ingredient X%" or "X percent"
+        pattern1 = rf'(\d+(?:\.\d+)?)\s*%\s*(?:w\/w\s*)?[\s)\]:]*{re.escape(ing_lower)}'
+        pattern2 = rf'{re.escape(ing_lower)}[\s:(\[\-]*(\d+(?:\.\d+)?)\s*%'
+        pattern3 = rf'(\d+(?:\.\d+)?)\s*(?:percent|pct)\s*(?:w\/w\s*)?[\s)\]:]*{re.escape(ing_lower)}'
 
         m1 = re.search(pattern1, text)
         if m1:

@@ -252,14 +252,14 @@ class ComplianceSupervisor:
 
         # 11. Cryptographic Hash Chain Generation (SHA-256 Tamper-Evident Ledger)
         citations_list = sorted(list(citations_set))
-        raw_matrix_list = [r.dict() for r in all_findings]
+        raw_matrix_list = [r.model_dump() if hasattr(r, 'model_dump') else r.dict() for r in all_findings]
 
         compliance_hash = ComplianceHashChain.generate_compliance_hash(
             inspection_id=inspection_id,
             listing_id=listing_id,
             timestamp_utc=timestamp_utc,
             rule_engine_version=self.settings.RULE_ENGINE_VERSION,
-            extracted_attributes=extracted.dict(),
+            extracted_attributes=extracted.model_dump() if hasattr(extracted, 'model_dump') else extracted.dict(),
             matrix_findings=raw_matrix_list,
             citations=citations_list,
             prev_hash=prev_hash,

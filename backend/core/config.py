@@ -1,7 +1,7 @@
 from __future__ import annotations
 import os
 from pathlib import Path
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from dotenv import load_dotenv
 
@@ -22,9 +22,10 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     STATIC_DIR: str = str(STATIC_DIR)
 
-    class Config:
-        env_file = str(BASE_DIR / ".env")
-        extra = "allow"
+    model_config = SettingsConfigDict(
+        env_file=str(BASE_DIR / ".env"),
+        extra="allow"
+    )
 
 
 _settings = None
