@@ -8,6 +8,7 @@ import { ComplianceCheckResult, AuditResponse } from '../lib/types';
 
 interface ComplianceMatrixProps {
   auditData: AuditResponse;
+  selectedCountryFilter?: string | null;
   onSelectFix?: (fixText: string) => void;
 }
 
@@ -28,7 +29,7 @@ const MARKET_FLAGS: Record<string, string> = {
   JP: '🇯🇵',
 };
 
-export default function ComplianceMatrix({ auditData, onSelectFix }: ComplianceMatrixProps) {
+export default function ComplianceMatrix({ auditData, selectedCountryFilter, onSelectFix }: ComplianceMatrixProps) {
   const [selectedCheck, setSelectedCheck] = useState<ComplianceCheckResult | null>(null);
 
   const countries = auditData.destination_markets;
@@ -91,11 +92,14 @@ export default function ComplianceMatrix({ auditData, onSelectFix }: ComplianceM
               </th>
               {countries.map(code => {
                 const summary = auditData.summary_by_country[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
+                const isColSelected = selectedCountryFilter === code;
                 return (
-                  <th key={code} className="py-3 px-3 text-center border-l border-slate-800/60">
+                  <th key={code} className={`py-3 px-3 text-center border-l border-slate-800/60 transition-all ${
+                    isColSelected ? 'bg-indigo-950/60 ring-2 ring-indigo-500/80 rounded-t-lg' : ''
+                  }`}>
                     <div className="flex items-center justify-center space-x-1.5">
                       <span className="text-lg">{MARKET_FLAGS[code] || '🌐'}</span>
-                      <span className="text-xs font-black text-white">{code}</span>
+                      <span className={`text-xs font-black ${isColSelected ? 'text-indigo-300 underline' : 'text-white'}`}>{code}</span>
                     </div>
                     <div className="flex items-center justify-center space-x-1 mt-1 text-[10px]">
                       {summary.violation > 0 && (
@@ -128,9 +132,12 @@ export default function ComplianceMatrix({ auditData, onSelectFix }: ComplianceM
                   const checks = getCellChecks(code, cat.id);
                   const status = getCellAggregateStatus(checks);
                   const primaryCheck = checks.find(c => c.status === status) || checks[0];
+                  const isColSelected = selectedCountryFilter === code;
 
                   return (
-                    <td key={code} className="py-3.5 px-3 text-center border-l border-slate-800/60">
+                    <td key={code} className={`py-3.5 px-3 text-center border-l border-slate-800/60 transition-all ${
+                      isColSelected ? 'bg-indigo-950/20 ring-1 ring-indigo-500/30' : ''
+                    }`}>
                       {primaryCheck ? (
                         <button
                           type="button"

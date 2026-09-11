@@ -169,6 +169,42 @@ export interface TradeEconomicsItem {
   recommendation_summary: string;
 }
 
+export interface AmazonExportBundle {
+  clean_title: string;
+  bullet_points: string[];
+  backend_search_terms: string;
+  a_plus_legal_disclaimer: string;
+  prohibited_terms_removed: string[];
+}
+
+export interface ShopifyMetafieldItem {
+  namespace: string;
+  key: string;
+  value: string;
+  type: string;
+  description: string;
+}
+
+export interface PackagingArtworkSpec {
+  container_type: string;
+  recommended_dimensions_mm: Record<string, number>;
+  net_quantity_declaration: string;
+  net_quantity_font_size_pt: number;
+  canadian_bilingual_text: Record<string, string>;
+  responsible_person_block: string;
+  required_vector_marks: string[];
+  statutory_printer_notes: string[];
+}
+
+export interface ComplianceExportPack {
+  sku_identifier: string;
+  generated_at: string;
+  amazon_bundle: AmazonExportBundle;
+  shopify_metafields: ShopifyMetafieldItem[];
+  packaging_artwork_spec: PackagingArtworkSpec;
+  customs_manifest_summary: Record<string, any>;
+}
+
 export interface AuditResponse {
   inspection_id: string;
   listing_id: string;
@@ -187,6 +223,7 @@ export interface AuditResponse {
   packaging_analysis?: PackagingAnalysisResult;
   debate?: any;
   remediation?: RemediationResult;
+  export_pack?: ComplianceExportPack;
   trade_economics: TradeEconomicsItem[];
   citations: string[];
   is_hash_valid: boolean;

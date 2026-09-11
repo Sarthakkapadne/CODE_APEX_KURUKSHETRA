@@ -5,6 +5,7 @@ import { Shield, FileText, Sparkles, CheckCircle2, Lock, Terminal } from 'lucide
 interface HeaderProps {
   onOpenIntelligence: () => void;
   onOpenHashVerifier: () => void;
+  onOpenExportPack?: () => void;
   onExportPdf: () => void;
   isPdfLoading?: boolean;
   hasAuditData?: boolean;
@@ -14,6 +15,7 @@ interface HeaderProps {
 export default function Header({
   onOpenIntelligence,
   onOpenHashVerifier,
+  onOpenExportPack,
   onExportPdf,
   isPdfLoading,
   hasAuditData,
@@ -69,6 +71,17 @@ export default function Header({
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
             <span className="hidden sm:inline">AI Copilot</span>
           </button>
+
+          {/* 1-Click Amazon & Shopify Export Pack */}
+          {hasAuditData && onOpenExportPack && (
+            <button
+              onClick={onOpenExportPack}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white text-xs font-bold shadow-md shadow-orange-500/20 transition-all"
+            >
+              <span>⚡</span>
+              <span className="hidden sm:inline">Export Pack</span>
+            </button>
+          )}
 
           {/* Export PDF Dossier */}
           {hasAuditData && (

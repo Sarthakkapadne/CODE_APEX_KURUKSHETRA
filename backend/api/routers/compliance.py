@@ -9,10 +9,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from backend.core.models import ListingInput, AuditResponse, PackagingAnalysisResult
+from backend.core.models import ListingInput, AuditResponse, PackagingAnalysisResult, ComplianceExportPack
 from backend.db.session import get_db
 from backend.db.models_db import Listing, Inspection, ComplianceResultRecord, AuditHashBlock
 from backend.modules.agents.supervisor import ComplianceSupervisor
+from backend.modules.exports.export_pack_generator import ExportPackGenerator
 from backend.modules.rule_engine.deterministic_engine import DeterministicRuleEngine
 from backend.modules.simulator.regulatory_simulator import RegulatorySimulator
 
@@ -88,7 +89,7 @@ async def run_compliance_audit(
             overall_verdict=audit_res.overall_verdict,
             destination_markets=json.dumps(audit_res.destination_markets),
             extracted_attributes_json=json.dumps(audit_res.extracted_attributes.dict()),
-            summary=audit_res.debate.consensus_verdict if audit_res.debate else "Completed audit",
+            summary=f"{audit_res.overall_verdict} (Risk: {audit_res.customs_radar.threat_level if audit_res.customs_radar else 'N/A'})",
         )
         db.add(db_inspection)
         await db.flush()
@@ -172,4 +173,29 @@ async def scan_packaging_label(
         listing_title=payload.get("title", "Product Packaging"),
         category_hint=payload.get("category_hint", "cosmetics"),
         target_markets=payload.get("destination_markets", ["US", "EU", "CA"])
+    )
+
+
+@router.post("/export-pack", response_model=ComplianceExportPack, summary="Generate 1-Click Amazon & Shopify Ready Export Pack")
+async def generate_export_pack(
+    listing: ListingInput,
+    supervisor: ComplianceSupervisor = Depends(get_supervisor),
+):
+    """
+    Generates a production-ready export pack containing compliance-scrubbed
+    Amazon title & 5 bullets, Shopify customs metafields, and print-ready
+    packaging artwork specifications with vector statutory marks.
+    """
+    # Quick attribute extraction
+    extracted = await supervisor.extractor.extract(listing.title, listing.description)
+    hs_res = supervisor.hs_tariff_engine.evaluate_hs_classification(listing, extracted, [])
+    radar_res = supervisor.customs_radar.evaluate_seizure_risk(listing, extracted, [], listing.destination_markets or ["US"])
+
+    return ExportPackGenerator.generate(
+        listing=listing,
+        remediation=None,
+        extracted=extracted,
+        hs_tariff=hs_res,
+        customs_radar=radar_res,
+        target_markets=listing.destination_markets or ["US"],
     )

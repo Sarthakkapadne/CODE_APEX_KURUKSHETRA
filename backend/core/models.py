@@ -20,8 +20,8 @@ class ListingInput(BaseModel):
 class ExtractedAttributes(BaseModel):
     category: str
     subcategory: str
-    intended_age: str
-    power_source: str
+    intended_age: str = "all_ages"
+    power_source: str = "none"
     has_battery: bool = False
     battery_type: str = "none"
     ingredients: List[str] = []
@@ -187,7 +187,47 @@ class AuditResponse(BaseModel):
     timestamp_utc: str
     rule_engine_version: str
     compliance_hash: str
-    prev_hash: str
+class AmazonExportBundle(BaseModel):
+    clean_title: str
+    bullet_points: List[str]
+    backend_search_terms: str
+    a_plus_legal_disclaimer: str
+    prohibited_terms_removed: List[str] = []
+
+class ShopifyMetafieldItem(BaseModel):
+    namespace: str = "customs_compliance"
+    key: str
+    value: str
+    type: str = "single_line_text_field"
+    description: str = ""
+
+class PackagingArtworkSpec(BaseModel):
+    container_type: str = "Standard Bottle / Jar / Carton"
+    recommended_dimensions_mm: Dict[str, float] = {"width": 80.0, "height": 120.0}
+    net_quantity_declaration: str
+    net_quantity_font_size_pt: float = 8.0
+    canadian_bilingual_text: Dict[str, str] = {}
+    responsible_person_block: str
+    required_vector_marks: List[str] = []
+    statutory_printer_notes: List[str] = []
+
+class ComplianceExportPack(BaseModel):
+    sku_identifier: str
+    generated_at: str
+    amazon_bundle: AmazonExportBundle
+    shopify_metafields: List[ShopifyMetafieldItem]
+    packaging_artwork_spec: PackagingArtworkSpec
+    customs_manifest_summary: Dict[str, Any] = {}
+
+class AuditResponse(BaseModel):
+    inspection_id: str
+    listing_id: str = ""
+    timestamp_utc: str = ""
+    rule_engine_version: str = "2026.1"
+    compliance_hash: str = ""
+    prev_hash: str = ""
+    created_at: Optional[str] = None
+    record_hash: Optional[str] = None
     overall_verdict: str  # COMPLIANT, REMEDIATION_REQUIRED, IMPORT_PROHIBITED, ESCALATION_REQUIRED
     destination_markets: List[str]
     extracted_attributes: ExtractedAttributes
@@ -199,6 +239,7 @@ class AuditResponse(BaseModel):
     accuracy_index: Optional[GroundTruthAccuracyIndex] = None
     packaging_analysis: Optional[PackagingAnalysisResult] = None
     remediation: Optional[RemediationResult] = None
+    export_pack: Optional[ComplianceExportPack] = None
     trade_economics: List[TradeEconomicsItem] = []
     citations: List[str] = []
     is_hash_valid: bool = True

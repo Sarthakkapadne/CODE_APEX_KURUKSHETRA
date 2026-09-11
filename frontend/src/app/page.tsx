@@ -16,6 +16,8 @@ import TradeEconomicsAdvisor from '../components/TradeEconomicsAdvisor';
 import HashVerificationModal from '../components/HashVerificationModal';
 import RegulatorySimulator from '../components/RegulatorySimulator';
 import CopilotIntelligenceModal from '../components/CopilotIntelligenceModal';
+import { WorldComplianceHeatmap } from '../components/WorldComplianceHeatmap';
+import { ExportPackModal } from '../components/ExportPackModal';
 import { ListingInput as ListingInputType, AuditResponse } from '../lib/types';
 import { CASE_PRESETS } from '../lib/presets';
 import { runComplianceAudit, scrapeListingUrl, downloadPdfReport } from '../lib/api';
@@ -35,9 +37,11 @@ export default function HomePage() {
   const [isPdfLoading, setIsPdfLoading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'matrix' | 'customs_radar' | 'packaging' | 'remediation' | 'economics'>('matrix');
 
-  // Modals
+  // Modals & Interactivity
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
   const [isHashVerifierOpen, setIsHashVerifierOpen] = useState<boolean>(false);
+  const [isExportPackOpen, setIsExportPackOpen] = useState<boolean>(false);
+  const [selectedHeatmapCountry, setSelectedHeatmapCountry] = useState<string | null>(null);
 
   // Run initial audit on load for default preset
   useEffect(() => {
@@ -86,6 +90,7 @@ export default function HomePage() {
       <Header
         onOpenIntelligence={() => setIsCopilotOpen(true)}
         onOpenHashVerifier={() => setIsHashVerifierOpen(true)}
+        onOpenExportPack={() => setIsExportPackOpen(true)}
         onExportPdf={handleExportPdf}
         isPdfLoading={isPdfLoading}
         hasAuditData={!!auditData}
@@ -110,6 +115,20 @@ export default function HomePage() {
             onSimulationToggled={() => executeAudit(currentInput)}
           />
         </section>
+
+        {/* ── Global Compliance & Tariff Heatmap (Visual World Map) ── */}
+        {auditData && (
+          <section>
+            <WorldComplianceHeatmap
+              auditResult={auditData}
+              selectedCountry={selectedHeatmapCountry}
+              onSelectCountry={(countryCode) => {
+                setSelectedHeatmapCountry(selectedHeatmapCountry === countryCode ? null : countryCode);
+                setActiveTab('matrix');
+              }}
+            />
+          </section>
+        )}
 
         {/* ── Workspace Tab Selector ── */}
         <section className="space-y-4">
@@ -161,6 +180,13 @@ export default function HomePage() {
 
             {auditData && (
               <div className="hidden lg:flex items-center space-x-3 text-xs text-slate-400">
+                <button
+                  type="button"
+                  onClick={() => setIsExportPackOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold rounded-lg shadow-md shadow-orange-500/20 transition-all text-xs"
+                >
+                  <span>⚡</span> 1-Click Amazon & Shopify Export Pack
+                </button>
                 <span className="font-mono text-[11px] text-slate-500">Inspection: {auditData.inspection_id}</span>
                 <GroundTruthAccuracyBadge accuracy={auditData.accuracy_index} />
               </div>
@@ -174,6 +200,7 @@ export default function HomePage() {
                 {activeTab === 'matrix' && (
                   <ComplianceMatrix
                     auditData={auditData}
+                    selectedCountryFilter={selectedHeatmapCountry}
                     onSelectFix={fixText => {
                       if (auditData.remediation) {
                         handleApplyFix(auditData.remediation.compliant_title, auditData.remediation.compliant_description);
@@ -242,6 +269,14 @@ export default function HomePage() {
       <CopilotIntelligenceModal
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
+      />
+
+      {/* ── 1-Click Compliant Export Pack Modal ── */}
+      <ExportPackModal
+        isOpen={isExportPackOpen}
+        onClose={() => setIsExportPackOpen(false)}
+        exportPack={auditData?.export_pack}
+        productTitle={currentInput.title}
       />
     </div>
   );

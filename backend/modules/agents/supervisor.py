@@ -27,6 +27,7 @@ from backend.modules.agents.remediation_rewriter import RemediationRewriterAgent
 from backend.modules.agents.escalation_handler import EscalationHandler
 from backend.modules.economics.trade_advisor import TradeEconomicsAdvisor
 from backend.modules.economics.hs_tariff_engine import HSTariffEngine
+from backend.modules.exports.export_pack_generator import ExportPackGenerator
 from backend.modules.simulator.regulatory_simulator import RegulatorySimulator
 
 
@@ -240,6 +241,16 @@ class ComplianceSupervisor:
             prev_hash=prev_hash,
         )
 
+        # 12. 1-Click Amazon & Shopify Ready Export Pack
+        export_pack = ExportPackGenerator.generate(
+            listing=listing,
+            remediation=remediation_result,
+            extracted=extracted,
+            hs_tariff=hs_tariff_result,
+            customs_radar=customs_radar_result,
+            target_markets=target_markets,
+        )
+
         return AuditResponse(
             inspection_id=inspection_id,
             listing_id=listing_id,
@@ -258,6 +269,7 @@ class ComplianceSupervisor:
             packaging_analysis=packaging_analysis,
             debate=None,
             remediation=remediation_result,
+            export_pack=export_pack,
             trade_economics=trade_economics,
             citations=citations_list,
             is_hash_valid=True,
