@@ -21,7 +21,12 @@ build/
 lexport.db
 satyamaan.db
 
-# Environment variables
+# Environment variables (NEVER commit live secrets)
+.env
+.env.*
+*.env
+backend/.env
+frontend/.env
 .env.local
 .env.*.local
 

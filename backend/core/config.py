@@ -8,7 +8,7 @@ STATIC_DIR = BASE_DIR / "static"
 
 
 class Settings(BaseSettings):
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "AIzaSyDG07zx38bTewRvOo5qm2mxv1MogkwDqRk")
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     DATABASE_URL: str = os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///{BASE_DIR.parent}/lexport.db")
     CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "*")
     APP_VERSION: str = "1.0.0"
