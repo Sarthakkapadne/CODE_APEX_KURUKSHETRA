@@ -162,7 +162,7 @@ class MultiModalOCREngine:
 
         contents = [*parts, prompt_text]
 
-        model_name = "gemini-2.5-flash"
+        model_name = getattr(self.settings, "GEMINI_MODEL", "gemini-3.5-flash")
         try:
             response = client.models.generate_content(
                 model=model_name,

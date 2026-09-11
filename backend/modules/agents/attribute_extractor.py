@@ -73,8 +73,8 @@ class AttributeExtractorAgent:
 
         try:
             client = genai.Client(api_key=api_key)
-            # Use stable fast flash model directly without wasting calls
-            model_name = "gemini-2.5-flash"
+            # Use gemini-3.5-flash model
+            model_name = getattr(self.settings, "GEMINI_MODEL", "gemini-3.5-flash")
             try:
                 response = client.models.generate_content(
                     model=model_name,

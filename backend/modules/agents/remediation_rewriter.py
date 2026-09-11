@@ -113,7 +113,7 @@ class RemediationRewriterAgent:
                 f"Flagged Compliance Issues & Fix Suggestions:\n" + "\n".join(flagged_clauses)
             )
 
-            model_name = "gemini-2.5-flash"
+            model_name = getattr(self.settings, "GEMINI_MODEL", "gemini-3.5-flash")
             response = client.models.generate_content(
                 model=model_name,
                 contents=prompt,

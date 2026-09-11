@@ -14,6 +14,7 @@ load_dotenv(BASE_DIR / ".env", override=True)
 
 class Settings(BaseSettings):
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
     DATABASE_URL: str = os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///{BASE_DIR.parent}/lexport.db")
     CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "*")
     APP_VERSION: str = "1.0.0"

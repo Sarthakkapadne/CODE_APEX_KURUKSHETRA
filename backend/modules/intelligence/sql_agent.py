@@ -101,22 +101,16 @@ class ComplianceSQLAgent:
 
         try:
             client = genai.Client(api_key=api_key)
-            response = None
-            for model_name in ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-flash-latest"]:
-                try:
-                    response = client.models.generate_content(
-                        model=model_name,
-                        contents=query_text,
-                        config=types.GenerateContentConfig(
-                            system_instruction=SYSTEM_PROMPT,
-                            temperature=0.0,
-                            response_mime_type="application/json"
-                        ),
-                    )
-                    if response and response.text:
-                        break
-                except Exception:
-                    continue
+            model_name = getattr(self.settings, "GEMINI_MODEL", "gemini-3.5-flash")
+            response = client.models.generate_content(
+                model=model_name,
+                contents=query_text,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    temperature=0.0,
+                    response_mime_type="application/json"
+                ),
+            )
             if response and response.text:
                 return json.loads(response.text.strip())
         except Exception as e:
