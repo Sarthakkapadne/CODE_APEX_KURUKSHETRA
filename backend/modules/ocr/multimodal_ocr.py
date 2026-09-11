@@ -77,6 +77,10 @@ def _parse_base64_image(image_str: str) -> Tuple[bytes, str]:
     return base64.b64decode(clean_b64), mime_type
 
 
+# In-memory cache for packaging OCR analysis to avoid duplicate LLM calls
+_OCR_CACHE: Dict[str, PackagingAnalysisResult] = {}
+
+
 class MultiModalOCREngine:
     def __init__(self):
         self.settings = get_settings()
@@ -169,52 +173,52 @@ class MultiModalOCREngine:
                     response_mime_type="application/json"
                 )
             )
-                if response and response.text:
-                    data = json.loads(response.text.strip())
+            if response and response.text:
+                data = json.loads(response.text.strip())
 
-                    # Convert bounding boxes
-                    boxes = [
-                        PackagingOCRRegion(
-                            label=b.get("label", "Detected Region"),
-                            box_2d=b.get("box_2d", [100, 100, 300, 800]),
-                            text=b.get("text", ""),
-                            confidence=float(b.get("confidence", 0.9)),
-                            severity=b.get("severity", "pass")
-                        )
-                        for b in data.get("bounding_boxes", [])
-                    ]
-
-                    # Convert provenance
-                    provenance = [
-                        TranslationProvenanceItem(
-                            original_term=p.get("original_term", ""),
-                            translated_term=p.get("translated_term", ""),
-                            detected_language=p.get("detected_language", "Foreign"),
-                            confidence=float(p.get("confidence", 0.95)),
-                            standardized_standard=p.get("standardized_standard", "INCI"),
-                            notes=p.get("notes", "")
-                        )
-                        for p in data.get("translation_provenance", [])
-                    ]
-
-                    res = PackagingAnalysisResult(
-                        detected_language=data.get("detected_language", "English"),
-                        raw_ocr_text=data.get("raw_ocr_text", ""),
-                        translated_english_text=data.get("translated_english_text", ""),
-                        detected_certification_logos=data.get("detected_certification_logos", []),
-                        missing_certification_logos=[],
-                        net_quantity_declaration=data.get("net_quantity_declaration"),
-                        is_bilingual=bool(data.get("is_bilingual", False)),
-                        translation_provenance=provenance,
-                        bounding_boxes=boxes,
-                        discrepancies=[],
-                        detected_barcode=data.get("detected_barcode"),
-                        detected_iso_symbols=data.get("detected_iso_symbols", []),
-                        physical_readiness_score=float(data.get("physical_readiness_score", 85.0)),
-                        physical_verdict=data.get("physical_verdict", "READY_FOR_EXPORT")
+                # Convert bounding boxes
+                boxes = [
+                    PackagingOCRRegion(
+                        label=b.get("label", "Detected Region"),
+                        box_2d=b.get("box_2d", [100, 100, 300, 800]),
+                        text=b.get("text", ""),
+                        confidence=float(b.get("confidence", 0.9)),
+                        severity=b.get("severity", "pass")
                     )
-                    _OCR_CACHE[cache_key] = res
-                    return res
+                    for b in data.get("bounding_boxes", [])
+                ]
+
+                # Convert provenance
+                provenance = [
+                    TranslationProvenanceItem(
+                        original_term=p.get("original_term", ""),
+                        translated_term=p.get("translated_term", ""),
+                        detected_language=p.get("detected_language", "Foreign"),
+                        confidence=float(p.get("confidence", 0.95)),
+                        standardized_standard=p.get("standardized_standard", "INCI"),
+                        notes=p.get("notes", "")
+                    )
+                    for p in data.get("translation_provenance", [])
+                ]
+
+                res = PackagingAnalysisResult(
+                    detected_language=data.get("detected_language", "English"),
+                    raw_ocr_text=data.get("raw_ocr_text", ""),
+                    translated_english_text=data.get("translated_english_text", ""),
+                    detected_certification_logos=data.get("detected_certification_logos", []),
+                    missing_certification_logos=[],
+                    net_quantity_declaration=data.get("net_quantity_declaration"),
+                    is_bilingual=bool(data.get("is_bilingual", False)),
+                    translation_provenance=provenance,
+                    bounding_boxes=boxes,
+                    discrepancies=[],
+                    detected_barcode=data.get("detected_barcode"),
+                    detected_iso_symbols=data.get("detected_iso_symbols", []),
+                    physical_readiness_score=float(data.get("physical_readiness_score", 85.0)),
+                    physical_verdict=data.get("physical_verdict", "READY_FOR_EXPORT")
+                )
+                _OCR_CACHE[cache_key] = res
+                return res
         except Exception as e:
             err_msg = str(e).lower()
             if "429" in err_msg or "resourceexhausted" in err_msg or "quota" in err_msg:
