@@ -10,6 +10,9 @@ export interface ListingInput {
   source_url?: string;
   image_base64?: string;
   image_url?: string;
+  front_image_base64?: string;
+  back_image_base64?: string;
+  barcode_raw?: string;
 }
 
 export interface ExtractedAttributes {
@@ -228,6 +231,8 @@ export interface AuditResponse {
   citations: string[];
   is_hash_valid: boolean;
   required_documents?: RequiredDocumentItem[];
+  barcode_analysis?: BarcodeAnalysisResult;
+  iso_symbols_detected?: ISOSymbolItem[];
 }
 
 export interface PresetListing {
@@ -242,14 +247,36 @@ export interface PresetListing {
   source_url?: string;
 }
 
+export interface BarcodeAnalysisResult {
+  raw_barcode?: string;
+  barcode_type: string;
+  is_valid_gs1: boolean;
+  gs1_check_digit?: number;
+  country_of_registration?: string;
+  warning_message?: string;
+}
+
+export interface ISOSymbolItem {
+  symbol_code: string;
+  symbol_name: string;
+  status: string;
+  statutory_requirement: string;
+}
+
 export interface RequiredDocumentItem {
-  id: string;
+  id?: string;
+  doc_code?: string;
   country_code: string;
-  title: string;
+  title?: string;
+  doc_name?: string;
   category?: string;
   is_mandatory: boolean;
-  citation: string;
-  description: string;
+  citation?: string;
+  statutory_citation?: string;
+  description?: string;
+  seller_action_needed?: string;
   governing_agency?: string;
+  issuing_authority?: string;
   status?: 'verified' | 'missing' | 'in_review';
+  seller_status?: string;
 }

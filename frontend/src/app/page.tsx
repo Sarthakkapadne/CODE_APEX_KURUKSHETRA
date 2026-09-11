@@ -439,6 +439,8 @@ export default function HomePage() {
                   setCurrentInput(prev => ({
                     ...prev,
                     image_base64: frontBase64 || backBase64,
+                    front_image_base64: frontBase64,
+                    back_image_base64: backBase64,
                   }));
                 }
               }}
@@ -694,6 +696,8 @@ export default function HomePage() {
                           setCurrentInput(prev => ({
                             ...prev,
                             image_base64: frontBase64 || backBase64,
+                            front_image_base64: frontBase64,
+                            back_image_base64: backBase64,
                           }));
                         }
                       }}

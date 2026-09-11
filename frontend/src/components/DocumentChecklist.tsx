@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import type { RequiredDocumentItem } from '../lib/types';
 import {
   FileText, CheckCircle2, XCircle, AlertCircle, ShieldAlert,
@@ -200,11 +200,30 @@ export default function DocumentChecklist({
   onStatusChange,
   className = '',
 }: DocumentChecklistProps) {
-  // Use passed documents or intelligent defaults
-  const [docList, setDocList] = useState<RequiredDocumentItem[]>(() => {
-    if (initialDocs && initialDocs.length > 0) return initialDocs;
-    return DEFAULT_REQUIRED_DOCUMENTS;
-  });
+  // Normalize passed documents or intelligent defaults
+  const normalizeDocs = (docs?: RequiredDocumentItem[]): RequiredDocumentItem[] => {
+    if (!docs || docs.length === 0) return DEFAULT_REQUIRED_DOCUMENTS;
+    return docs.map((doc, idx) => ({
+      ...doc,
+      id: doc.id || doc.doc_code || `doc-${doc.country_code}-${idx}`,
+      country_code: doc.country_code,
+      title: doc.title || doc.doc_name || 'Statutory Requirement',
+      category: doc.category || 'general',
+      is_mandatory: Boolean(doc.is_mandatory),
+      citation: doc.citation || doc.statutory_citation || 'Statutory Code',
+      description: doc.description || doc.seller_action_needed || '',
+      governing_agency: doc.governing_agency || doc.issuing_authority || 'Regulatory Agency',
+      status: (doc.status || (doc.seller_status === 'verified' ? 'verified' : 'missing')) as 'verified' | 'missing' | 'in_review',
+    }));
+  };
+
+  const [docList, setDocList] = useState<RequiredDocumentItem[]>(() => normalizeDocs(initialDocs));
+
+  useEffect(() => {
+    if (initialDocs && initialDocs.length > 0) {
+      setDocList(normalizeDocs(initialDocs));
+    }
+  }, [initialDocs]);
 
   const [filterType, setFilterType] = useState<'all' | 'mandatory' | 'missing'>('all');
   const [selectedCountryFilter, setSelectedCountryFilter] = useState<string>('all');
@@ -214,7 +233,8 @@ export default function DocumentChecklist({
   const handleToggleStatus = (docId: string) => {
     setDocList(prev =>
       prev.map(doc => {
-        if (doc.id === docId) {
+        const id = doc.id || doc.doc_code;
+        if (id === docId) {
           const nextStatus: 'verified' | 'missing' = doc.status === 'verified' ? 'missing' : 'verified';
           if (onStatusChange) onStatusChange(docId, nextStatus);
           return { ...doc, status: nextStatus };
@@ -243,10 +263,10 @@ export default function DocumentChecklist({
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         return (
-          doc.title.toLowerCase().includes(q) ||
-          doc.citation.toLowerCase().includes(q) ||
-          (doc.description && doc.description.toLowerCase().includes(q)) ||
-          doc.country_code.toLowerCase().includes(q)
+          (Boolean(doc.title) && (doc.title as string).toLowerCase().includes(q)) ||
+          (Boolean(doc.citation) && (doc.citation as string).toLowerCase().includes(q)) ||
+          (Boolean(doc.description) && (doc.description as string).toLowerCase().includes(q)) ||
+          (Boolean(doc.country_code) && doc.country_code.toLowerCase().includes(q))
         );
       }
 
@@ -432,12 +452,13 @@ export default function DocumentChecklist({
 
                 {/* Country Document List */}
                 <div className="divide-y divide-slate-800/60 p-2 sm:p-3 space-y-2">
-                  {docs.map(doc => {
+                  {docs.map((doc, docIdx) => {
+                    const docId = doc.id || doc.doc_code || `doc-${countryCode}-${docIdx}`;
                     const isVerified = doc.status === 'verified';
 
                     return (
                       <div
-                        key={doc.id}
+                        key={docId}
                         className={`p-3 rounded-xl transition-all border ${
                           isVerified
                             ? 'bg-emerald-950/10 border-emerald-500/30'
@@ -515,7 +536,7 @@ export default function DocumentChecklist({
                             {/* Toggle Switch */}
                             <button
                               type="button"
-                              onClick={() => handleToggleStatus(doc.id)}
+                              onClick={() => handleToggleStatus(docId)}
                               className={`relative inline-flex h-7 w-28 items-center rounded-full p-1 transition-colors border ${
                                 isVerified
                                   ? 'bg-emerald-600 border-emerald-400 text-white'
