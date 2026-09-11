@@ -18,6 +18,8 @@ from backend.core.models import (
 from backend.core.hash_chain import ComplianceHashChain
 from backend.modules.rule_engine.deterministic_engine import DeterministicRuleEngine
 from backend.modules.rule_engine.accuracy_evaluator import AccuracyEvaluator
+from backend.modules.rule_engine.barcode_validator import BarcodeValidator
+from backend.modules.rule_engine.document_matrix import DocumentMatrixEngine
 from backend.modules.ocr.multimodal_ocr import MultiModalOCREngine
 from backend.modules.agents.attribute_extractor import AttributeExtractorAgent
 from backend.modules.agents.classification_mismatch import ClassificationMismatchDetector
@@ -50,6 +52,8 @@ class ComplianceSupervisor:
         self.rewriter = RemediationRewriterAgent()
         self.escalation_handler = EscalationHandler()
         self.economics_advisor = TradeEconomicsAdvisor()
+        self.barcode_validator = BarcodeValidator()
+        self.document_matrix = DocumentMatrixEngine()
 
     async def run_audit(
         self,
@@ -73,6 +77,9 @@ class ComplianceSupervisor:
         packaging_analysis: PackagingAnalysisResult = await self.ocr_engine.inspect_packaging(
             image_base64=listing.image_base64,
             image_url=listing.image_url,
+            front_image_base64=listing.front_image_base64,
+            back_image_base64=listing.back_image_base64,
+            barcode_raw=listing.barcode_raw,
             listing_title=listing.title,
             category_hint=listing.category_hint or "cosmetics",
             target_markets=target_markets
@@ -86,6 +93,23 @@ class ComplianceSupervisor:
             target_markets=target_markets
         )
         packaging_analysis.discrepancies = discrepancies
+
+        # 1d. GS1 Barcode Modulo-10 Check & ISO 7000 Handling Marks
+        raw_barcode = listing.barcode_raw or packaging_analysis.detected_barcode
+        barcode_analysis = self.barcode_validator.validate_barcode(raw_barcode)
+        iso_symbols_detected = self.barcode_validator.detect_iso_symbols(
+            text=full_text,
+            detected_marks=packaging_analysis.detected_iso_symbols,
+            category=extracted.category
+        )
+
+        # 1e. Mandatory Document & License Matrix Determination
+        required_documents = self.document_matrix.determine_required_documents(
+            category=extracted.category,
+            target_markets=target_markets,
+            has_battery=extracted.has_battery,
+            raw_text=full_text
+        )
 
         # 2. Deterministic Rule Engine Evaluation per Country (Tier 1 & Tier 3)
         matrix: Dict[str, List[ComplianceCheckResult]] = {}
@@ -270,6 +294,9 @@ class ComplianceSupervisor:
             debate=None,
             remediation=remediation_result,
             export_pack=export_pack,
+            required_documents=required_documents,
+            barcode_analysis=barcode_analysis,
+            iso_symbols_detected=iso_symbols_detected,
             trade_economics=trade_economics,
             citations=citations_list,
             is_hash_valid=True,

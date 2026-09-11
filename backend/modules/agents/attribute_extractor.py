@@ -39,6 +39,8 @@ Extract the following JSON structure:
 
 STRICT RULE: ONLY return valid JSON. Do not wrap in markdown or commentary."""
 
+_EXTRACT_CACHE: Dict[str, Dict[str, Any]] = {}
+
 
 class AttributeExtractorAgent:
     def __init__(self):
@@ -63,27 +65,37 @@ class AttributeExtractorAgent:
         if not api_key:
             return None
 
+        # Check in-memory cache to prevent duplicate LLM calls
+        cache_key = str(hash(text))
+        if cache_key in _EXTRACT_CACHE:
+            logger.info("[EXTRACTOR] Returning cached extraction (0 LLM requests).")
+            return _EXTRACT_CACHE[cache_key]
+
         try:
             client = genai.Client(api_key=api_key)
-            models_to_try = ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-flash-latest"]
-
-            for model_name in models_to_try:
-                try:
-                    response = client.models.generate_content(
-                        model=model_name,
-                        contents=f"Analyze this e-commerce product listing:\n\n{text}",
-                        config=types.GenerateContentConfig(
-                            system_instruction=SYSTEM_PROMPT,
-                            temperature=0.1,
-                            response_mime_type="application/json"
-                        ),
-                    )
-                    if response and response.text:
-                        raw_json = response.text.strip()
-                        return json.loads(raw_json)
-                except Exception as me:
-                    logger.debug(f"[EXTRACTOR] Gemini model {model_name} error: {me}")
-                    continue
+            # Use gemini-3.5-flash model
+            model_name = getattr(self.settings, "GEMINI_MODEL", "gemini-3.5-flash")
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=f"Analyze this e-commerce product listing:\n\n{text}",
+                    config=types.GenerateContentConfig(
+                        system_instruction=SYSTEM_PROMPT,
+                        temperature=0.1,
+                        response_mime_type="application/json"
+                    ),
+                )
+                if response and response.text:
+                    raw_json = response.text.strip()
+                    parsed = json.loads(raw_json)
+                    _EXTRACT_CACHE[cache_key] = parsed
+                    return parsed
+            except Exception as me:
+                err_msg = str(me).lower()
+                if "429" in err_msg or "resourceexhausted" in err_msg or "quota" in err_msg:
+                    logger.warning("[EXTRACTOR] Gemini rate limit reached (429). Falling back instantly to Tier 1 deterministic extractor.")
+                    return None
+                logger.debug(f"[EXTRACTOR] Gemini model error: {me}")
         except Exception as e:
             logger.warning(f"[EXTRACTOR] Gemini client error: {e}")
         return None

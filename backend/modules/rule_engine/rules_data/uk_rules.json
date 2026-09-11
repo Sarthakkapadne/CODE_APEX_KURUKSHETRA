@@ -24,6 +24,7 @@
       "statute_citation": "UK Product Safety and Metrology Regulations 2019 / SCPN Portal",
       "title": "Mandatory UK-Established Responsible Person (GB Address)",
       "condition_type": "mandatory_field",
+      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "personal_care", "haircare", "body"],
       "required_field": "uk_responsible_person",
       "severity": "violation",
       "expected_requirement": "Name and Great Britain (England, Scotland, Wales) physical address of the UK Responsible Person.",
