@@ -21,18 +21,18 @@ const AVAILABLE_MARKETS = [
 
 export default function ListingInput({ onAudit, isLoading, onScrape }: ListingInputProps) {
   const [activeTab, setActiveTab] = useState<'text' | 'url'>('text');
-  const [selectedPresetId, setSelectedPresetId] = useState<string>('preset-ayurvedic-cream');
-  const [urlInput, setUrlInput] = useState<string>('https://www.amazon.com/dp/B0AYURVEDA01');
+  const [selectedPresetId, setSelectedPresetId] = useState<string>(CASE_PRESETS[0].id);
+  const [urlInput, setUrlInput] = useState<string>(CASE_PRESETS[0].source_url || '');
   const [isScraping, setIsScraping] = useState<boolean>(false);
 
-  // Form state initialized with Preset 1 (Ayurvedic cream)
-  const defaultPreset = CASE_PRESETS[0];
-  const [title, setTitle] = useState(defaultPreset.title);
-  const [description, setDescription] = useState(defaultPreset.description);
-  const [brandName, setBrandName] = useState(defaultPreset.brand_name);
-  const [price, setPrice] = useState(defaultPreset.price);
-  const [countryOfOrigin, setCountryOfOrigin] = useState(defaultPreset.country_of_origin);
-  const [selectedMarkets, setSelectedMarkets] = useState<string[]>(['US', 'EU', 'UK', 'CA', 'JP']);
+  // Form state initialized with default preset
+  const [title, setTitle] = useState(CASE_PRESETS[0].title);
+  const [description, setDescription] = useState(CASE_PRESETS[0].description);
+  const [brandName, setBrandName] = useState(CASE_PRESETS[0].brand_name);
+  const [price, setPrice] = useState<number | undefined>(CASE_PRESETS[0].price);
+  const [countryOfOrigin, setCountryOfOrigin] = useState(CASE_PRESETS[0].country_of_origin);
+  const [selectedMarkets, setSelectedMarkets] = useState<string[]>(['US', 'EU', 'UK', 'CA', 'JP', 'AU']);
+
 
   const handleSelectPreset = (preset: PresetListing) => {
     setSelectedPresetId(preset.id);

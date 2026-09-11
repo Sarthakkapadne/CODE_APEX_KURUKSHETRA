@@ -72,22 +72,27 @@ class EscalationHandler:
                 ))
 
         # ── Layer 2: Marketplace Platform Ungating Policies ──
-        if "topical" in extracted.subcategory or "cream" in lower or "supplement" in lower:
-            escalations.append(ComplianceCheckResult(
-                check_code="ESCALATE-MKT-UNGATING",
-                country_code="US",
-                category="Safety/Certifications",
-                status="escalation",
-                trust_tier="Tier 3 Escalation",
-                rule_citation="Amazon Category Ungating Policy: Topical Skincare & Dietary Supplements",
-                extracted_value="Amazon Category Ungating Pre-Approval Required",
-                expected_requirement="Recent wholesale invoice, GMP certificate, and COA (Certificate of Analysis)",
-                explanation="MARKETPLACE POLICY: Even if 100% legally compliant with US law, Amazon requires pre-approval (category ungating) for topical skincare, demanding invoices from a verified distributor.",
-                fix_suggestion="Submit distributor invoice and GMP facility certification via Amazon Seller Central."
-            ))
+        if "US" in target_markets:
+            is_topical_or_supp = (
+                extracted.category in ["cosmetics", "supplements"] or
+                any(w in lower for w in ["skincare", "dietary supplement", "topical lotion", "face cream", "moisturizer", "serum", "capsules", "tablets"])
+            ) and not any(w in lower for w in ["ice cream", "whipped cream", "cream color", "creamer", "shaving brush"])
+            if is_topical_or_supp:
+                escalations.append(ComplianceCheckResult(
+                    check_code="ESCALATE-MKT-UNGATING",
+                    country_code="US",
+                    category="Safety/Certifications",
+                    status="escalation",
+                    trust_tier="Tier 3 Escalation",
+                    rule_citation="Amazon Category Ungating Policy: Topical Skincare & Dietary Supplements",
+                    extracted_value="Amazon Category Ungating Pre-Approval Required",
+                    expected_requirement="Recent wholesale invoice, GMP certificate, and COA (Certificate of Analysis)",
+                    explanation="MARKETPLACE POLICY: Even if 100% legally compliant with US law, Amazon requires pre-approval (category ungating) for topical skincare, demanding invoices from a verified distributor.",
+                    fix_suggestion="Submit distributor invoice and GMP facility certification via Amazon Seller Central."
+                ))
 
         # ── Layer 3: Intellectual Property & Regional Distribution Rights ──
-        if any(brand in lower for brand in ["apple", "dyson", "nike", "samsung", "rolex"]):
+        if "EU" in target_markets and any(brand in lower for brand in ["apple", "dyson", "nike", "samsung", "rolex"]):
             escalations.append(ComplianceCheckResult(
                 check_code="ESCALATE-IP-RIGHTS",
                 country_code="EU",

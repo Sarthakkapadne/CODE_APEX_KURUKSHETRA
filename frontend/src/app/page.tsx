@@ -55,8 +55,9 @@ export default function HomePage() {
     brand_name: CASE_PRESETS[0].brand_name,
     price: CASE_PRESETS[0].price,
     country_of_origin: CASE_PRESETS[0].country_of_origin,
-    destination_markets: ['US', 'EU', 'UK', 'CA', 'JP'],
+    destination_markets: ['US', 'EU', 'UK', 'CA', 'JP', 'AU'],
   });
+
 
   const [auditData, setAuditData] = useState<AuditResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);

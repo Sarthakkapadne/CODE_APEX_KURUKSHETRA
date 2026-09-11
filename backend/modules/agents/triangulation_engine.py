@@ -56,9 +56,9 @@ class TriangulationEngine:
                 border_impact="FAA/IATA hazmat misdeclaration. Immediate air cargo hold and commercial carrier disqualification."
             ))
 
-        # ── Discrepancy 3: Missing Mandatory CE Mark for EU ──
+        # ── Discrepancy 3: Missing Mandatory CE Mark for EU (Electronics, Toys, Medical Devices) ──
         if "EU" in target_markets and "CE_MARK" not in packaging.detected_certification_logos:
-            is_regulated_product = any(w in full_listing_text for w in ["earbud", "headphone", "electronic", "toy", "medical", "device", "cream"])
+            is_regulated_product = any(w in full_listing_text for w in ["earbud", "headphone", "electronic", "toy", "medical device", "medical equipment"]) or extracted.category in ["electronics", "toys"]
             if is_regulated_product:
                 discrepancies.append(TriangulationDiscrepancyItem(
                     check_code="TRI-LOGO-03",
@@ -71,15 +71,16 @@ class TriangulationEngine:
                 ))
 
         # ── Discrepancy 4: Missing Mandatory Bilingual French for Canada ──
-        if "CA" in target_markets and not packaging.is_bilingual:
+        if "CA" in target_markets and packaging.raw_ocr_text and not packaging.is_bilingual:
             has_french = any(w in ocr_text_lower for w in ["fabriqué", "mode d'emploi", "ingrédients", "poids net", "avertissement"])
-            if not has_french:
+            is_cpg = extracted.category in ["cosmetics", "food", "supplements", "toys"] or any(w in full_listing_text for w in ["cream", "lotion", "serum", "food", "toy"])
+            if not has_french and is_cpg and len(packaging.raw_ocr_text.strip()) > 30:
                 discrepancies.append(TriangulationDiscrepancyItem(
                     check_code="TRI-LANG-04",
                     discrepancy_type="LANGUAGE_NON_COMPLIANCE",
                     severity="HIGH_DETENTION_RISK",
                     listing_claim="Target market includes Canada (Health Canada / CBSA jurisdiction).",
-                    physical_label_reality="Physical packaging is unilingual English/Japanese with zero official French text.",
+                    physical_label_reality="Physical packaging is unilingual with zero official French text declarations.",
                     destination_statute="Consumer Packaging and Labelling Act (R.S.C., 1985, c. C-38) Section 6",
                     border_impact="CBSA commercial importation hold. Non-compliant consumer goods cannot clear customs without bilingual labeling."
                 ))
