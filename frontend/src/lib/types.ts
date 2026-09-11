@@ -10,7 +10,9 @@ export interface ListingInput {
   source_url?: string;
   image_base64?: string;
   image_url?: string;
+  images?: string[];
 }
+
 
 export interface ExtractedAttributes {
   category: string;

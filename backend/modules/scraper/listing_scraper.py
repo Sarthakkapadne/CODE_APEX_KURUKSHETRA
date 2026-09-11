@@ -91,6 +91,62 @@ class ListingScraper:
                             pass
                     break
 
+            # Multi-Image Gallery Extraction (Amazon colorImages / Shopify / OpenGraph)
+            gallery_images: List[str] = []
+
+            # A. Amazon colorImages JSON in script tags
+            amz_color_match = re.search(r"'colorImages':\s*\{\s*'initial':\s*(\[.*?\])\s*\}", html, re.DOTALL)
+            if amz_color_match:
+                try:
+                    color_data = json.loads(amz_color_match.group(1))
+                    for item in color_data:
+                        img_url = item.get("large") or (item.get("main", {}).get("large") if isinstance(item.get("main"), dict) else None) or item.get("hiRes")
+                        if img_url and img_url not in gallery_images:
+                            gallery_images.append(img_url)
+                except Exception:
+                    pass
+
+            # B. Amazon data-a-dynamic-image on #landingImage
+            landing_img = soup.select_one("#landingImage, #imgBlkFront")
+            if landing_img and landing_img.get("data-a-dynamic-image"):
+                try:
+                    dyn_imgs = json.loads(landing_img["data-a-dynamic-image"])
+                    for u in dyn_imgs.keys():
+                        if u not in gallery_images:
+                            gallery_images.append(u)
+                except Exception:
+                    pass
+
+            # C. Amazon Alt Images Thumbnails converted to High-Res
+            for img in soup.select("#altImages img, .regularAltImageViewLayout img"):
+                src = img.get("src", "")
+                if src and "images/I/" in src:
+                    # Convert thumbnail to high-res by stripping resolution specifier
+                    hires_src = re.sub(r'\._[A-Z0-9_,]+_\.', '.', src)
+                    if hires_src not in gallery_images and not hires_src.endswith(".gif"):
+                        gallery_images.append(hires_src)
+
+            # D. Shopify product images / OpenGraph images
+            for img in soup.select(".product__media img, .product-single__photo, img[src*='cdn.shopify.com']"):
+                src = img.get("src") or img.get("data-src", "")
+                if src:
+                    if src.startswith("//"):
+                        src = "https:" + src
+                    clean_src = re.sub(r'_\d+x\d+\.', '.', src)
+                    if clean_src not in gallery_images:
+                        gallery_images.append(clean_src)
+
+            og_img = soup.select_one("meta[property='og:image']")
+            if og_img and og_img.get("content"):
+                og_url = og_img["content"]
+                if og_url not in gallery_images:
+                    gallery_images.insert(0, og_url)
+
+            if gallery_images:
+                result["images"] = gallery_images[:8]  # Up to 8 high-res gallery images
+                result["image_url"] = gallery_images[0]
+
+
         # 3. If live scrape yielded empty or was blocked by Amazon/Cloudflare captcha, provide contextual mock
         if not result["title"]:
             result = self._get_fallback_mock_for_url(url_clean)
@@ -116,7 +172,8 @@ class ListingScraper:
                 "currency": "USD",
                 "country_of_origin": "China",
                 "category_hint": "toys",
-                "images": ["/static/demo_walker.jpg"]
+                "images": ["/static/demo_walker_front.jpg", "/static/demo_walker_label.jpg", "/static/demo_walker_specs.jpg"],
+                "image_url": "/static/demo_walker_front.jpg"
             }
 
         if "cutting" in lower_url or "board" in lower_url or "antimicrobial" in lower_url:
@@ -134,7 +191,8 @@ class ListingScraper:
                 "currency": "USD",
                 "country_of_origin": "Vietnam",
                 "category_hint": "kitchenware",
-                "images": ["/static/demo_board.jpg"]
+                "images": ["/static/demo_board_front.jpg", "/static/demo_board_label.jpg", "/static/demo_board_specs.jpg"],
+                "image_url": "/static/demo_board_front.jpg"
             }
 
         # Default fallback: Ayurvedic Pain Cream
@@ -152,5 +210,7 @@ class ListingScraper:
             "currency": "USD",
             "country_of_origin": "India",
             "category_hint": "cosmetics",
-            "images": ["/static/demo_cream.jpg"]
+            "images": ["/static/demo_cream_front.jpg", "/static/demo_cream_back.jpg", "/static/demo_cream_box.jpg"],
+            "image_url": "/static/demo_cream_front.jpg"
         }
+

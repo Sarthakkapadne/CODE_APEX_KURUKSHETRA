@@ -113,4 +113,24 @@ class ClassificationMismatchDetector:
                         fix_suggestion=f"Provide a dedicated EU/UK SKU with <= 0.1% hydrogen peroxide or PAP alternative."
                     ))
 
+        # ── Case 5: Cosmetic vs Unapproved Drug Reclassification (US FDA 21 U.S.C. § 321(g)) ──
+        has_disease_intent = "DISEASE_TREATMENT_INTENT" in extracted.intent_classifications or any(
+            t in lower for t in ["cures arthritis", "cures", "treats", "heals arthritis", "eliminates pain", "vanquish"]
+        )
+        if has_disease_intent and extracted.category in ["cosmetics", "skincare", "general_merchandise"]:
+            if "US" in target_markets:
+                mismatches.append(ComplianceCheckResult(
+                    check_code="MISMATCH-FDA-DRUG-RECLASSIFICATION",
+                    country_code="US",
+                    category="Classification Status",
+                    status="violation",
+                    trust_tier="Tier 2 Grounded AI",
+                    rule_citation="FD&C Act 21 U.S.C. § 321(g)(1)(B) vs India AYUSH / Global Cosmetic Codex",
+                    extracted_value="Regulated as Unapproved New Drug (US) vs Cosmetic / Traditional Wellness",
+                    expected_requirement="Cosmetic products cannot claim to treat, cure, or mitigate physiological diseases.",
+                    explanation="STRUCTURAL CLASSIFICATION MISMATCH (Layer 1b): In international markets, herbal and Ayurvedic topical preparations are marketed as traditional wellness cosmetics. In the United States, 21 U.S.C. § 321(g) establishes that 'intended use' dictates legal classification: claims to treat or mitigate diseases (like arthritis or chronic pain) automatically reclassify the product as an Unapproved New Drug, exposing shipments to CBP Notice of Action and seizure under 19 U.S.C. § 1595a(c).",
+                    fix_suggestion="Substituted disease treatment claims with compliant structure/function language (e.g., 'soothes tired joints', 'supports mobility')."
+                ))
+
         return mismatches
+

@@ -19,7 +19,7 @@ from backend.core.models import ExtractedAttributes
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """You are a specialized Customs & Regulatory Technical Classifier for LexPort.
-Your job is to extract true technical parameters and regulatory specifications from informal e-commerce marketing text.
+Your job is to extract true technical parameters, regulatory specifications, and legal intent classifications from informal e-commerce marketing text.
 
 Extract the following JSON structure:
 {
@@ -34,10 +34,23 @@ Extract the following JSON structure:
   "claims": ["list", "of", "explicit", "claims", "made"],
   "inferred_hs_code": "e.g., 3304.99 or 9503.00 or 8509.80",
   "technical_specs": {"voltage": "5V", "wattage": "10W"},
-  "missing_required_fields": ["country_of_origin", "net_quantity", "manufacturer_contact"]
+  "missing_required_fields": ["country_of_origin", "net_quantity", "manufacturer_contact"],
+  "intent_classifications": [
+    "DISEASE_TREATMENT_INTENT (if claiming cure, relief, eradication, or prevention of any disease or pathology like arthritis, eczema, acne, regardless of creative wording)",
+    "STRUCTURE_FUNCTION_INTENT (if claiming normal cosmetic hydration, soothing, cleansing, or beauty function)",
+    "PESTICIDAL_ANTIMICROBIAL_INTENT (if claiming to kill, repel, or destroy bacteria/germs/fungi on inanimate surfaces)",
+    "INFANT_SAFETY_RISK_INTENT (if intended for infants and promoting inclined sleep or wheeled mobility)"
+  ],
+  "target_ailments": ["list of specific diseases or symptoms claimed, e.g., arthritis, joint inflammation, pain"],
+  "antimicrobial_target": "article_surface | human_body | environmental | none"
 }
 
-STRICT RULE: ONLY return valid JSON. Do not wrap in markdown or commentary."""
+STRICT ZERO-HALLUCINATION RULE:
+- ONLY return valid JSON. Do not wrap in markdown or commentary.
+- Classify the true underlying regulatory intent of claims regardless of how creatively they are phrased.
+- Never invent statutory section numbers in extraction.
+"""
+
 
 _EXTRACT_CACHE: Dict[str, Dict[str, Any]] = {}
 
@@ -187,6 +200,37 @@ class AttributeExtractorAgent:
         if not any(w in lower for w in ["net wt", "net weight", "fl oz", "ml", "g"]):
             missing_fields.append("net_quantity")
 
+        # Regulatory Intent Semantic Taxonomy Classification
+        intent_classifications: List[str] = []
+        target_ailments: List[str] = []
+        antimicrobial_target = "none"
+
+        # Check disease treatment intent (matches creative phrasing like "vanquishes arthritis", "eradicates inflammation")
+        disease_triggers = ["cure", "heal", "treat", "eliminate pain", "inflammation", "arthritis", "rheumatoid", "back pain", "ache", "soreness", "anti-inflammatory medicine", "vanquish"]
+        for dt in disease_triggers:
+            if dt in lower:
+                if "DISEASE_TREATMENT_INTENT" not in intent_classifications:
+                    intent_classifications.append("DISEASE_TREATMENT_INTENT")
+                if dt not in target_ailments:
+                    target_ailments.append(dt)
+
+        # Check antimicrobial/pesticidal intent
+        pesticide_triggers = ["antibacterial", "kills 99.9% germs", "kills germs", "antimicrobial", "disinfect", "sanitiz", "steriliz"]
+        for pt in pesticide_triggers:
+            if pt in lower:
+                if "PESTICIDAL_ANTIMICROBIAL_INTENT" not in intent_classifications:
+                    intent_classifications.append("PESTICIDAL_ANTIMICROBIAL_INTENT")
+                antimicrobial_target = "article_surface" if category == "kitchenware" else "human_body"
+
+        # Check infant safety risk intent
+        if category == "toys" or any(w in lower for w in ["baby", "infant", "newborn", "walker", "sleep positioner", "wedge"]):
+            if any(w in lower for w in ["walker", "wheel", "rolling", "incline", "sleep positioner", "anti-roll"]):
+                intent_classifications.append("INFANT_SAFETY_RISK_INTENT")
+
+        # Default structure/function if not disease
+        if not intent_classifications or "DISEASE_TREATMENT_INTENT" not in intent_classifications:
+            intent_classifications.append("STRUCTURE_FUNCTION_INTENT")
+
         return ExtractedAttributes(
             category=category,
             subcategory=subcategory,
@@ -200,4 +244,8 @@ class AttributeExtractorAgent:
             inferred_hs_code=hs_code,
             technical_specs={"extracted_via": "deterministic_heuristics"},
             missing_required_fields=missing_fields,
+            intent_classifications=intent_classifications,
+            target_ailments=target_ailments,
+            antimicrobial_target=antimicrobial_target,
         )
+

@@ -36,7 +36,8 @@ export default function HomePage() {
   const [auditData, setAuditData] = useState<AuditResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPdfLoading, setIsPdfLoading] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'matrix' | 'customs_radar' | 'packaging' | 'remediation' | 'economics'>('matrix');
+  const [activeWorkspace, setActiveWorkspace] = useState<'studio' | 'packaging' | 'radar' | 'remediation'>('studio');
+  const [isSimulatorOpen, setIsSimulatorOpen] = useState<boolean>(false);
 
   // Modals & Interactivity
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
@@ -70,7 +71,7 @@ export default function HomePage() {
     };
     setCurrentInput(updated);
     executeAudit(updated);
-    setActiveTab('matrix');
+    setActiveWorkspace('studio');
   };
 
   const handleExportPdf = async () => {
@@ -98,157 +99,236 @@ export default function HomePage() {
         latestHash={auditData?.compliance_hash}
       />
 
+      {/* ── 4 Dedicated Workspace Sticky Sub-Navigation Bar ── */}
+      <div className="bg-slate-900/90 border-b border-slate-800/80 sticky top-16 z-30 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between overflow-x-auto gap-4">
+          <div className="flex items-center space-x-2">
+            {[
+              { id: 'studio', label: '1. 🔍 Audit Studio', sub: 'Listing & Multi-Market Matrix', badge: auditData?.overall_verdict },
+              { id: 'packaging', label: '2. 📦 Packaging Lab', sub: 'Vision OCR & 3-Way Triangulation', badge: auditData?.packaging_analysis?.physical_verdict },
+              { id: 'radar', label: '3. 🚨 Customs Radar', sub: 'Demurrage & Tariffs', badge: auditData?.customs_radar?.threat_level?.replace(/_/g, ' ') },
+              { id: 'remediation', label: '4. ⚡ Remediation & Export', sub: 'Compliant Diffs & PDF', badge: auditData?.remediation?.diff_items.length ? `${auditData.remediation.diff_items.length} Fixes` : '1-Click Fix' },
+            ].map(ws => {
+              const isActive = activeWorkspace === ws.id;
+              return (
+                <button
+                  key={ws.id}
+                  type="button"
+                  onClick={() => setActiveWorkspace(ws.id as any)}
+                  className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border whitespace-nowrap ${
+                    isActive
+                      ? 'bg-sky-600 text-white border-sky-400 shadow-md shadow-sky-600/25'
+                      : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="text-left">
+                    <div className="leading-tight">{ws.label}</div>
+                    <div className={`text-[10px] font-normal ${isActive ? 'text-sky-100' : 'text-slate-500'}`}>
+                      {ws.sub}
+                    </div>
+                  </div>
+                  {ws.badge && (
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
+                      isActive ? 'bg-sky-700 text-sky-100' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {ws.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center space-x-3 text-xs text-slate-400 flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsSimulatorOpen(!isSimulatorOpen)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                isSimulatorOpen
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm'
+                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-amber-400'
+              }`}
+            >
+              <span>⚡</span>
+              <span>{isSimulatorOpen ? 'Close Simulator' : 'Test Regulatory Shocks'}</span>
+            </button>
+            {auditData && (
+              <GroundTruthAccuracyBadge accuracy={auditData.accuracy_index} />
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* ── Main Dashboard Container ── */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        
-        {/* ── Top Panel: Listing Input & Preset Selector ── */}
-        <section>
-          <ListingInput
-            onAudit={executeAudit}
-            isLoading={isLoading}
-            onScrape={scrapeListingUrl}
-          />
-        </section>
 
-        {/* ── Mid Panel: Regulatory Change Simulator (Live Shocks) ── */}
-        <section>
-          <RegulatorySimulator
-            onSimulationToggled={() => executeAudit(currentInput)}
-          />
-        </section>
-
-        {/* ── Global Compliance & Tariff Heatmap (Visual World Map) ── */}
-        {auditData && (
-          <section>
-            <WorldComplianceHeatmap
-              auditResult={auditData}
-              selectedCountry={selectedHeatmapCountry}
-              onSelectCountry={(countryCode) => {
-                setSelectedHeatmapCountry(selectedHeatmapCountry === countryCode ? null : countryCode);
-                setActiveTab('matrix');
-              }}
-            />
+        {/* ── Expandable Regulatory Change Simulator (Shocks) ── */}
+        {isSimulatorOpen && (
+          <section className="bg-slate-900 border border-amber-500/40 rounded-2xl p-4 shadow-xl space-y-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span>⚡</span> Emergency Regulatory Change Simulator (Live Shocks)
+              </span>
+              <span className="text-[11px] text-slate-400">Toggle emergency crackdowns to watch matrix flip in real time</span>
+            </div>
+            <RegulatorySimulator onSimulationToggled={() => executeAudit(currentInput)} />
           </section>
         )}
 
-        {/* ── Workspace Tab Selector ── */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2 overflow-x-auto">
-            <div className="flex space-x-2">
-              {[
-                { id: 'matrix', label: 'Compliance Matrix', icon: Scale, badge: auditData?.overall_verdict },
-                { 
-                  id: 'customs_radar', 
-                  label: 'Customs Seizure Radar & HTS', 
-                  icon: ShieldAlert, 
-                  badge: auditData?.customs_radar?.threat_level ? auditData.customs_radar.threat_level.replace(/_/g, ' ') : 'Live' 
-                },
-                { 
-                  id: 'packaging', 
-                  label: 'Packaging Vision & 3-Way Radar', 
-                  icon: Scan, 
-                  badge: auditData?.packaging_analysis?.detected_language ? `${auditData.packaging_analysis.detected_language} OCR` : 'Rosetta Stone' 
-                },
-                { id: 'remediation', label: 'Compliant Rewrite & Diffs', icon: Sparkles, badge: auditData?.remediation?.diff_items.length ? `${auditData.remediation.diff_items.length} Fixes` : null },
-                { id: 'economics', label: 'Trade Economics Advisor', icon: TrendingUp, badge: 'Ranked Entry' },
-              ].map(tab => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border whitespace-nowrap ${
-                      isActive
-                        ? 'bg-sky-600 text-white border-sky-500 shadow-md shadow-sky-600/20'
-                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{tab.label}</span>
-                    {tab.badge && (
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
-                        isActive ? 'bg-sky-700 text-sky-100' : 'bg-slate-800 text-slate-300'
-                      }`}>
-                        {tab.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+        {/* ══════════════════════════════════════════════════════════════
+            WORKSPACE 1: AUDIT STUDIO (Core Input, Heatmap, and Matrix)
+           ══════════════════════════════════════════════════════════════ */}
+        {activeWorkspace === 'studio' && (
+          <div className="space-y-6">
+            {/* Listing Input & Presets */}
+            <section>
+              <ListingInput
+                onAudit={executeAudit}
+                isLoading={isLoading}
+                onScrape={scrapeListingUrl}
+              />
+            </section>
 
+            {/* Global Heatmap */}
             {auditData && (
-              <div className="hidden lg:flex items-center space-x-3 text-xs text-slate-400">
-                <button
-                  type="button"
-                  onClick={() => setIsExportPackOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold rounded-lg shadow-md shadow-orange-500/20 transition-all text-xs"
-                >
-                  <span>⚡</span> 1-Click Amazon & Shopify Export Pack
-                </button>
-                <span className="font-mono text-[11px] text-slate-500">Inspection: {auditData.inspection_id}</span>
-                <GroundTruthAccuracyBadge accuracy={auditData.accuracy_index} />
-              </div>
+              <section>
+                <WorldComplianceHeatmap
+                  auditResult={auditData}
+                  selectedCountry={selectedHeatmapCountry}
+                  onSelectCountry={(countryCode) => {
+                    setSelectedHeatmapCountry(selectedHeatmapCountry === countryCode ? null : countryCode);
+                  }}
+                />
+              </section>
+            )}
+
+            {/* Multi-Market Compliance Matrix */}
+            {auditData && (
+              <section>
+                <ComplianceMatrix
+                  auditData={auditData}
+                  selectedCountryFilter={selectedHeatmapCountry}
+                  onSelectFix={fixText => {
+                    if (auditData.remediation) {
+                      handleApplyFix(auditData.remediation.compliant_title, auditData.remediation.compliant_description);
+                    }
+                  }}
+                />
+              </section>
             )}
           </div>
+        )}
 
-          {/* ── Active Tab Display ── */}
-          <div>
+        {/* ══════════════════════════════════════════════════════════════
+            WORKSPACE 2: PACKAGING & VISION OCR LAB
+           ══════════════════════════════════════════════════════════════ */}
+        {activeWorkspace === 'packaging' && (
+          <div className="space-y-6">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+                <div>
+                  <h2 className="text-base font-bold text-white flex items-center gap-2">
+                    <span>📦</span> Multi-Lingual Rosetta Stone & 3-Way Triangulation Lab
+                  </h2>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Inspect physical box packaging, detect foreign scripts (Kanji, German, French), verify GS1 Modulo-10 barcodes, and reconcile digital claims against physical reality.
+                  </p>
+                </div>
+                {auditData?.packaging_analysis?.physical_verdict && (
+                  <span className="text-xs font-mono px-2.5 py-1 rounded-lg font-bold bg-sky-950 text-sky-300 border border-sky-800">
+                    {auditData.packaging_analysis.physical_verdict} ({auditData.packaging_analysis.physical_readiness_score.toFixed(0)}% Score)
+                  </span>
+                )}
+              </div>
+
+              {auditData ? (
+                <PackagingImageInspector
+                  packaging={auditData.packaging_analysis}
+                />
+              ) : (
+                <div className="text-center py-12 text-slate-500 text-sm">
+                  Run an audit first to inspect physical packaging labels.
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ══════════════════════════════════════════════════════════════
+            WORKSPACE 3: CUSTOMS RISK RADAR & TRADE ECONOMICS
+           ══════════════════════════════════════════════════════════════ */}
+        {activeWorkspace === 'radar' && (
+          <div className="space-y-6">
             {auditData ? (
               <>
-                {activeTab === 'matrix' && (
-                  <ComplianceMatrix
-                    auditData={auditData}
-                    selectedCountryFilter={selectedHeatmapCountry}
-                    onSelectFix={fixText => {
-                      if (auditData.remediation) {
-                        handleApplyFix(auditData.remediation.compliant_title, auditData.remediation.compliant_description);
-                      }
-                    }}
-                  />
-                )}
-
-                {activeTab === 'customs_radar' && (
-                  <div>
-                    <CustomsSeizureRadar
-                      radar={auditData.customs_radar}
-                    />
-                    <HSTariffArbitrageCard
-                      hsTariff={auditData.hs_tariff}
-                    />
-                  </div>
-                )}
-
-                {activeTab === 'packaging' && (
-                  <PackagingImageInspector
-                    packaging={auditData.packaging_analysis}
-                  />
-                )}
-
-                {activeTab === 'remediation' && (
-                  <RemediationDiffView
-                    remediation={auditData.remediation}
-                    onApplyFix={handleApplyFix}
-                  />
-                )}
-
-                {activeTab === 'economics' && (
-                  <TradeEconomicsAdvisor
-                    economics={auditData.trade_economics}
-                  />
-                )}
+                <CustomsSeizureRadar
+                  radar={auditData.customs_radar}
+                />
+                <HSTariffArbitrageCard
+                  hsTariff={auditData.hs_tariff}
+                />
+                <TradeEconomicsAdvisor
+                  economics={auditData.trade_economics}
+                />
               </>
             ) : (
-              <div className="p-12 text-center text-slate-500 bg-slate-900/60 rounded-2xl border border-slate-800">
-                Loading live compliance audit results...
+              <div className="text-center py-12 text-slate-500 text-sm bg-slate-900 border border-slate-800 rounded-2xl">
+                Run an audit first to evaluate customs seizure exposure and trade economics.
               </div>
             )}
           </div>
-        </section>
+        )}
+
+        {/* ══════════════════════════════════════════════════════════════
+            WORKSPACE 4: REMEDIATION & 1-CLICK EXPORT
+           ══════════════════════════════════════════════════════════════ */}
+        {activeWorkspace === 'remediation' && (
+          <div className="space-y-6">
+            {auditData ? (
+              <>
+                <div className="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl">
+                  <div>
+                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                      <span>⚡</span> 1-Click Amazon & Shopify Export Bundle
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Ready-to-copy compliant bullets, Shopify customs metafields, and packaging print artwork specs.
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsExportPackOpen(true)}
+                      className="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold rounded-lg shadow-md shadow-orange-500/20 text-xs flex items-center gap-1.5 transition-all"
+                    >
+                      <span>⚡</span> View Export Pack Modal
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleExportPdf}
+                      disabled={isPdfLoading}
+                      className="px-3.5 py-2 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg shadow-md shadow-sky-600/20 text-xs flex items-center gap-1.5 transition-all disabled:opacity-50"
+                    >
+                      <span>📄</span> {isPdfLoading ? 'Generating...' : 'Download PDF Dossier'}
+                    </button>
+                  </div>
+                </div>
+
+                <RemediationDiffView
+                  remediation={auditData.remediation}
+                  onApplyFix={handleApplyFix}
+                />
+              </>
+            ) : (
+              <div className="text-center py-12 text-slate-500 text-sm bg-slate-900 border border-slate-800 rounded-2xl">
+                Run an audit first to generate compliant rewrites and export packs.
+              </div>
+            )}
+          </div>
+        )}
 
       </main>
+
 
       {/* ── Footer ── */}
       <footer className="mt-auto border-t border-slate-900 bg-slate-950 py-4 text-center text-xs text-slate-500">

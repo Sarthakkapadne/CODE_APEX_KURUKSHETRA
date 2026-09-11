@@ -33,6 +33,11 @@ class ExtractedAttributes(BaseModel):
     inferred_hs_code: str = "3304.99"
     technical_specs: Dict[str, Any] = {}
     missing_required_fields: List[str] = []
+    # Regulatory Intent Semantic Taxonomy (Eliminates brittle keyword matching)
+    intent_classifications: List[str] = []  # e.g., ["DISEASE_TREATMENT_INTENT", "STRUCTURE_FUNCTION_INTENT", "PESTICIDAL_ANTIMICROBIAL_INTENT", "INFANT_SAFETY_RISK_INTENT"]
+    target_ailments: List[str] = []  # e.g., ["arthritis", "joint inflammation", "eczema"]
+    antimicrobial_target: str = "none"  # "article_surface", "human_body", "environmental", "none"
+
 
 
 class ComplianceCheckResult(BaseModel):

@@ -32,7 +32,12 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
   const [price, setPrice] = useState<number | undefined>(CASE_PRESETS[0].price);
   const [countryOfOrigin, setCountryOfOrigin] = useState(CASE_PRESETS[0].country_of_origin);
   const [selectedMarkets, setSelectedMarkets] = useState<string[]>(['US', 'EU', 'UK', 'CA', 'JP', 'AU']);
-
+  const [scrapedImages, setScrapedImages] = useState<string[]>([
+    '/static/demo_cream_front.jpg',
+    '/static/demo_cream_back.jpg',
+    '/static/demo_cream_box.jpg'
+  ]);
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string>('/static/demo_cream_front.jpg');
 
   const handleSelectPreset = (preset: PresetListing) => {
     setSelectedPresetId(preset.id);
@@ -42,7 +47,21 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
     setPrice(preset.price);
     setCountryOfOrigin(preset.country_of_origin);
     if (preset.source_url) setUrlInput(preset.source_url);
+    if (preset.id.includes('walker')) {
+      const imgs = ['/static/demo_walker_front.jpg', '/static/demo_walker_label.jpg', '/static/demo_walker_specs.jpg'];
+      setScrapedImages(imgs);
+      setSelectedImageUrl(imgs[0]);
+    } else if (preset.id.includes('board')) {
+      const imgs = ['/static/demo_board_front.jpg', '/static/demo_board_label.jpg', '/static/demo_board_specs.jpg'];
+      setScrapedImages(imgs);
+      setSelectedImageUrl(imgs[0]);
+    } else {
+      const imgs = ['/static/demo_cream_front.jpg', '/static/demo_cream_back.jpg', '/static/demo_cream_box.jpg'];
+      setScrapedImages(imgs);
+      setSelectedImageUrl(imgs[0]);
+    }
   };
+
 
   const handleToggleMarket = (code: string) => {
     if (selectedMarkets.includes(code)) {
@@ -69,6 +88,10 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
         if (data.brand_name) setBrandName(data.brand_name);
         if (data.price) setPrice(data.price);
         if (data.country_of_origin) setCountryOfOrigin(data.country_of_origin);
+        if (data.images && data.images.length > 0) {
+          setScrapedImages(data.images);
+          setSelectedImageUrl(data.images[0]);
+        }
         setActiveTab('text');
       }
     } catch (e) {
@@ -88,8 +111,11 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
       country_of_origin: countryOfOrigin,
       destination_markets: selectedMarkets,
       source_url: activeTab === 'url' ? urlInput : undefined,
+      image_url: selectedImageUrl || undefined,
+      images: scrapedImages.length > 0 ? scrapedImages : undefined,
     });
   };
+
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl space-y-6">
@@ -296,7 +322,40 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
             />
           </div>
 
+          {/* Scraped Image Gallery Bar */}
+          {scrapedImages.length > 0 && (
+            <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                  <span>📸</span> Detected Product Packaging & Gallery Images ({scrapedImages.length} found)
+                </span>
+                <span className="text-[10px] text-slate-500">Click to select primary packaging image</span>
+              </div>
+              <div className="flex items-center space-x-2 overflow-x-auto py-1">
+                {scrapedImages.map((img, idx) => {
+                  const isSelected = selectedImageUrl === img;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setSelectedImageUrl(img)}
+                      className={`relative rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 ${
+                        isSelected ? 'border-sky-400 ring-2 ring-sky-400/30 shadow-md shadow-sky-500/20' : 'border-slate-800 hover:border-slate-600'
+                      }`}
+                    >
+                      <img src={img} alt={`Gallery ${idx + 1}`} className="w-14 h-14 object-cover" />
+                      <span className="absolute bottom-0 inset-x-0 bg-slate-950/80 text-[8px] text-center font-bold text-slate-300 py-0.5">
+                        {idx === 0 ? 'Front' : idx === 1 ? 'Back Label' : `Img ${idx + 1}`}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-slate-300">Declared Country of Origin</label>
               <input
