@@ -73,6 +73,8 @@ class RemediationRewriterAgent:
         # 2. Deterministic high-precision fallback
         return self._rewrite_fallback(title, description, extracted, violations, target_markets)
 
+_REWRITE_CACHE: Dict[str, RemediationResult] = {}
+
     async def _rewrite_with_gemini(
         self,
         title: str,
@@ -85,11 +87,21 @@ class RemediationRewriterAgent:
         if not api_key:
             return None
 
+        # If no critical violations, no LLM call needed
+        active_violations = [v for v in violations if v.status in ["violation", "escalation", "warning"]]
+        if not active_violations:
+            return None
+
+        cache_key = str(hash(title + description + "".join(v.check_code for v in active_violations)))
+        if cache_key in _REWRITE_CACHE:
+            logger.info("[REWRITER] Returning cached remediation (0 LLM requests).")
+            return _REWRITE_CACHE[cache_key]
+
         try:
             client = genai.Client(api_key=api_key)
             flagged_clauses = [
                 f"- [{v.country_code}] {v.check_code}: {v.extracted_value} ({v.rule_citation}) -> {v.fix_suggestion}"
-                for v in violations if v.status in ["violation", "escalation", "warning"]
+                for v in active_violations
             ]
 
             prompt = (
@@ -100,36 +112,44 @@ class RemediationRewriterAgent:
                 f"Flagged Compliance Issues & Fix Suggestions:\n" + "\n".join(flagged_clauses)
             )
 
-            response = None
-            for model_name in ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-flash-latest"]:
-                try:
-                    response = client.models.generate_content(
-                        model=model_name,
-                        contents=prompt,
-                        config=types.GenerateContentConfig(
-                            system_instruction=REWRITE_SYSTEM_PROMPT,
-                            temperature=0.2,
-                            response_mime_type="application/json"
-                        ),
-                    )
-                    if response and response.text:
-                        break
-                except Exception:
-                    continue
-
-            if response and response.text:
-                data = json.loads(response.text.strip())
-                return RemediationResult(
-                    original_title=title,
-                    compliant_title=data.get("compliant_title", title),
-                    original_description=description,
-                    compliant_description=data.get("compliant_description", description),
-                    diff_items=[DiffItem(**d) for d in data.get("diff_items", [])],
-                    ready_to_paste_bullets=data.get("ready_to_paste_bullets", []),
-                    escalation_checklist=data.get("escalation_checklist", []),
+            model_name = "gemini-2.5-flash"
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=REWRITE_SYSTEM_PROMPT,
+                        temperature=0.2,
+                        response_mime_type="application/json"
+                    ),
                 )
-        except Exception as e:
-            logger.warning(f"[REWRITER] Gemini rewrite error: {e}. Using deterministic rewriter.")
+                if response and response.text:
+                    data = json.loads(response.text.strip())
+                    res = RemediationResult(
+                        original_title=title,
+                        compliant_title=data.get("compliant_title", title),
+                        original_description=description,
+                        compliant_description=data.get("compliant_description", description),
+                        diff_summary=[
+                            WordDiffItem(
+                                original_phrase=d.get("original_phrase", ""),
+                                compliant_phrase=d.get("compliant_phrase", ""),
+                                reason=d.get("reason", "Statutory alignment"),
+                                severity=d.get("severity", "moderate")
+                            )
+                            for d in data.get("diff_items", [])
+                        ],
+                        amazon_bullets=data.get("ready_to_paste_bullets", []),
+                        escalation_checklist=data.get("escalation_checklist", [])
+                    )
+                    _REWRITE_CACHE[cache_key] = res
+                    return res
+            except Exception as me:
+                err_msg = str(me).lower()
+                if "429" in err_msg or "resourceexhausted" in err_msg or "quota" in err_msg:
+                    logger.warning("[REWRITER] Gemini rate limit reached (429). Falling back instantly to Tier 1 deterministic rewriter.")
+                    return None
+                logger.debug(f"[REWRITER] Gemini model error: {me}")
         return None
 
     def _rewrite_fallback(

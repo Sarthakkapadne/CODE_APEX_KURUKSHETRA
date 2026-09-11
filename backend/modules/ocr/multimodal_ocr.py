@@ -133,6 +133,12 @@ class MultiModalOCREngine:
         if not api_key:
             return None
 
+        # Check cache by image hash
+        cache_key = str(hash("".join(img[:60] for img in images_b64)))
+        if cache_key in _OCR_CACHE:
+            logger.info("[VISION_OCR] Returning cached packaging analysis (0 LLM requests).")
+            return _OCR_CACHE[cache_key]
+
         client = genai.Client(api_key=api_key)
 
         parts = []
@@ -152,17 +158,17 @@ class MultiModalOCREngine:
 
         contents = [*parts, prompt_text]
 
-        for model_name in ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-2.5-flash"]:
-            try:
-                response = client.models.generate_content(
-                    model=model_name,
-                    contents=contents,
-                    config=types.GenerateContentConfig(
-                        system_instruction=VISION_SYSTEM_PROMPT,
-                        temperature=0.1,
-                        response_mime_type="application/json"
-                    )
+        model_name = "gemini-2.5-flash"
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=VISION_SYSTEM_PROMPT,
+                    temperature=0.1,
+                    response_mime_type="application/json"
                 )
+            )
                 if response and response.text:
                     data = json.loads(response.text.strip())
 
@@ -191,7 +197,7 @@ class MultiModalOCREngine:
                         for p in data.get("translation_provenance", [])
                     ]
 
-                    return PackagingAnalysisResult(
+                    res = PackagingAnalysisResult(
                         detected_language=data.get("detected_language", "English"),
                         raw_ocr_text=data.get("raw_ocr_text", ""),
                         translated_english_text=data.get("translated_english_text", ""),
@@ -207,9 +213,14 @@ class MultiModalOCREngine:
                         physical_readiness_score=float(data.get("physical_readiness_score", 85.0)),
                         physical_verdict=data.get("physical_verdict", "READY_FOR_EXPORT")
                     )
-            except Exception as e:
-                logger.debug(f"[VISION_OCR] Error with model {model_name}: {e}")
-                continue
+                    _OCR_CACHE[cache_key] = res
+                    return res
+        except Exception as e:
+            err_msg = str(e).lower()
+            if "429" in err_msg or "resourceexhausted" in err_msg or "quota" in err_msg:
+                logger.warning("[VISION_OCR] Gemini Vision rate limited (429). Falling back instantly to deterministic packaging synthesis.")
+            else:
+                logger.debug(f"[VISION_OCR] Gemini Vision call error: {e}")
 
         return None
 
