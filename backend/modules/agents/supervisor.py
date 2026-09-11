@@ -13,13 +13,15 @@ from backend.core.config import get_settings
 from backend.core.models import (
     ListingInput, AuditResponse, ComplianceCheckResult, ExtractedAttributes,
     RemediationResult, TradeEconomicsItem, CustomsSeizureRadarResult,
-    HSTariffArbitrageResult, GroundTruthAccuracyIndex
+    HSTariffArbitrageResult, GroundTruthAccuracyIndex, PackagingAnalysisResult
 )
 from backend.core.hash_chain import ComplianceHashChain
 from backend.modules.rule_engine.deterministic_engine import DeterministicRuleEngine
 from backend.modules.rule_engine.accuracy_evaluator import AccuracyEvaluator
+from backend.modules.ocr.multimodal_ocr import MultiModalOCREngine
 from backend.modules.agents.attribute_extractor import AttributeExtractorAgent
 from backend.modules.agents.classification_mismatch import ClassificationMismatchDetector
+from backend.modules.agents.triangulation_engine import TriangulationEngine
 from backend.modules.agents.customs_risk_radar import CustomsRiskRadar
 from backend.modules.agents.remediation_rewriter import RemediationRewriterAgent
 from backend.modules.agents.escalation_handler import EscalationHandler
@@ -38,6 +40,8 @@ class ComplianceSupervisor:
         self.rule_engine = rule_engine or DeterministicRuleEngine()
         self.simulator = simulator or RegulatorySimulator()
         self.extractor = AttributeExtractorAgent()
+        self.ocr_engine = MultiModalOCREngine()
+        self.triangulation_engine = TriangulationEngine()
         self.mismatch_detector = ClassificationMismatchDetector()
         self.customs_radar = CustomsRiskRadar()
         self.hs_tariff_engine = HSTariffEngine()
@@ -63,6 +67,24 @@ class ComplianceSupervisor:
             description=listing.description,
             raw_text=full_text
         )
+
+        # 1b. Multi-Modal Vision OCR & Multi-Lingual Rosetta Stone Packaging Inspection
+        packaging_analysis: PackagingAnalysisResult = await self.ocr_engine.inspect_packaging(
+            image_base64=listing.image_base64,
+            image_url=listing.image_url,
+            listing_title=listing.title,
+            category_hint=listing.category_hint or "cosmetics",
+            target_markets=target_markets
+        )
+
+        # 1c. 3-Way Triangulation (Listing Copy vs Physical Packaging Reality vs Destination Law)
+        discrepancies = self.triangulation_engine.reconcile(
+            listing=listing,
+            extracted=extracted,
+            packaging=packaging_analysis,
+            target_markets=target_markets
+        )
+        packaging_analysis.discrepancies = discrepancies
 
         # 2. Deterministic Rule Engine Evaluation per Country (Tier 1 & Tier 3)
         matrix: Dict[str, List[ComplianceCheckResult]] = {}
@@ -113,8 +135,30 @@ class ComplianceSupervisor:
                 if not any(item.check_code == esc.check_code for item in matrix[esc.country_code]):
                     matrix[esc.country_code].append(esc)
                     all_findings.append(esc)
-                    if esc.rule_citation:
-                        citations_set.add(esc.rule_citation)
+        # 4b. Layer 2: 3-Way Triangulation Discrepancies Injection
+        for disc in discrepancies:
+            disc_status = "violation" if "CRITICAL" in disc.severity or "HIGH" in disc.severity else "warning"
+            disc_country = "CA" if "LANG" in disc.check_code else ("EU" if "LOGO" in disc.check_code else "US")
+            if disc_country not in target_markets and target_markets:
+                disc_country = target_markets[0]
+
+            disc_check = ComplianceCheckResult(
+                check_code=disc.check_code,
+                country_code=disc_country,
+                category="Packaging & Labeling Discrepancy",
+                status=disc_status,
+                trust_tier="Tier 2 Multi-Modal Triangulation",
+                rule_citation=disc.destination_statute,
+                extracted_value=disc.physical_label_reality[:120],
+                expected_requirement=disc.listing_claim[:120],
+                explanation=disc.border_impact,
+                fix_suggestion="Update physical label packaging or revise digital marketing copy to ensure 100% alignment."
+            )
+            if disc_country in matrix:
+                matrix[disc_country].append(disc_check)
+            all_findings.append(disc_check)
+            if disc.destination_statute:
+                citations_set.add(disc.destination_statute)
 
         # 5. Summarize status counts per country
         summary_by_country: Dict[str, Dict[str, int]] = {}
@@ -211,6 +255,7 @@ class ComplianceSupervisor:
             customs_radar=customs_radar_result,
             hs_tariff=hs_tariff_result,
             accuracy_index=accuracy_index,
+            packaging_analysis=packaging_analysis,
             debate=None,
             remediation=remediation_result,
             trade_economics=trade_economics,

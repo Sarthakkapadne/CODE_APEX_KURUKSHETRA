@@ -8,6 +8,8 @@ export interface ListingInput {
   country_of_origin?: string;
   destination_markets: string[];
   source_url?: string;
+  image_base64?: string;
+  image_url?: string;
 }
 
 export interface ExtractedAttributes {
@@ -95,6 +97,48 @@ export interface GroundTruthAccuracyIndex {
   }>;
 }
 
+export interface TranslationProvenanceItem {
+  original_term: string;
+  translated_term: string;
+  detected_language: string;
+  confidence: number;
+  standardized_standard: string;
+  notes: string;
+}
+
+export interface PackagingOCRRegion {
+  label: string;
+  box_2d: number[]; // [ymin, xmin, ymax, xmax]
+  text: string;
+  confidence: number;
+  severity: 'violation' | 'warning' | 'pass';
+}
+
+export interface TriangulationDiscrepancyItem {
+  check_code: string;
+  discrepancy_type: string;
+  severity: string;
+  listing_claim: string;
+  physical_label_reality: string;
+  destination_statute: string;
+  border_impact: string;
+}
+
+export interface PackagingAnalysisResult {
+  detected_language: string;
+  raw_ocr_text: string;
+  translated_english_text: string;
+  detected_certification_logos: string[];
+  missing_certification_logos: string[];
+  net_quantity_declaration?: string;
+  is_bilingual: boolean;
+  translation_provenance: TranslationProvenanceItem[];
+  bounding_boxes: PackagingOCRRegion[];
+  discrepancies: TriangulationDiscrepancyItem[];
+  physical_readiness_score: number;
+  physical_verdict: 'READY_FOR_EXPORT' | 'REPACKAGING_MANDATORY' | 'SEIZURE_RISK';
+}
+
 export interface DiffItem {
   original_phrase: string;
   compliant_phrase: string;
@@ -140,6 +184,7 @@ export interface AuditResponse {
   customs_radar?: CustomsSeizureRadarResult;
   hs_tariff?: HSTariffArbitrageResult;
   accuracy_index?: GroundTruthAccuracyIndex;
+  packaging_analysis?: PackagingAnalysisResult;
   debate?: any;
   remediation?: RemediationResult;
   trade_economics: TradeEconomicsItem[];

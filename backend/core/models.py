@@ -13,6 +13,8 @@ class ListingInput(BaseModel):
     country_of_origin: Optional[str] = "India"
     destination_markets: List[str] = Field(default=["US", "EU", "UK", "CA", "JP"])
     source_url: Optional[str] = None
+    image_base64: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class ExtractedAttributes(BaseModel):
@@ -91,6 +93,48 @@ class GroundTruthAccuracyIndex(BaseModel):
     verbatim_statutory_proofs: List[Dict[str, str]] = []  # citation, verbatim_law, government_source
 
 
+class TranslationProvenanceItem(BaseModel):
+    original_term: str
+    translated_term: str
+    detected_language: str
+    confidence: float
+    standardized_standard: str = "INCI / International Technical Codex"
+    notes: str = ""
+
+
+class PackagingOCRRegion(BaseModel):
+    label: str
+    box_2d: List[int] = []  # [ymin, xmin, ymax, xmax] 0-1000 normalized
+    text: str
+    confidence: float
+    severity: str = "violation"  # violation, warning, pass
+
+
+class TriangulationDiscrepancyItem(BaseModel):
+    check_code: str
+    discrepancy_type: str  # FALSE_ADVERTISING_CLAIM, BATTERY_HAZMAT_MISMATCH, MISSING_CERTIFICATION_MARK, LANGUAGE_NON_COMPLIANCE
+    severity: str  # CRITICAL_FRAUD_RISK, HIGH_DETENTION_RISK, MODERATE_WARNING
+    listing_claim: str
+    physical_label_reality: str
+    destination_statute: str
+    border_impact: str
+
+
+class PackagingAnalysisResult(BaseModel):
+    detected_language: str
+    raw_ocr_text: str
+    translated_english_text: str
+    detected_certification_logos: List[str] = []
+    missing_certification_logos: List[str] = []
+    net_quantity_declaration: Optional[str] = None
+    is_bilingual: bool = False
+    translation_provenance: List[TranslationProvenanceItem] = []
+    bounding_boxes: List[PackagingOCRRegion] = []
+    discrepancies: List[TriangulationDiscrepancyItem] = []
+    physical_readiness_score: float = 85.0
+    physical_verdict: str = "READY_FOR_EXPORT"  # READY_FOR_EXPORT, REPACKAGING_MANDATORY, SEIZURE_RISK
+
+
 class DebateTurn(BaseModel):
     round_number: int = 1
     speaker: str = "Customs Officer"
@@ -153,6 +197,7 @@ class AuditResponse(BaseModel):
     customs_radar: Optional[CustomsSeizureRadarResult] = None
     hs_tariff: Optional[HSTariffArbitrageResult] = None
     accuracy_index: Optional[GroundTruthAccuracyIndex] = None
+    packaging_analysis: Optional[PackagingAnalysisResult] = None
     remediation: Optional[RemediationResult] = None
     trade_economics: List[TradeEconomicsItem] = []
     citations: List[str] = []

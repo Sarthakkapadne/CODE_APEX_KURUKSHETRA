@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Scale, MessageSquare, Sparkles, TrendingUp,
-  RotateCcw, CheckCircle2, AlertOctagon, Terminal, ShieldAlert
+  RotateCcw, CheckCircle2, AlertOctagon, Terminal, ShieldAlert, Scan
 } from 'lucide-react';
 import Header from '../components/Header';
 import ListingInput from '../components/ListingInput';
@@ -10,6 +10,7 @@ import ComplianceMatrix from '../components/ComplianceMatrix';
 import CustomsSeizureRadar from '../components/CustomsSeizureRadar';
 import HSTariffArbitrageCard from '../components/HSTariffArbitrageCard';
 import GroundTruthAccuracyBadge from '../components/GroundTruthAccuracyBadge';
+import PackagingImageInspector from '../components/PackagingImageInspector';
 import RemediationDiffView from '../components/RemediationDiffView';
 import TradeEconomicsAdvisor from '../components/TradeEconomicsAdvisor';
 import HashVerificationModal from '../components/HashVerificationModal';
@@ -32,7 +33,7 @@ export default function HomePage() {
   const [auditData, setAuditData] = useState<AuditResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPdfLoading, setIsPdfLoading] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'matrix' | 'customs_radar' | 'remediation' | 'economics'>('matrix');
+  const [activeTab, setActiveTab] = useState<'matrix' | 'customs_radar' | 'packaging' | 'remediation' | 'economics'>('matrix');
 
   // Modals
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
@@ -122,6 +123,12 @@ export default function HomePage() {
                   icon: ShieldAlert, 
                   badge: auditData?.customs_radar?.threat_level ? auditData.customs_radar.threat_level.replace(/_/g, ' ') : 'Live' 
                 },
+                { 
+                  id: 'packaging', 
+                  label: 'Packaging Vision & 3-Way Radar', 
+                  icon: Scan, 
+                  badge: auditData?.packaging_analysis?.detected_language ? `${auditData.packaging_analysis.detected_language} OCR` : 'Rosetta Stone' 
+                },
                 { id: 'remediation', label: 'Compliant Rewrite & Diffs', icon: Sparkles, badge: auditData?.remediation?.diff_items.length ? `${auditData.remediation.diff_items.length} Fixes` : null },
                 { id: 'economics', label: 'Trade Economics Advisor', icon: TrendingUp, badge: 'Ranked Entry' },
               ].map(tab => {
@@ -184,6 +191,12 @@ export default function HomePage() {
                       hsTariff={auditData.hs_tariff}
                     />
                   </div>
+                )}
+
+                {activeTab === 'packaging' && (
+                  <PackagingImageInspector
+                    packaging={auditData.packaging_analysis}
+                  />
                 )}
 
                 {activeTab === 'remediation' && (

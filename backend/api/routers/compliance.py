@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from backend.core.models import ListingInput, AuditResponse
+from backend.core.models import ListingInput, AuditResponse, PackagingAnalysisResult
 from backend.db.session import get_db
 from backend.db.models_db import Listing, Inspection, ComplianceResultRecord, AuditHashBlock
 from backend.modules.agents.supervisor import ComplianceSupervisor
@@ -154,3 +154,22 @@ async def list_inspections(db: AsyncSession = Depends(get_db)):
         }
         for i in inspections
     ]
+
+
+@router.post("/ocr-scan", response_model=PackagingAnalysisResult, summary="Multi-Modal Packaging Vision OCR & Rosetta Stone Translation")
+async def scan_packaging_label(
+    payload: dict,
+    supervisor: ComplianceSupervisor = Depends(get_supervisor),
+):
+    """
+    Direct endpoint for scanning packaging box / label images,
+    detecting languages (Kanji, German, French, etc.), standardizing to English INCI,
+    and identifying certification logos.
+    """
+    return await supervisor.ocr_engine.inspect_packaging(
+        image_base64=payload.get("image_base64"),
+        image_url=payload.get("image_url"),
+        listing_title=payload.get("title", "Product Packaging"),
+        category_hint=payload.get("category_hint", "cosmetics"),
+        target_markets=payload.get("destination_markets", ["US", "EU", "CA"])
+    )
