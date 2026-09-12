@@ -11,6 +11,11 @@ from sqlalchemy.orm import declarative_base, relationship
 Base = declarative_base()
 
 
+def utc_now() -> datetime:
+    """Returns naive UTC timestamp compatible with both SQLite and PostgreSQL without timezone mismatch."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -19,7 +24,7 @@ class User(Base):
     full_name = Column(String(255), nullable=False)
     role = Column(String(50), default="seller")  # seller, compliance_officer, admin
     company_name = Column(String(255), default="Cross-Border Global Seller")
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=utc_now)
 
 
 class Listing(Base):
@@ -34,7 +39,7 @@ class Listing(Base):
     currency = Column(String(10), default="USD")
     country_of_origin = Column(String(100), default="India")
     source_url = Column(String(1000), nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=utc_now)
 
     inspections = relationship("Inspection", back_populates="listing", cascade="all, delete-orphan")
 
@@ -52,7 +57,7 @@ class Inspection(Base):
     destination_markets = Column(Text, default="[\"US\", \"EU\", \"UK\", \"CA\", \"JP\"]")
     extracted_attributes_json = Column(Text, default="{}")
     summary = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=utc_now)
 
     listing = relationship("Listing", back_populates="inspections")
     results = relationship("ComplianceResultRecord", back_populates="inspection", cascade="all, delete-orphan")
@@ -87,7 +92,7 @@ class AuditHashBlock(Base):
     prev_hash = Column(String(64), nullable=False)
     payload_canonical = Column(Text, nullable=False)
     timestamp_utc = Column(String(50), nullable=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=utc_now)
 
 
 class RuleRecord(Base):
@@ -108,7 +113,7 @@ class RuleRecord(Base):
     conditions_json = Column(Text, default="{}")
     requirements_json = Column(Text, default="[]")
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=utc_now)
 
 
 class TradeMarketRecord(Base):
@@ -133,7 +138,7 @@ class TradeMarketRecord(Base):
     ocean_transit_days = Column(Integer, default=24)
     complexity_score = Column(Integer, default=50)
     trade_status = Column(String(50), default="open")
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=utc_now)
 
 
 class RequiredDocumentRecord(Base):
@@ -149,7 +154,7 @@ class RequiredDocumentRecord(Base):
     issuing_authority = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
     seller_action_needed = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=utc_now)
 
 
 class ListingPresetRecord(Base):
@@ -167,4 +172,4 @@ class ListingPresetRecord(Base):
     icon = Column(String(20), default="📦")
     sub_label = Column(String(255), nullable=True)
     images_json = Column(Text, default="[]")
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=utc_now)

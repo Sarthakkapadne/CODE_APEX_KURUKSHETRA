@@ -15,6 +15,19 @@ logger = logging.getLogger(__name__)
 DB_PATH = Path(__file__).resolve().parent.parent.parent / "lexport.db"
 raw_db_url = os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///{DB_PATH}")
 
+# Auto-heal database URLs where password contains unencoded special characters like '@'
+if "://" in raw_db_url and raw_db_url.count("@") > 1:
+    try:
+        prefix, remainder = raw_db_url.split("://", 1)
+        auth_part, host_part = remainder.rsplit("@", 1)
+        if ":" in auth_part:
+            user_part, pass_part = auth_part.split(":", 1)
+            unquoted = urllib.parse.unquote(pass_part)
+            encoded_pass = urllib.parse.quote(unquoted)
+            raw_db_url = f"{prefix}://{user_part}:{encoded_pass}@{host_part}"
+    except Exception as e:
+        logger.warning(f"[DB] URL auto-heal warning: {e}")
+
 connect_args = {}
 # Normalize PostgreSQL URL for asyncpg
 if raw_db_url.startswith("postgres://"):

@@ -1,10 +1,10 @@
 """
 End-to-End Verification Test for Compliance Confidence Meter & Dependency Graph
 """
-import urllib.request
-import json
+from fastapi.testclient import TestClient
+from backend.api.main import app
 
-BASE_URL = "http://127.0.0.1:8000"
+client = TestClient(app)
 
 def test_full_pipeline():
     # 1. Test POST /compliance/confidence
@@ -48,20 +48,16 @@ def test_full_pipeline():
         ]
     }
 
-    req_data = json.dumps({
-        "audit_data": mock_audit,
-        "target_market": "ALL",
-        "simulated_resolved_ids": []
-    }).encode("utf-8")
-
-    req = urllib.request.Request(
-        f"{BASE_URL}/compliance/confidence",
-        data=req_data,
-        headers={"Content-Type": "application/json"}
+    res = client.post(
+        "/compliance/confidence",
+        json={
+            "audit_data": mock_audit,
+            "target_market": "ALL",
+            "simulated_resolved_ids": []
+        }
     )
-    res = urllib.request.urlopen(req)
-    assert res.status == 200, f"Expected 200, got {res.status}"
-    data = json.loads(res.read().decode("utf-8"))
+    assert res.status_code == 200, f"Expected 200, got {res.status_code}"
+    data = res.json()
 
     print("\n[E2E 1] Live Confidence Evaluation:")
     print(f"  Confidence Score: {data['confidence_score']}%")
@@ -81,20 +77,16 @@ def test_full_pipeline():
     print(f"  Downstream Unlocked: {top_action['downstream_nodes_unlocked']} nodes")
 
     # 2. Test POST /compliance/confidence/simulate
-    sim_data = json.dumps({
-        "audit_data": mock_audit,
-        "target_market": "ALL",
-        "resolved_node_ids": [top_action["node_id"]]
-    }).encode("utf-8")
-
-    sim_req = urllib.request.Request(
-        f"{BASE_URL}/compliance/confidence/simulate",
-        data=sim_data,
-        headers={"Content-Type": "application/json"}
+    sim_res = client.post(
+        "/compliance/confidence/simulate",
+        json={
+            "audit_data": mock_audit,
+            "target_market": "ALL",
+            "resolved_node_ids": [top_action["node_id"]]
+        }
     )
-    sim_res = urllib.request.urlopen(sim_req)
-    assert sim_res.status == 200
-    sim_result = json.loads(sim_res.read().decode("utf-8"))
+    assert sim_res.status_code == 200
+    sim_result = sim_res.json()
 
     print("\n[E2E 2] Simulated Resolution Test:")
     print(f"  Original Score: {data['confidence_score']}%")
@@ -104,10 +96,9 @@ def test_full_pipeline():
     assert sim_result['confidence_score'] > data['confidence_score'], "Simulated score must be higher"
 
     # 3. Test GET /api/products/{product_id}/compliance-confidence
-    get_req = urllib.request.Request(f"{BASE_URL}/api/products/test_e2e_insp_999/compliance-confidence")
-    get_res = urllib.request.urlopen(get_req)
-    assert get_res.status == 200
-    get_data = json.loads(get_res.read().decode("utf-8"))
+    get_res = client.get("/api/products/test_e2e_insp_999/compliance-confidence")
+    assert get_res.status_code == 200
+    get_data = get_res.json()
     print("\n[E2E 3] GET /api/products/{id}/compliance-confidence:")
     print(f"  Product ID: {get_data['product_id']}")
     print(f"  Confidence Score: {get_data['confidence_score']}%")
