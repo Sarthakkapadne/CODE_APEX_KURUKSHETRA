@@ -17,7 +17,7 @@ import {
 import { fetchComplianceConfidence, simulateConfidenceResolution } from '../lib/api';
 
 interface ComplianceConfidenceDashboardProps {
-  auditData: AuditResponse;
+  auditData: AuditResponse | null;
 }
 
 export default function ComplianceConfidenceDashboard({ auditData }: ComplianceConfidenceDashboardProps) {
@@ -37,6 +37,10 @@ export default function ComplianceConfidenceDashboard({ auditData }: ComplianceC
   // Load confidence data whenever auditData, selectedMarket, or simulatedNodeIds change
   const loadConfidence = useCallback(
     async (simIds: string[] = simulatedNodeIds) => {
+      if (!auditData) {
+        setIsLoading(false);
+        return;
+      }
       setIsLoading(true);
       setError(null);
       try {
@@ -102,6 +106,14 @@ export default function ComplianceConfidenceDashboard({ auditData }: ComplianceC
 
   // Available markets from audit
   const availableMarkets = ['ALL', ...(auditData?.destination_markets || ['US', 'EU', 'CA', 'UK'])];
+
+  if (!auditData) {
+    return (
+      <div className="p-8 text-center bg-slate-900 border border-slate-800 rounded-2xl text-slate-400">
+        Run an audit first to evaluate compliance confidence scores and downstream dependency graphs.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

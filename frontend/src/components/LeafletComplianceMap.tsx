@@ -252,7 +252,7 @@ export default function LeafletComplianceMap({
     });
 
     return statuses;
-  }, [auditData]);
+  }, [auditData, jurisdictionMarkets]);
 
   // Leaflet Map Initialization
   useEffect(() => {
@@ -311,8 +311,17 @@ export default function LeafletComplianceMap({
       const bounds = L.latLngBounds([]);
 
       Object.entries(jurisdictionMarkets).forEach(([code, node]) => {
-        const info = marketStatuses[code];
-        if (!info) return;
+        const info = marketStatuses[code] || {
+          tier: 'out_of_scope' as ComplianceTier,
+          color: '#475569',
+          label: 'Out of Scope',
+          passCount: 0,
+          warnCount: 0,
+          violationCount: 0,
+          escalationCount: 0,
+          dutyRate: node.defaultDuty,
+          deMinimis: node.defaultDeMinimis,
+        };
 
         bounds.extend(node.coordinates);
         const isSelected = activeCountry === code;
@@ -485,7 +494,7 @@ export default function LeafletComplianceMap({
         mapInstanceRef.current = null;
       }
     };
-  }, [marketStatuses]);
+  }, [marketStatuses, jurisdictionMarkets]);
 
   // Handle clicking pills or external changes
   const handlePillClick = (code: string) => {
@@ -552,7 +561,17 @@ export default function LeafletComplianceMap({
 
         <div className="flex flex-wrap items-center gap-1.5">
           {Object.entries(jurisdictionMarkets).map(([code, node]) => {
-            const st = marketStatuses[code];
+            const st = marketStatuses[code] || {
+              tier: 'out_of_scope' as ComplianceTier,
+              color: '#475569',
+              label: 'Out of Scope',
+              passCount: 0,
+              warnCount: 0,
+              violationCount: 0,
+              escalationCount: 0,
+              dutyRate: node.defaultDuty,
+              deMinimis: node.defaultDeMinimis,
+            };
             const isSelected = activeCountry === code;
 
             const badgeBorder =

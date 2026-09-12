@@ -6,11 +6,6 @@ import {
 } from 'lucide-react';
 import { ComplianceCheckResult, AuditResponse } from '../lib/types';
 
-interface ComplianceMatrixProps {
-  auditData: AuditResponse;
-  selectedCountryFilter?: string | null;
-  onSelectFix?: (fixText: string) => void;
-}
 
 const CATEGORY_ROWS = [
   { id: 'Classification Status', title: '1. Classification & Category Box', desc: 'Layer 1b Cross-Border Mismatch' },
@@ -27,16 +22,36 @@ const MARKET_FLAGS: Record<string, string> = {
   UK: '🇬🇧',
   CA: '🇨🇦',
   JP: '🇯🇵',
+  AU: '🇦🇺',
+  IN: '🇮🇳',
+  DE: '🇩🇪',
+  CN: '🇨🇳',
+  VN: '🇻🇳',
+  SG: '🇸🇬',
 };
+
+interface ComplianceMatrixProps {
+  auditData: AuditResponse | null;
+  selectedCountryFilter?: string | null;
+  onSelectFix?: (fixText: string) => void;
+}
 
 export default function ComplianceMatrix({ auditData, selectedCountryFilter, onSelectFix }: ComplianceMatrixProps) {
   const [selectedCheck, setSelectedCheck] = useState<ComplianceCheckResult | null>(null);
 
-  const countries = auditData.destination_markets;
+  if (!auditData) {
+    return (
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-500">
+        Run an inspection audit to populate the simultaneous multi-market compliance matrix.
+      </div>
+    );
+  }
+
+  const countries = auditData.destination_markets || [];
 
   // Helper to find relevant checks for a (country, category) cell
   const getCellChecks = (country: string, category: string): ComplianceCheckResult[] => {
-    const list = auditData.matrix[country] || [];
+    const list = auditData.matrix?.[country] || [];
     return list.filter(item => item.category === category);
   };
 

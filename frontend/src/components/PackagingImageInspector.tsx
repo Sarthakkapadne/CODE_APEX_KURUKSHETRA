@@ -67,14 +67,14 @@ export default function PackagingImageInspector({ packaging }: PackagingImageIns
                 Physical Label Visual Inspection Canvas
               </span>
               <span className="text-[11px] text-slate-400 font-mono">
-                {packaging.bounding_boxes.length} Bounding Boxes Mapped
+                {(packaging.bounding_boxes || []).length} Bounding Boxes Mapped
               </span>
             </div>
 
             {/* Simulated Packaging Label Canvas */}
             <div className="relative flex-1 p-6 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/60 dark:to-slate-800/40 min-h-[260px] flex flex-col justify-between font-sans">
               <div className="space-y-3">
-                {packaging.bounding_boxes.map((box, i) => {
+                {(packaging.bounding_boxes || []).map((box, i) => {
                   const isViolation = box.severity === 'violation';
                   const isSelected = selectedBox?.label === box.label;
 
@@ -109,13 +109,13 @@ export default function PackagingImageInspector({ packaging }: PackagingImageIns
               <div className="mt-4 pt-3 border-t border-slate-300 dark:border-slate-700/80 flex flex-wrap items-center justify-between gap-2 text-xs">
                 <span className="text-[11px] font-bold text-slate-500 uppercase">Printed Markings:</span>
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  {packaging.detected_certification_logos.map((logo, i) => (
+                  {(packaging.detected_certification_logos || []).map((logo, i) => (
                     <span key={i} className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" />
                       {logo.replace('_', ' ')}
                     </span>
                   ))}
-                  {packaging.missing_certification_logos.map((logo, i) => (
+                  {(packaging.missing_certification_logos || []).map((logo, i) => (
                     <span key={i} className="px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300 text-[10px] font-bold border border-red-300 dark:border-red-700 flex items-center gap-1">
                       <XCircle className="w-3 h-3" />
                       MISSING {logo.replace('_', ' ')}
@@ -140,8 +140,8 @@ export default function PackagingImageInspector({ packaging }: PackagingImageIns
               </div>
 
               <div className="space-y-3">
-                {packaging.translation_provenance.length > 0 ? (
-                  packaging.translation_provenance.map((item, i) => (
+                {(packaging.translation_provenance || []).length > 0 ? (
+                  (packaging.translation_provenance || []).map((item, i) => (
                     <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-lg text-xs">
                       <div className="flex items-center justify-between gap-2 mb-1.5">
                         <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5 font-mono">
@@ -190,7 +190,7 @@ export default function PackagingImageInspector({ packaging }: PackagingImageIns
         </div>
 
         {/* Bottom Section: 3-Way Triangulation Radar Table */}
-        {packaging.discrepancies.length > 0 && (
+        {(packaging.discrepancies || []).length > 0 && (
           <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 flex items-center gap-1.5">
@@ -198,7 +198,7 @@ export default function PackagingImageInspector({ packaging }: PackagingImageIns
                 3-Way Triangulation Discrepancies (Listing Copy vs Physical Box vs Destination Law)
               </h4>
               <span className="text-[11px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-semibold font-mono">
-                {packaging.discrepancies.length} Critical Discrepancies Detected
+                {(packaging.discrepancies || []).length} Critical Discrepancies Detected
               </span>
             </div>
 
@@ -214,7 +214,7 @@ export default function PackagingImageInspector({ packaging }: PackagingImageIns
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900">
-                  {packaging.discrepancies.map((disc, idx) => (
+                  {(packaging.discrepancies || []).map((disc, idx) => (
                     <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                       <td className="p-3 font-semibold text-red-600 dark:text-red-400 whitespace-nowrap">
                         <span className="px-2 py-0.5 rounded bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 text-[10px] block w-fit">

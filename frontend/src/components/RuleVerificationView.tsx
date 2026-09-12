@@ -18,7 +18,7 @@ import {
 import { verifyProductCompliance, fetchVerificationPresets } from '../lib/api';
 
 interface RuleVerificationViewProps {
-  auditData: AuditResponse;
+  auditData: AuditResponse | null;
 }
 
 const STATUS_CONFIG = {
@@ -132,6 +132,25 @@ export default function RuleVerificationView({ auditData }: RuleVerificationView
     }
 
     // Default to current auditData
+    if (!auditData) {
+      return {
+        product_name: 'Product Listing',
+        category: 'cosmetics',
+        target_market: targetMarket,
+        description: '',
+        materials: [],
+        ingredients: [],
+        intended_use: 'Consumer usage',
+        manufacturer_name: 'Cross-Border Manufacturer Ltd',
+        manufacturer_address: 'Frankfurt, Germany',
+        country_of_origin: 'US',
+        contains_battery: false,
+        battery_type: undefined,
+        marketing_claims: [],
+        documents: [],
+      };
+    }
+
     let claims = auditData.extracted_attributes?.claims || [];
     let mfgAddr = auditData.extracted_attributes?.missing_required_fields?.includes('manufacturer_address')
       ? null
@@ -216,6 +235,15 @@ export default function RuleVerificationView({ auditData }: RuleVerificationView
   const overallCfg = verificationResult
     ? OVERALL_STATUS_CONFIG[verificationResult.overall_status] || OVERALL_STATUS_CONFIG.NEEDS_ACTION
     : OVERALL_STATUS_CONFIG.NEEDS_ACTION;
+
+  if (!auditData && selectedPresetId === 'current-audit') {
+    return (
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4">
+        <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full mx-auto" />
+        <p className="text-slate-400 text-sm">Awaiting statutory compliance audit to verify rules against listing data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

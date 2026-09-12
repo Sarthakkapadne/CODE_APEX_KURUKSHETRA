@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { TradeEconomicsItem, AuditResponse } from '@/lib/types';
 
 interface WorldComplianceHeatmapProps {
-  auditResult: AuditResponse;
+  auditResult: AuditResponse | null;
   selectedCountry?: string | null;
   onSelectCountry?: (countryCode: string) => void;
 }
@@ -130,6 +130,14 @@ export const WorldComplianceHeatmap: React.FC<WorldComplianceHeatmapProps> = ({
   onSelectCountry,
 }) => {
   const [hoveredMarket, setHoveredMarket] = useState<MarketGeoData | null>(null);
+
+  if (!auditResult) {
+    return (
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-500">
+        Run an inspection audit to view the global compliance heatmap.
+      </div>
+    );
+  }
 
   // Compute status per market
   const getMarketStatus = (code: string) => {

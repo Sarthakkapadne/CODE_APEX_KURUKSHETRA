@@ -32,7 +32,7 @@ export default function HSTariffArbitrageCard({ hsTariff }: HSTariffArbitrageCar
         </div>
 
         {/* Total Arbitrage Savings Pill */}
-        {hsTariff.total_arbitrage_savings_usd > 0 ? (
+        {(hsTariff.total_arbitrage_savings_usd || 0) > 0 ? (
           <div className="px-3.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 flex items-center gap-2 text-emerald-800 dark:text-emerald-300 shadow-sm">
             <TrendingDown className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <div className="text-right">
@@ -40,7 +40,7 @@ export default function HSTariffArbitrageCard({ hsTariff }: HSTariffArbitrageCar
                 Duty Savings Arbitrage
               </span>
               <span className="text-base font-extrabold">
-                +${hsTariff.total_arbitrage_savings_usd.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
+                +${(hsTariff.total_arbitrage_savings_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
               </span>
             </div>
           </div>

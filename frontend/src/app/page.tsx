@@ -81,11 +81,6 @@ export default function HomePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState<boolean>(false);
   const [selectedHeatmapCountry, setSelectedHeatmapCountry] = useState<string | null>(null);
 
-  // Run initial audit on load for default preset
-  useEffect(() => {
-    executeAudit(currentInput);
-  }, []);
-
   const executeAudit = async (input: ListingInputType) => {
     setIsLoading(true);
     try {
@@ -271,6 +266,52 @@ export default function HomePage() {
               />
             </section>
 
+            {/* Initial Ready-to-Audit State (When no audit has been triggered yet) */}
+            {!auditData && !isLoading && (
+              <div className="bg-gradient-to-b from-slate-900/80 to-slate-950/80 border border-slate-800 rounded-2xl p-8 sm:p-10 text-center space-y-5 shadow-2xl relative overflow-hidden">
+                <div className="relative z-10 max-w-xl mx-auto space-y-4">
+                  <div className="inline-flex p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/30 text-sky-400 shadow-lg shadow-sky-500/10">
+                    <ShieldCheck className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">
+                    Ready for Multi-Market Compliance Audit
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                    Select one of the 6 documented failure presets above or customize product listing parameters, then click <strong className="text-sky-400 font-semibold">&ldquo;Run Multi-Agent Compliance Audit&rdquo;</strong> to initiate cross-border statutory verification.
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-left">
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80">
+                      <span className="text-[10px] font-bold text-sky-400 uppercase tracking-wider block">Step 1</span>
+                      <span className="text-xs font-semibold text-slate-200">Pick Preset</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80">
+                      <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">Step 2</span>
+                      <span className="text-xs font-semibold text-slate-200">10 Sovereign Markets</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80">
+                      <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">Step 3</span>
+                      <span className="text-xs font-semibold text-slate-200">Single-Hop AI</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80">
+                      <span className="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">Step 4</span>
+                      <span className="text-xs font-semibold text-slate-200">SHA-256 Ledger</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Loading State when audit is processing */}
+            {isLoading && !auditData && (
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center space-y-4 shadow-xl animate-pulse">
+                <div className="w-10 h-10 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-white">Executing Unified Cross-Border Compliance Audit...</h4>
+                  <p className="text-xs text-slate-400">Evaluating product listing in a single consolidated reasoning prompt.</p>
+                </div>
+              </div>
+            )}
+
             {/* Studio Sub-Navigation Tabs */}
             {auditData && (
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -409,7 +450,7 @@ export default function HomePage() {
                     auditData={auditData}
                     selectedCountryFilter={selectedHeatmapCountry}
                     onSelectFix={fixText => {
-                      if (auditData.remediation) {
+                      if (auditData?.remediation) {
                         handleApplyFix(auditData.remediation.compliant_title, auditData.remediation.compliant_description);
                       }
                     }}
