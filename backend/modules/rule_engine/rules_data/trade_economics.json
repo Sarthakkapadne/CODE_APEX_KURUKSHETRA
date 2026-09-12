@@ -119,6 +119,18 @@
       "estimated_duty_rate": "Duty-free under 1,000,000 VND; standard tariffs (15-30%) and 10% VAT above threshold",
       "entry_friction_rank": 4,
       "recommendation_summary": "Rapidly growing e-commerce destination with a 1,000,000 VND de minimis exemption. Consignments above threshold require formal import clearance, Vietnamese sub-labeling, and CR marks for children's goods."
+    },
+    "BR": {
+      "country_code": "BR",
+      "country_name": "Brazil",
+      "de_minimis_threshold": 50.0,
+      "de_minimis_currency": "USD",
+      "vat_gst_rate": "17% ICMS state tax",
+      "simplification_scheme": "Remessa Conforme Program (Expedited pre-cleared e-commerce portal)",
+      "customs_complexity_score": 9,
+      "estimated_duty_rate": "20% under $50 USD (Remessa Conforme); 60% import tariff above $50 USD",
+      "entry_friction_rank": 7,
+      "recommendation_summary": "High tariff environment. Enroll in Remessa Conforme program for expedited customs pre-clearance and 20% federal tariff for parcels under $50 USD; otherwise standard 60% tariff applies."
     }
   }
 }

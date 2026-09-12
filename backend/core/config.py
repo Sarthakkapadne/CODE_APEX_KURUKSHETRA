@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     RULE_ENGINE_VERSION: str = "LexPort-Rules-v2026.1"
     ENVIRONMENT: str = "development"
     STATIC_DIR: str = str(STATIC_DIR)
+    MAPTILER_API_KEY: str = os.getenv("MAPTILER_API_KEY", "CTTf1GnjFmqpYI0cPqIC")
+    LEAFLET_API_KEY: str = os.getenv("LEAFLET_API_KEY", "CTTf1GnjFmqpYI0cPqIC")
 
     class Config:
         env_file = str(BASE_DIR / ".env")

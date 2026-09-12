@@ -33,8 +33,9 @@ async def compare_trade_economics(req: EconomicsRequest):
     )
 
 
+@router.get("", summary="Get reference fiscal and de minimis data for all markets")
 @router.get("/markets", summary="Get reference fiscal and de minimis data for all markets dynamically from database")
-async def get_market_economics_reference(db: AsyncSession = Depends(get_db)):
+async def get_market_economics_reference(hs_code: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     """
     Returns trade economics, GPS coordinates, de minimis thresholds, and duty profiles
     queried live from SQLite TradeMarketRecord.

@@ -14,6 +14,7 @@ export interface ListingInput {
   back_image_base64?: string;
   barcode_raw?: string;
   images?: string[];
+  enable_gemini?: boolean;
 }
 
 export interface ExtractedAttributes {
@@ -209,6 +210,24 @@ export interface ComplianceExportPack {
   customs_manifest_summary: Record<string, any>;
 }
 
+export interface DebateTurn {
+  speaker: string;
+  role: string;
+  stance: string;
+  argument: string;
+  statutory_citation?: string;
+  risk_level?: string;
+}
+
+export interface AdversarialDebateResult {
+  debate_topic: string;
+  turns: DebateTurn[];
+  consensus_verdict: string;
+  consensus_severity?: string;
+  unanimous_citations?: string[];
+  binding_remediations: string[];
+}
+
 export interface AuditResponse {
   inspection_id: string;
   listing_id: string;
@@ -225,7 +244,7 @@ export interface AuditResponse {
   hs_tariff?: HSTariffArbitrageResult;
   accuracy_index?: GroundTruthAccuracyIndex;
   packaging_analysis?: PackagingAnalysisResult;
-  debate?: any;
+  debate?: AdversarialDebateResult;
   remediation?: RemediationResult;
   export_pack?: ComplianceExportPack;
   trade_economics: TradeEconomicsItem[];

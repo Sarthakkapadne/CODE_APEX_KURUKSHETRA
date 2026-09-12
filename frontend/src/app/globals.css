@@ -1,140 +1,306 @@
+@import 'leaflet/dist/leaflet.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #090d16;
-  --foreground: #f8fafc;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 body {
-  color: var(--foreground);
-  background: radial-gradient(circle at 50% 0%, #0f172a 0%, #090d16 100%);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
+  font-family: var(--font-sans);
+  background-color: #F8FAFC;
+  color: #0F172A;
 }
 
-/* Custom subtle scrollbars */
+/* ── Custom Scrollbars ── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 3px;
+  background: #CBD5E1;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94A3B8;
 }
 
-/* ── Enterprise Glassmorphism Utilities ── */
-.glass-card {
-  background: rgba(15, 23, 42, 0.75);
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #E2E8F0;
+  border-radius: 9999px;
+}
+
+/* ── Glassmorphism Panels ── */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
-.glass-panel {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.4);
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.97);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -6px rgba(37, 99, 235, 0.10), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+  border-color: rgba(147, 197, 253, 0.7);
 }
 
-.glow-hover {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.glow-hover:hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 0 20px -5px rgba(56, 189, 248, 0.25);
-  transform: translateY(-1px);
+/* ── Background Patterns ── */
+.radial-bg {
+  background-image: radial-gradient(circle at 50% 0%, rgba(219, 234, 254, 0.45) 0%, rgba(248, 250, 252, 0) 65%);
 }
 
-/* ── Leaflet + Tailwind Integration Fixes ── */
-/* Critical: Prevent Tailwind's 'img { max-width: 100% }' from breaking Leaflet map tile rendering */
-.leaflet-container img {
-  max-width: none !important;
-  max-height: none !important;
+.hero-gradient {
+  background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 45%, #F0F9FF 100%);
 }
 
+/* ── Glow Effects ── */
+.blue-glow {
+  box-shadow: 0 0 30px -8px rgba(37, 99, 235, 0.30);
+}
+
+.blue-gradient-text {
+  background: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Animated Gradient Orb (Hero) ── */
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(20px, -15px) scale(1.04); }
+  66%       { transform: translate(-15px, 10px) scale(0.97); }
+}
+
+.hero-orb {
+  animation: orbFloat 12s ease-in-out infinite;
+}
+
+/* ── Status Badge System ── */
+.badge-pass {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80;
+}
+.badge-warn {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/80;
+}
+.badge-fail {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80;
+}
+.badge-esc {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80;
+}
+
+/* ── Pulsing Status Dots ── */
+.pulse-dot-green { @apply relative flex h-2 w-2; }
+.pulse-dot-green::before {
+  content: '';
+  @apply absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping;
+}
+.pulse-dot-green::after {
+  content: '';
+  @apply relative inline-flex h-2 w-2 rounded-full bg-emerald-500;
+}
+
+.pulse-dot-blue { @apply relative flex h-2 w-2; }
+.pulse-dot-blue::before {
+  content: '';
+  @apply absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75 animate-ping;
+}
+.pulse-dot-blue::after {
+  content: '';
+  @apply relative inline-flex h-2 w-2 rounded-full bg-blue-600;
+}
+
+.pulse-dot-amber { @apply relative flex h-2 w-2; }
+.pulse-dot-amber::before {
+  content: '';
+  @apply absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 animate-ping;
+}
+.pulse-dot-amber::after {
+  content: '';
+  @apply relative inline-flex h-2 w-2 rounded-full bg-amber-500;
+}
+
+/* ── Shimmer Skeleton Loader ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E8EFFE 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: 12px;
+}
+
+/* ── Drawer Slide-In ── */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes slideInUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+@keyframes countUp {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+.animate-slide-in-right { animation: slideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-slide-in-up    { animation: slideInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-in        { animation: fadeIn 0.3s ease-in-out forwards; }
+.animate-scale-in       { animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-count-up       { animation: countUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+/* ── Feature Cards Hover Lift ── */
+.feature-card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s ease;
+}
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -6px rgba(37, 99, 235, 0.10), 0 2px 6px -2px rgba(0,0,0,0.04);
+}
+
+/* ── Chat Message Bubbles ── */
+.chat-user {
+  background: #2563EB;
+  color: #FFFFFF;
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 4px 14px -4px rgba(37, 99, 235, 0.30);
+}
+.chat-user p { color: #FFFFFF !important; }
+.chat-user .text-slate-400 { color: rgba(255,255,255,0.6) !important; }
+
+.chat-assistant {
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px 18px 18px 18px;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Compliance Matrix ── */
+.matrix-container {
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
+  overflow-x: auto;
+}
+.matrix-container thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #F8FAFC;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Notification Badge ── */
+.notif-dot {
+  @apply absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500 border-2 border-white;
+}
+
+/* ── Country Readiness Bar ── */
+.readiness-bar {
+  height: 6px;
+  border-radius: 9999px;
+  background: #E2E8F0;
+  overflow: hidden;
+}
+.readiness-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Confidence Ring ── */
+.confidence-ring {
+  transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Progress Step Connector ── */
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, #BFDBFE, #E2E8F0);
+}
+.step-connector.active { background: linear-gradient(90deg, #2563EB, #93C5FD); }
+
+/* ── Matrix Cell Status Colors ── */
+.cell-pass       { @apply bg-emerald-50 text-emerald-700 border-emerald-200; }
+.cell-warning    { @apply bg-amber-50 text-amber-700 border-amber-200; }
+.cell-violation  { @apply bg-rose-50 text-rose-700 border-rose-200; }
+.cell-escalation { @apply bg-indigo-50 text-indigo-700 border-indigo-200; }
+
+/* ── PDF Preview Overlay ── */
+.pdf-preview-overlay {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Leaflet Specific Overrides ── */
 .leaflet-container {
-  font-family: inherit;
-  z-index: 1;
+  font-family: var(--font-sans) !important;
+  background-color: #f1f5f9 !important;
+  border-radius: 1rem;
 }
 
-/* Dark theme styling for Leaflet Popups */
+.leaflet-tile {
+  filter: saturate(1.05) contrast(1.02);
+}
+
 .leaflet-popup-content-wrapper {
-  background: #0f172a !important;
-  color: #f8fafc !important;
-  border: 1px solid #334155 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.8) !important;
-}
-
-.leaflet-popup-content {
-  margin: 10px 12px !important;
-  line-height: 1.4 !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
 .leaflet-popup-tip {
-  background: #0f172a !important;
-  border: 1px solid #334155 !important;
+  background: #ffffff !important;
 }
 
-.leaflet-container a.leaflet-popup-close-button {
-  color: #94a3b8 !important;
-  padding: 6px !important;
-  top: 6px !important;
-  right: 6px !important;
-}
-
-.leaflet-container a.leaflet-popup-close-button:hover {
-  color: #f8fafc !important;
-}
-
-/* Dark theme styling for Leaflet Tooltips */
 .leaflet-tooltip {
   background: #0f172a !important;
-  color: #f8fafc !important;
   border: 1px solid #334155 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6) !important;
+  color: #f8fafc !important;
+  border-radius: 0.5rem !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18) !important;
 }
 
-.leaflet-tooltip-top:before {
-  border-top-color: #0f172a !important;
-}
-.leaflet-tooltip-bottom:before {
-  border-bottom-color: #0f172a !important;
-}
-.leaflet-tooltip-left:before {
-  border-left-color: #0f172a !important;
-}
-.leaflet-tooltip-right:before {
-  border-right-color: #0f172a !important;
+/* ── Input focus enhancement ── */
+input:focus, textarea:focus, select:focus {
+  outline: none;
 }
 
-/* ── UI Animations ── */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* ── Prevent layout shift on scrollbar appear ── */
+html { scroll-behavior: smooth; }
 
-@keyframes slideInUp {
-  from { opacity: 0; transform: translate(-50%, 20px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slideInUp {
-  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
+/* ── Table zebra stripes ── */
+.table-zebra tbody tr:nth-child(even) { background-color: #F8FAFC; }
+.table-zebra tbody tr:hover           { background-color: #EFF6FF; transition: background-color 0.15s ease; }

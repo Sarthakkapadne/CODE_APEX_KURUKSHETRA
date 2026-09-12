@@ -1,21 +1,33 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import "leaflet/dist/leaflet.css";
+import type { Metadata } from 'next';
+import 'leaflet/dist/leaflet.css';
+import './globals.css';
+import { AuthProvider } from '../lib/auth';
 
 export const metadata: Metadata = {
-  title: "LexPort — Agentic Compliance Co-Pilot for Cross-Border Sellers",
-  description: "Reviews e-commerce listings against destination-market regulations. 3-Tier Multi-Agent compliance audit with SHA-256 EU AI Act cryptographic verification.",
+  title: 'LexPort — Cross-Border Compliance Co-Pilot',
+  description: 'Check product compliance across countries, identify missing requirements, fix violations, and generate a verified compliance dossier — all from one workspace.',
+  keywords: 'compliance, cross-border, export, customs, HS code, product compliance, trade',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-sky-500 selection:text-white">
-        {children}
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="bg-lexport-bg font-sans antialiased">
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

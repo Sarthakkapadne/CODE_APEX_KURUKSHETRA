@@ -1,727 +1,419 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
-  Scale, MessageSquare, Sparkles, TrendingUp,
-  RotateCcw, CheckCircle2, AlertOctagon, Terminal, ShieldAlert, Scan,
-  ShoppingCart, FileText, Globe, Layers, ArrowRightLeft, ShieldCheck, Zap
+  Scale, ArrowRight, CheckCircle2, AlertTriangle, XCircle,
+  Globe, Shield, FileText, Zap, Star, ShieldCheck, BarChart3,
+  MessageSquare, Lock, ChevronRight, TrendingUp, Search
 } from 'lucide-react';
-import Header, { ViewMode } from '../components/Header';
-import ListingInput from '../components/ListingInput';
-import ComplianceMatrix from '../components/ComplianceMatrix';
-import CustomsSeizureRadar from '../components/CustomsSeizureRadar';
-import HSTariffArbitrageCard from '../components/HSTariffArbitrageCard';
-import GroundTruthAccuracyBadge from '../components/GroundTruthAccuracyBadge';
-import PackagingImageInspector from '../components/PackagingImageInspector';
-import RemediationDiffView from '../components/RemediationDiffView';
-import TradeEconomicsAdvisor from '../components/TradeEconomicsAdvisor';
-import HashVerificationModal from '../components/HashVerificationModal';
-import RegulatorySimulator from '../components/RegulatorySimulator';
-import CopilotIntelligenceModal from '../components/CopilotIntelligenceModal';
-import { WorldComplianceHeatmap } from '../components/WorldComplianceHeatmap';
-import { ExportPackModal } from '../components/ExportPackModal';
-import ComplianceChatbotModal from '../components/ComplianceChatbotModal';
-import ComplianceConfidenceDashboard from '../components/ComplianceConfidenceDashboard';
-import RuleVerificationView from '../components/RuleVerificationView';
-import MultiPackagingDropzone from '../components/MultiPackagingDropzone';
-import DocumentChecklist from '../components/DocumentChecklist';
-import { ListingInput as ListingInputType, AuditResponse } from '../lib/types';
-import { CASE_PRESETS } from '../lib/presets';
-import { runComplianceAudit, scrapeListingUrl, downloadPdfReport } from '../lib/api';
 
-const LeafletTradeMap = dynamic(() => import('../components/LeafletTradeMap'), {
-  ssr: false,
-  loading: () => <div className="h-[460px] rounded-2xl border border-slate-800 bg-slate-900 animate-pulse" />,
-});
+const MARKETS = [
+  { code: 'US', name: 'United States', flag: '🇺🇸' },
+  { code: 'EU', name: 'European Union', flag: '🇪🇺' },
+  { code: 'UK', name: 'United Kingdom', flag: '🇬🇧' },
+  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
+  { code: 'JP', name: 'Japan', flag: '🇯🇵' },
+  { code: 'AU', name: 'Australia', flag: '🇦🇺' },
+  { code: 'SG', name: 'Singapore', flag: '🇸🇬' },
+];
 
-const LeafletComplianceMap = dynamic(() => import('../components/LeafletComplianceMap'), {
-  ssr: false,
-  loading: () => <div className="h-[460px] rounded-2xl border border-slate-800 bg-slate-900 animate-pulse" />,
-});
+const HOW_IT_WORKS = [
+  { step: '01', title: 'Submit Your Product', desc: 'Upload images, paste a link, or describe your product manually.', icon: Zap },
+  { step: '02', title: 'Analyze Requirements', desc: 'Our rule engine checks all regulations across destination markets.', icon: ShieldCheck },
+  { step: '03', title: 'Review & Fix Issues', desc: 'See exactly what is wrong, why, and get specific fix suggestions.', icon: AlertTriangle },
+  { step: '04', title: 'Upload Documents', desc: 'Track required certifications, test reports, and labels.', icon: FileText },
+  { step: '05', title: 'Export Dossier', desc: 'Generate a tamper-evident PDF compliance report with SHA-256 seal.', icon: Lock },
+];
 
-const ALL_10_MARKETS = ['US', 'EU', 'UK', 'CA', 'JP', 'AU', 'IN', 'DE', 'CN', 'VN'];
+const FEATURES = [
+  { icon: Scale, title: 'Multi-Market Compliance Matrix', desc: 'Instantly see pass/warning/violation status for every regulation across all markets in one grid.' },
+  { icon: MessageSquare, title: 'AI Compliance Copilot', desc: 'Ask in plain language — "Why did Canada fail?" — and get grounded answers with rule citations.' },
+  { icon: BarChart3, title: 'Trade Economics Advisor', desc: 'Compare duty rates, de-minimis thresholds, VAT/GST schemes, and entry friction across markets.' },
+  { icon: Shield, title: 'Adversarial Debate Room', desc: 'Inspector vs. Seller Advocate AI debate drives out every compliance grey area before you import.' },
+  { icon: FileText, title: 'Verified Compliance Dossier', desc: 'Export a country-by-country PDF report with cryptographic hash chain for audit-readiness.' },
+  { icon: Globe, title: 'Fix Once, Resolve Everywhere', desc: 'Shared legal basis means fixing one root issue automatically resolves it across linked markets.' },
+];
 
-export default function HomePage() {
-  const [currentInput, setCurrentInput] = useState<ListingInputType>({
-    title: CASE_PRESETS[0].title,
-    description: CASE_PRESETS[0].description,
-    brand_name: CASE_PRESETS[0].brand_name,
-    price: CASE_PRESETS[0].price,
-    country_of_origin: CASE_PRESETS[0].country_of_origin,
-    destination_markets: ALL_10_MARKETS,
-  });
+const TRUST_LOGOS = [
+  'EU AI Act Compliant',
+  'SHA-256 Hash Chain',
+  'Zero Fabricated Claims',
+  'Tier-1 Deterministic',
+  'IATA DGR Verified',
+];
 
-  const [auditData, setAuditData] = useState<AuditResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isPdfLoading, setIsPdfLoading] = useState<boolean>(false);
+const MARKET_SCAN_DEMO = [
+  { market: '🇺🇸 US',     status: 'pass',      label: 'Ready' },
+  { market: '🇪🇺 EU',     status: 'warning',   label: '2 Fixes' },
+  { market: '🇬🇧 UK',     status: 'pass',      label: 'Ready' },
+  { market: '🇨🇦 Canada', status: 'violation', label: 'Doc Missing' },
+  { market: '🇯🇵 Japan',  status: 'escalation',label: 'Review' },
+];
 
-  // ── Role View Mode: Seller vs Compliance Officer ──
-  const [viewMode, setViewMode] = useState<ViewMode>('seller');
+export default function LandingPage() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCounterIdx, setActiveCounterIdx] = useState(0);
 
-  // ── 4-Workspace Navigation ──
-  const [activeWorkspace, setActiveWorkspace] = useState<'studio' | 'packaging' | 'radar' | 'remediation'>('studio');
+  useEffect(() => {
+    const timer = setInterval(() => setActiveCounterIdx(i => (i + 1) % MARKET_SCAN_DEMO.length), 1400);
+    return () => clearInterval(timer);
+  }, []);
 
-  // ── Workspace 1 Sub-Navigation ──
-  const [studioTab, setStudioTab] = useState<'matrix' | 'verification' | 'confidence'>('matrix');
-
-  // ── Workspace 2 Sub-Navigation ──
-  const [packagingTab, setPackagingTab] = useState<'ocr' | 'documents'>('ocr');
-
-  // ── Workspace 3 Map Sub-Mode ──
-  const [radarMapMode, setRadarMapMode] = useState<'compliance' | 'trade'>('compliance');
-
-  // ── Global Leaflet Dual Map Mode ──
-  const [mapMode, setMapMode] = useState<'compliance' | 'trade_corridors' | 'svg_overview'>('compliance');
-
-  // ── Modals & Simulator ──
-  const [isSimulatorOpen, setIsSimulatorOpen] = useState<boolean>(false);
-  const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
-  const [isHashVerifierOpen, setIsHashVerifierOpen] = useState<boolean>(false);
-  const [isExportPackOpen, setIsExportPackOpen] = useState<boolean>(false);
-  const [isChatbotOpen, setIsChatbotOpen] = useState<boolean>(false);
-  const [selectedHeatmapCountry, setSelectedHeatmapCountry] = useState<string | null>(null);
-
-  const executeAudit = async (input: ListingInputType) => {
-    setIsLoading(true);
-    try {
-      const payload: ListingInputType = {
-        ...input,
-        destination_markets: input.destination_markets && input.destination_markets.length > 0 
-          ? input.destination_markets 
-          : ALL_10_MARKETS,
-      };
-      const res = await runComplianceAudit(payload);
-      setAuditData(res);
-      setCurrentInput(payload);
-    } catch (e: any) {
-      console.error('Audit execution error:', e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleApplyFix = (compliantTitle: string, compliantDesc: string) => {
-    const updated = {
-      ...currentInput,
-      title: compliantTitle,
-      description: compliantDesc,
-    };
-    setCurrentInput(updated);
-    executeAudit(updated);
-    setActiveWorkspace('studio');
-    setStudioTab('matrix');
-  };
-
-  const handleExportPdf = async () => {
-    if (!auditData) return;
-    setIsPdfLoading(true);
-    try {
-      await downloadPdfReport(auditData);
-    } catch (e) {
-      console.error('PDF export error:', e);
-    } finally {
-      setIsPdfLoading(false);
-    }
-  };
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    router.push('/audit/new');
+  }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
-      {/* ── Top Navigation Bar ── */}
-      <Header
-        viewMode={viewMode}
-        onToggleViewMode={setViewMode}
-        onOpenIntelligence={() => setIsCopilotOpen(true)}
-        onOpenChatbot={() => setIsChatbotOpen(true)}
-        onOpenHashVerifier={() => setIsHashVerifierOpen(true)}
-        onOpenExportPack={() => setIsExportPackOpen(true)}
-        onExportPdf={handleExportPdf}
-        isPdfLoading={isPdfLoading}
-        hasAuditData={!!auditData}
-        latestHash={auditData?.compliance_hash}
-      />
+    <div className="bg-white">
+      {/* ── Sticky Top Navigation ── */}
+      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center shadow-blue">
+              <Scale className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-black text-primary-700 tracking-tight">LexPort</span>
+            <span className="hidden sm:inline text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-50 text-primary-600 border border-primary-100">
+              CO-PILOT
+            </span>
+          </Link>
 
-      {/* ── Role Context Indicator Banner ── */}
-      <div className={`px-4 sm:px-6 lg:px-8 py-2 text-xs border-b transition-colors flex items-center justify-between ${
-        viewMode === 'seller'
-          ? 'bg-emerald-950/40 border-emerald-800/50 text-emerald-300'
-          : 'bg-sky-950/40 border-sky-800/50 text-sky-300'
-      }`}>
-        <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            {viewMode === 'seller' ? (
-              <>
-                <ShoppingCart className="w-4 h-4 text-emerald-400" />
-                <span className="font-semibold">Seller Mode Active:</span>
-                <span className="text-emerald-400/80 hidden sm:inline">
-                  Prioritizing landed margin, fast 1-click remediation, and clear export feasibility across 10 countries.
-                </span>
-              </>
-            ) : (
-              <>
-                <Scale className="w-4 h-4 text-sky-400" />
-                <span className="font-semibold">Compliance Officer Mode Active:</span>
-                <span className="text-sky-400/80 hidden sm:inline">
-                  Deep technical inspection, statutory citations, 4-factor confidence metrics, and deterministic rule decision traces.
-                </span>
-              </>
-            )}
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+            <Link href="#how-it-works" className="hover:text-primary-600 transition-colors">How It Works</Link>
+            <Link href="#features"     className="hover:text-primary-600 transition-colors">Features</Link>
+            <Link href="#markets"      className="hover:text-primary-600 transition-colors">Markets</Link>
           </div>
-          <button
-            type="button"
-            onClick={() => setViewMode(viewMode === 'seller' ? 'compliance' : 'seller')}
-            className="text-[11px] font-bold underline hover:opacity-80 transition-opacity ml-2 shrink-0"
-          >
-            Switch to {viewMode === 'seller' ? 'Compliance View' : 'Seller View'} ➔
-          </button>
-        </div>
-      </div>
 
-      {/* ── 4 Dedicated Workspace Sticky Sub-Navigation Bar ── */}
-      <div className="bg-slate-900/90 border-b border-slate-800/80 sticky top-16 z-30 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between overflow-x-auto gap-4">
-          <div className="flex items-center space-x-2">
-            {[
-              { id: 'studio', label: '1. 🔍 Audit Studio', sub: 'Listing & 10-Market Matrix', badge: auditData?.overall_verdict },
-              { id: 'packaging', label: '2. 📦 Packaging Lab', sub: 'Vision OCR & Evidence Checklist', badge: auditData?.packaging_analysis?.physical_verdict },
-              { id: 'radar', label: '3. 🚨 Customs Radar', sub: 'Tariffs & Leaflet GIS Maps', badge: auditData?.customs_radar?.threat_level?.replace(/_/g, ' ') },
-              { id: 'remediation', label: '4. ⚡ Remediation & Export', sub: 'Compliant Diffs & PDF', badge: auditData?.remediation?.diff_items.length ? `${auditData.remediation.diff_items.length} Fixes` : '1-Click Fix' },
-            ].map(ws => {
-              const isActive = activeWorkspace === ws.id;
-              return (
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="text-sm font-semibold text-slate-600 hover:text-primary-600 transition-colors px-3 py-2">
+              Sign In
+            </Link>
+            <Link
+              href="/signup"
+              className="text-sm font-semibold bg-primary-600 text-white px-4 py-2 rounded-xl hover:bg-primary-700 transition-colors shadow-blue"
+            >
+              Get Started
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* ── Hero Section ── */}
+      <section className="relative overflow-hidden">
+        {/* Layered gradient background */}
+        <div className="absolute inset-0 hero-gradient pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[55%] h-full bg-gradient-to-l from-blue-50/70 to-transparent pointer-events-none" />
+
+        {/* Animated background orb */}
+        <div className="absolute top-20 right-[10%] w-[420px] h-[420px] rounded-full bg-gradient-to-br from-blue-100/60 to-primary-100/40 blur-3xl pointer-events-none hero-orb" />
+        <div className="absolute top-40 left-[5%] w-[280px] h-[280px] rounded-full bg-gradient-to-br from-primary-50/50 to-transparent blur-2xl pointer-events-none" style={{ animation: 'orbFloat 9s ease-in-out infinite 2s' }} />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 lg:pt-28 lg:pb-36">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+            {/* ── Left: Hero Copy ── */}
+            <div className="space-y-7">
+              <div className="inline-flex items-center gap-2 bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-full text-xs font-semibold text-primary-700">
+                <Star className="w-3.5 h-3.5 fill-primary-400" />
+                <span>EU AI Act Compliant · Zero Unsourced Assertions</span>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.08] tracking-tight">
+                Know Before
+                <span className="block blue-gradient-text">You Ship.</span>
+              </h1>
+
+              <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
+                Check product compliance across countries, identify missing requirements, fix violations, and generate a verified compliance dossier — all from one workspace.
+              </p>
+
+              {/* Search Bar */}
+              <form onSubmit={handleSearch} className="flex gap-3 max-w-lg">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder="Search a product, HS code, or rule..."
+                    className="w-full border border-slate-200 bg-white rounded-2xl pl-11 pr-4 py-3.5 text-sm text-slate-700 placeholder-slate-400 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 shadow-sm transition-all"
+                  />
+                </div>
                 <button
-                  key={ws.id}
-                  type="button"
-                  onClick={() => setActiveWorkspace(ws.id as any)}
-                  className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border whitespace-nowrap ${
-                    isActive
-                      ? 'bg-sky-600 text-white border-sky-400 shadow-md shadow-sky-600/25'
-                      : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-                  }`}
+                  type="submit"
+                  className="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-5 py-3.5 rounded-2xl shadow-blue transition-colors text-sm whitespace-nowrap flex items-center gap-2"
                 >
-                  <div className="text-left">
-                    <div className="leading-tight">{ws.label}</div>
-                    <div className={`text-[10px] font-normal ${isActive ? 'text-sky-100' : 'text-slate-500'}`}>
-                      {ws.sub}
-                    </div>
-                  </div>
-                  {ws.badge && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
-                      isActive ? 'bg-sky-700 text-sky-100' : 'bg-slate-800 text-slate-400'
-                    }`}>
-                      {ws.badge}
-                    </span>
-                  )}
+                  Check Now
+                  <ArrowRight className="w-4 h-4" />
                 </button>
+              </form>
+
+              <div className="flex flex-wrap gap-4 text-xs text-slate-500">
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />No credit card</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />5+ markets</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />Instant results</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />Verified audit trail</span>
+              </div>
+            </div>
+
+            {/* ── Right: Floating Demo Cards ── */}
+            <div className="relative lg:h-[480px] hidden lg:block">
+
+              {/* Main product scan card */}
+              <div className="absolute top-6 right-4 w-72 bg-white rounded-2xl shadow-card-hover border border-slate-100 p-5 float-card-1">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PRODUCT SCAN</p>
+                    <h3 className="font-black text-slate-800 mt-0.5">Wireless Charger</h3>
+                  </div>
+                  <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-primary-600" />
+                  </div>
+                </div>
+                <div className="space-y-2.5">
+                  {MARKET_SCAN_DEMO.map((m, i) => (
+                    <div
+                      key={m.market}
+                      className={`flex items-center justify-between text-sm transition-all duration-500 rounded-lg px-2 py-1 -mx-2 ${i === activeCounterIdx ? 'bg-slate-50' : ''}`}
+                    >
+                      <span className="text-slate-600 font-medium">{m.market}</span>
+                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full transition-all ${
+                        m.status === 'pass'       ? 'bg-emerald-50 text-emerald-700' :
+                        m.status === 'warning'    ? 'bg-amber-50 text-amber-700' :
+                        m.status === 'violation'  ? 'bg-rose-50 text-rose-700' :
+                                                    'bg-indigo-50 text-indigo-700'
+                      }`}>
+                        {m.status === 'pass' ? '✓' : m.status === 'warning' ? '⚠' : m.status === 'violation' ? '✕' : '◉'} {m.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Evidence Confidence chip */}
+              <div className="absolute top-0 left-8 bg-white rounded-2xl shadow-card-hover border border-slate-100 px-4 py-3 flex items-center gap-3 float-card-2">
+                <div className="relative w-11 h-11">
+                  <svg className="w-11 h-11 -rotate-90" viewBox="0 0 44 44">
+                    <circle cx="22" cy="22" r="18" fill="none" stroke="#EFF6FF" strokeWidth="4" />
+                    <circle cx="22" cy="22" r="18" fill="none" stroke="#2563EB" strokeWidth="4"
+                      strokeDasharray="113.1" strokeDashoffset="6.79" strokeLinecap="round" />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-primary-700">94%</span>
+                </div>
+                <div>
+                  <p className="text-xs font-black text-slate-800">Evidence Confidence</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">Tier 1 · Deterministic</p>
+                </div>
+              </div>
+
+              {/* Markets coverage chip */}
+              <div className="absolute bottom-24 left-0 bg-white rounded-2xl shadow-card-hover border border-slate-100 px-4 py-3 float-card-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <Globe className="w-4 h-4 text-primary-600" />
+                  <p className="text-xs font-black text-slate-800">12 Markets Covered</p>
+                </div>
+                <p className="text-[10px] text-slate-400">US · EU · UK · CA · JP + 7 more</p>
+              </div>
+
+              {/* Stats chip */}
+              <div className="absolute bottom-6 right-8 bg-primary-600 text-white rounded-2xl shadow-blue px-4 py-3">
+                <p className="text-sm font-black">8 Passed</p>
+                <p className="text-[10px] opacity-80">2 warnings · 1 missing doc</p>
+              </div>
+
+              {/* Fix action chip */}
+              <div className="absolute top-[250px] left-4 bg-white rounded-2xl shadow-card-hover border border-amber-100 px-3.5 py-2.5 flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center">
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-800">3 Fixes Available</p>
+                  <p className="text-[9px] text-amber-600 font-semibold">EU · Canada · Japan</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Trust Strip ── */}
+      <section className="border-y border-slate-100 bg-slate-50/80 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs font-semibold text-slate-400 uppercase tracking-widest">
+            {TRUST_LOGOS.map((t, i) => (
+              <span key={i} className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-primary-400" />
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Markets Strip ── */}
+      <section id="markets" className="py-14 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm font-black text-slate-400 uppercase tracking-widest mb-8">
+            One product. Every market.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            {MARKETS.map(m => (
+              <div key={m.code} className="flex items-center gap-2.5 bg-white border border-slate-200 rounded-2xl px-5 py-3 shadow-card hover:shadow-card-hover hover:border-primary-200 transition-all feature-card cursor-default">
+                <span className="text-2xl">{m.flag}</span>
+                <div>
+                  <p className="text-sm font-black text-slate-800">{m.code}</p>
+                  <p className="text-[11px] text-slate-400">{m.name}</p>
+                </div>
+              </div>
+            ))}
+            <div className="flex items-center gap-2 bg-primary-50 border border-primary-100 rounded-2xl px-5 py-3 text-primary-600">
+              <Globe className="w-5 h-5" />
+              <div>
+                <p className="text-sm font-black">+5 More</p>
+                <p className="text-[11px] opacity-70">Expanding</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── How It Works ── */}
+      <section id="how-it-works" className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-3">How It Works</h2>
+            <p className="text-slate-500 max-w-xl mx-auto">From product submission to verified compliance dossier in minutes.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {HOW_IT_WORKS.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <div key={i} className="relative">
+                  {i < HOW_IT_WORKS.length - 1 && (
+                    <div className="hidden lg:block absolute top-7 left-full w-full h-0.5 bg-gradient-to-r from-primary-200 to-transparent z-0" />
+                  )}
+                  <div className="relative bg-white border border-slate-100 rounded-2xl p-5 shadow-card hover:shadow-card-hover feature-card transition-all">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-[11px] font-black text-primary-300 font-mono">{step.step}</span>
+                      <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center">
+                        <Icon className="w-4 h-4 text-primary-600" />
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-slate-800 text-sm mb-1">{step.title}</h3>
+                    <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
               );
             })}
           </div>
+        </div>
+      </section>
 
-          <div className="flex items-center space-x-3 text-xs text-slate-400 flex-shrink-0">
-            <button
-              type="button"
-              onClick={() => setIsSimulatorOpen(!isSimulatorOpen)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
-                isSimulatorOpen
-                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm'
-                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-amber-400'
-              }`}
-            >
-              <span>⚡</span>
-              <span>{isSimulatorOpen ? 'Close Simulator' : 'Test Regulatory Shocks'}</span>
-            </button>
-            {auditData && (
-              <GroundTruthAccuracyBadge accuracy={auditData.accuracy_index} />
-            )}
+      {/* ── Features Grid ── */}
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-3">Everything You Need</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto">Built for sellers, exporters, and compliance managers who need to move fast without taking compliance risks.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {FEATURES.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <div key={i} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-card hover:shadow-card-hover feature-card transition-all group">
+                  <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary-100 transition-colors">
+                    <Icon className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <h3 className="font-black text-slate-800 mb-2 text-sm">{f.title}</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">{f.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── Main Dashboard Container ── */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-        {/* ── Expandable Regulatory Change Simulator (Shocks) ── */}
-        {isSimulatorOpen && (
-          <section className="bg-slate-900 border border-amber-500/40 rounded-2xl p-4 shadow-xl space-y-2 animate-fadeIn">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                <span>⚡</span> Emergency Regulatory Change Simulator (Live Shocks)
-              </span>
-              <span className="text-[11px] text-slate-400">Toggle emergency crackdowns to watch matrix flip in real time</span>
-            </div>
-            <RegulatorySimulator onSimulationToggled={() => executeAudit(currentInput)} />
-          </section>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            WORKSPACE 1: AUDIT STUDIO (Listing, Matrix, Traces, Confidence)
-           ══════════════════════════════════════════════════════════════ */}
-        {activeWorkspace === 'studio' && (
-          <div className="space-y-6">
-            {/* Listing Input & Presets */}
-            <section>
-              <ListingInput
-                onAudit={executeAudit}
-                isLoading={isLoading}
-                onScrape={scrapeListingUrl}
-              />
-            </section>
-
-            {/* Initial Ready-to-Audit State (When no audit has been triggered yet) */}
-            {!auditData && !isLoading && (
-              <div className="bg-gradient-to-b from-slate-900/80 to-slate-950/80 border border-slate-800 rounded-2xl p-8 sm:p-10 text-center space-y-5 shadow-2xl relative overflow-hidden">
-                <div className="relative z-10 max-w-xl mx-auto space-y-4">
-                  <div className="inline-flex p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/30 text-sky-400 shadow-lg shadow-sky-500/10">
-                    <ShieldCheck className="w-8 h-8" />
+      {/* ── What You Get Section ── */}
+      <section className="py-20 bg-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight">
+                The first 10 seconds should answer everything.
+              </h2>
+              <div className="space-y-4">
+                {[
+                  'I upload my product.',
+                  'The system checks my destination countries.',
+                  'It tells me exactly what is wrong.',
+                  'It tells me what documents I need.',
+                  'I fix it and re-audit in one click.',
+                  'I generate a verified compliance report.',
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <p className="text-slate-300 text-sm font-medium">{item}</p>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">
-                    Ready for Multi-Market Compliance Audit
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                    Select one of the 6 documented failure presets above or customize product listing parameters, then click <strong className="text-sky-400 font-semibold">&ldquo;Run Multi-Agent Compliance Audit&rdquo;</strong> to initiate cross-border statutory verification.
-                  </p>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-left">
-                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80">
-                      <span className="text-[10px] font-bold text-sky-400 uppercase tracking-wider block">Step 1</span>
-                      <span className="text-xs font-semibold text-slate-200">Pick Preset</span>
-                    </div>
-                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80">
-                      <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">Step 2</span>
-                      <span className="text-xs font-semibold text-slate-200">10 Sovereign Markets</span>
-                    </div>
-                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80">
-                      <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">Step 3</span>
-                      <span className="text-xs font-semibold text-slate-200">Single-Hop AI</span>
-                    </div>
-                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80">
-                      <span className="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">Step 4</span>
-                      <span className="text-xs font-semibold text-slate-200">SHA-256 Ledger</span>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
-            )}
-
-            {/* Loading State when audit is processing */}
-            {isLoading && !auditData && (
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center space-y-4 shadow-xl animate-pulse">
-                <div className="w-10 h-10 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-white">Executing Unified Cross-Border Compliance Audit...</h4>
-                  <p className="text-xs text-slate-400">Evaluating product listing in a single consolidated reasoning prompt.</p>
-                </div>
-              </div>
-            )}
-
-            {/* Studio Sub-Navigation Tabs */}
-            {auditData && (
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div className="flex items-center space-x-2">
-                  <button
-                    type="button"
-                    onClick={() => setStudioTab('matrix')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                      studioTab === 'matrix'
-                        ? 'bg-slate-800 text-sky-400 border border-sky-500/40 shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-                    }`}
-                  >
-                    <Globe className="w-3.5 h-3.5" />
-                    <span>Multi-Market Matrix & Heatmap</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setStudioTab('verification')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                      studioTab === 'verification'
-                        ? 'bg-slate-800 text-sky-400 border border-sky-500/40 shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-                    }`}
-                  >
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Rule Verification & Decision Traces</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setStudioTab('confidence')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                      studioTab === 'confidence'
-                        ? 'bg-slate-800 text-sky-400 border border-sky-500/40 shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-                    }`}
-                  >
-                    <Layers className="w-3.5 h-3.5 text-purple-400" />
-                    <span>Confidence Score & Dependency DAG</span>
-                  </button>
-                </div>
-
-                <div className="text-[11px] text-slate-500 hidden md:block">
-                  Supported Codices: US, EU, UK, CA, JP, AU, IN, DE, CN, VN
-                </div>
-              </div>
-            )}
-
-            {/* Sub-Tab 1: Compliance Matrix & Heatmap */}
-            {auditData && studioTab === 'matrix' && (
-              <div className="space-y-6">
-                {/* ── Prominent 2-Module Leaflet GIS Compliance & Trade Maps ── */}
-                <section className="space-y-3 bg-slate-900/60 p-3 sm:p-4 rounded-2xl border border-slate-800">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-1">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => setMapMode('compliance')}
-                        className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
-                          mapMode === 'compliance'
-                            ? 'bg-sky-600 text-white border-sky-400 shadow-md shadow-sky-600/25 ring-1 ring-white/10'
-                            : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
-                        }`}
-                      >
-                        <span>🗺️</span>
-                        <span>1. CartoDB World Compliance Map</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setMapMode('trade_corridors')}
-                        className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
-                          mapMode === 'trade_corridors'
-                            ? 'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-600/25 ring-1 ring-white/10'
-                            : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
-                        }`}
-                      >
-                        <span>🌐</span>
-                        <span>2. Bilateral Trade Corridors & Distance Engine</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setMapMode('svg_overview')}
-                        className={`hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all border ${
-                          mapMode === 'svg_overview'
-                            ? 'bg-slate-800 text-white border-slate-600'
-                            : 'bg-slate-950 text-slate-500 border-slate-800 hover:text-slate-300'
-                        }`}
-                      >
-                        <span>📊</span>
-                        <span>2D Overview</span>
-                      </button>
-                    </div>
-
-                    <span className="text-[11px] font-mono text-slate-400">
-                      {mapMode === 'compliance'
-                        ? 'Click any country marker to filter compliance checks'
-                        : mapMode === 'trade_corridors'
-                        ? 'Select 1 focal country to view live Haversine nautical distances'
-                        : 'Quick 2D statutory summary'}
-                    </span>
-                  </div>
-
-                  {mapMode === 'compliance' ? (
-                    <LeafletComplianceMap
-                      auditData={auditData}
-                      selectedCountry={selectedHeatmapCountry}
-                      onSelectCountry={(countryCode) => {
-                        setSelectedHeatmapCountry(selectedHeatmapCountry === countryCode ? null : countryCode);
-                      }}
-                    />
-                  ) : mapMode === 'trade_corridors' ? (
-                    <LeafletTradeMap
-                      currentInput={currentInput}
-                      auditData={auditData}
-                      onSelectCountry={(countryCode) => {
-                        setSelectedHeatmapCountry(selectedHeatmapCountry === countryCode ? null : countryCode);
-                      }}
-                    />
-                  ) : (
-                    <WorldComplianceHeatmap
-                      auditResult={auditData}
-                      selectedCountry={selectedHeatmapCountry}
-                      onSelectCountry={(countryCode) => {
-                        setSelectedHeatmapCountry(selectedHeatmapCountry === countryCode ? null : countryCode);
-                      }}
-                    />
-                  )}
-                </section>
-
-                <section>
-                  <ComplianceMatrix
-                    auditData={auditData}
-                    selectedCountryFilter={selectedHeatmapCountry}
-                    onSelectFix={fixText => {
-                      if (auditData?.remediation) {
-                        handleApplyFix(auditData.remediation.compliant_title, auditData.remediation.compliant_description);
-                      }
-                    }}
-                  />
-                </section>
-              </div>
-            )}
-
-            {/* Sub-Tab 2: Rule-by-Rule Verification Engine */}
-            {auditData && studioTab === 'verification' && (
-              <div className="space-y-6">
-                <RuleVerificationView auditData={auditData} />
-              </div>
-            )}
-
-            {/* Sub-Tab 3: Compliance Confidence & Dependency Graph */}
-            {auditData && studioTab === 'confidence' && (
-              <div className="space-y-6">
-                <ComplianceConfidenceDashboard auditData={auditData} />
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            WORKSPACE 2: PACKAGING & EVIDENCE LAB
-           ══════════════════════════════════════════════════════════════ */}
-        {activeWorkspace === 'packaging' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div className="flex items-center space-x-2">
-                <button
-                  type="button"
-                  onClick={() => setPackagingTab('ocr')}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                    packagingTab === 'ocr'
-                      ? 'bg-slate-800 text-sky-400 border border-sky-500/40 shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-                  }`}
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Link
+                  href="/signup"
+                  className="bg-primary-600 text-white font-bold px-7 py-3.5 rounded-xl hover:bg-primary-500 transition-colors text-sm text-center shadow-blue"
                 >
-                  <Scan className="w-3.5 h-3.5" />
-                  <span>Physical Vision OCR & 3-Way Triangulation</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPackagingTab('documents')}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                    packagingTab === 'documents'
-                      ? 'bg-slate-800 text-sky-400 border border-sky-500/40 shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-                  }`}
+                  Start for Free →
+                </Link>
+                <Link
+                  href="/audit/new"
+                  className="border border-slate-600 text-slate-300 font-bold px-7 py-3.5 rounded-xl hover:bg-slate-800 transition-colors text-sm text-center"
                 >
-                  <FileText className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Document & Lab Test Evidence Checklist</span>
-                </button>
+                  Try a Live Audit
+                </Link>
               </div>
-
-              {auditData?.packaging_analysis?.physical_verdict && (
-                <span className="text-xs font-mono px-2.5 py-1 rounded-lg font-bold bg-sky-950 text-sky-300 border border-sky-800">
-                  {auditData.packaging_analysis.physical_verdict} ({auditData.packaging_analysis.physical_readiness_score.toFixed(0)}% Physical Readiness)
-                </span>
-              )}
             </div>
-
-            {packagingTab === 'ocr' && (
-              <div className="space-y-6">
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                  {auditData ? (
-                    <PackagingImageInspector packaging={auditData.packaging_analysis} />
-                  ) : (
-                    <div className="text-center py-12 text-slate-500 text-sm">
-                      Run an audit first to inspect physical packaging labels.
-                    </div>
-                  )}
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { label: 'Markets Supported', value: '12+', color: 'bg-primary-600' },
+                { label: 'Compliance Checks', value: '50+', color: 'bg-emerald-600' },
+                { label: 'Rule Citations', value: '200+', color: 'bg-indigo-600' },
+                { label: 'Hash Verified', value: '100%', color: 'bg-amber-600' },
+              ].map((s, i) => (
+                <div key={i} className="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                  <div className={`w-8 h-1 rounded-full ${s.color} mb-3`} />
+                  <p className="text-3xl font-black text-white">{s.value}</p>
+                  <p className="text-xs text-slate-400 mt-1">{s.label}</p>
                 </div>
-
-                {/* Multi-angle packaging dropzone */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                  <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-                    <span>📷</span> Multi-Angle Packaging Upload & Forensic OCR
-                  </h3>
-                  <p className="text-xs text-slate-400 mb-4">
-                    Upload front label, back ingredients, and barcode panels simultaneously to trigger automatic 3-way discrepancy checks.
-                  </p>
-                  <MultiPackagingDropzone
-                    onImagesSelected={(front, back) => {
-                      const updated = {
-                        ...currentInput,
-                        front_image_base64: front,
-                        back_image_base64: back,
-                      };
-                      setCurrentInput(updated);
-                      executeAudit(updated);
-                    }}
-                    isLoading={isLoading}
-                  />
-                </div>
-              </div>
-            )}
-
-            {packagingTab === 'documents' && (
-              <div className="space-y-6">
-                <DocumentChecklist
-                  documents={auditData?.required_documents}
-                  targetMarkets={currentInput.destination_markets}
-                  productCategory={auditData?.extracted_attributes?.category || 'cosmetics'}
-                />
-              </div>
-            )}
+              ))}
+            </div>
           </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            WORKSPACE 3: CUSTOMS RISK RADAR & GIS TRADE MAPS
-           ══════════════════════════════════════════════════════════════ */}
-        {activeWorkspace === 'radar' && (
-          <div className="space-y-6">
-            {auditData ? (
-              <>
-                {/* Map Mode Switcher */}
-                <div className="flex items-center justify-between bg-slate-900/90 border border-slate-800 p-3 rounded-2xl">
-                  <div className="flex items-center space-x-2">
-                    <button
-                      type="button"
-                      onClick={() => setRadarMapMode('compliance')}
-                      className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                        radarMapMode === 'compliance'
-                          ? 'bg-sky-600 text-white shadow-md'
-                          : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-                      }`}
-                    >
-                      <Globe className="w-3.5 h-3.5" />
-                      <span>Statutory Compliance Heatmap (GIS)</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setRadarMapMode('trade')}
-                      className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                        radarMapMode === 'trade'
-                          ? 'bg-indigo-600 text-white shadow-md'
-                          : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-                      }`}
-                    >
-                      <ArrowRightLeft className="w-3.5 h-3.5" />
-                      <span>Global Trade Corridors & Tariffs</span>
-                    </button>
-                  </div>
-
-                  <span className="text-[11px] text-slate-400 hidden sm:inline">
-                    Interactive GIS powered by OpenStreetMap & CartoDB Dark Matter
-                  </span>
-                </div>
-
-                {/* Leaflet Map Rendering */}
-                {radarMapMode === 'compliance' ? (
-                  <LeafletComplianceMap
-                    auditData={auditData}
-                    selectedCountry={selectedHeatmapCountry}
-                    onSelectCountry={(code) => setSelectedHeatmapCountry(code)}
-                  />
-                ) : (
-                  <LeafletTradeMap
-                    currentInput={currentInput}
-                    auditData={auditData}
-                    onSelectCountry={(code) => setSelectedHeatmapCountry(code)}
-                  />
-                )}
-
-                {/* Customs Seizure Radar with live calculations */}
-                <CustomsSeizureRadar radar={auditData.customs_radar} />
-
-                {/* HS Tariff Arbitrage */}
-                <HSTariffArbitrageCard hsTariff={auditData.hs_tariff} />
-
-                {/* Trade Economics Advisor */}
-                <TradeEconomicsAdvisor economics={auditData.trade_economics} />
-              </>
-            ) : (
-              <div className="text-center py-12 text-slate-500 text-sm bg-slate-900 border border-slate-800 rounded-2xl">
-                Run an audit first to evaluate customs seizure exposure and trade economics.
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            WORKSPACE 4: REMEDIATION & 1-CLICK EXPORT
-           ══════════════════════════════════════════════════════════════ */}
-        {activeWorkspace === 'remediation' && (
-          <div className="space-y-6">
-            {auditData ? (
-              <>
-                <div className="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl">
-                  <div>
-                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                      <span>⚡</span> 1-Click Amazon & Shopify Export Bundle
-                    </h2>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      Ready-to-copy compliant bullets, Shopify customs metafields, and packaging print artwork specs.
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      type="button"
-                      onClick={() => setIsExportPackOpen(true)}
-                      className="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold rounded-lg shadow-md shadow-orange-500/20 text-xs flex items-center gap-1.5 transition-all"
-                    >
-                      <span>⚡</span> View Export Pack Modal
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleExportPdf}
-                      disabled={isPdfLoading}
-                      className="px-3.5 py-2 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg shadow-md shadow-sky-600/20 text-xs flex items-center gap-1.5 transition-all disabled:opacity-50"
-                    >
-                      <span>📄</span> {isPdfLoading ? 'Generating...' : 'Download PDF Dossier'}
-                    </button>
-                  </div>
-                </div>
-
-                <RemediationDiffView
-                  remediation={auditData.remediation}
-                  onApplyFix={handleApplyFix}
-                />
-              </>
-            ) : (
-              <div className="text-center py-12 text-slate-500 text-sm bg-slate-900 border border-slate-800 rounded-2xl">
-                Run an audit first to generate compliant rewrites and export packs.
-              </div>
-            )}
-          </div>
-        )}
-
-      </main>
+        </div>
+      </section>
 
       {/* ── Footer ── */}
-      <footer className="mt-auto border-t border-slate-900 bg-slate-950 py-4 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>LexPort · Agentic Cross-Border Compliance Co-Pilot · PS13 Master Build</span>
-          <span className="font-mono text-[11px] text-slate-600">
-            EU Digital Omnibus AI Act (August 2026) Audit Ready · Zero Unsourced Assertions
-          </span>
+      <footer className="bg-slate-950 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 bg-primary-600 rounded-lg flex items-center justify-center">
+              <Scale className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-black text-white text-lg">LexPort</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-900 text-primary-400 border border-primary-800">CO-PILOT</span>
+          </div>
+          <p className="text-xs text-slate-500 text-center">
+            © 2026 LexPort · EU AI Act Compliant · SHA-256 Hash Chain Audit Trail · Zero Unsourced Assertions
+          </p>
+          <div className="flex gap-4 text-xs text-slate-500">
+            <Link href="/login"  className="hover:text-slate-300 transition-colors">Sign In</Link>
+            <Link href="/signup" className="hover:text-slate-300 transition-colors">Sign Up</Link>
+            <Link href="/audit/new" className="hover:text-slate-300 transition-colors">Run Audit</Link>
+          </div>
         </div>
       </footer>
-
-      {/* ── Global Modals & Floating Assistants ── */}
-      <HashVerificationModal
-        isOpen={isHashVerifierOpen}
-        onClose={() => setIsHashVerifierOpen(false)}
-        auditData={auditData || undefined}
-      />
-
-      <CopilotIntelligenceModal
-        isOpen={isCopilotOpen}
-        onClose={() => setIsCopilotOpen(false)}
-      />
-
-      <ComplianceChatbotModal
-        isOpen={isChatbotOpen}
-        onClose={() => setIsChatbotOpen(false)}
-        initialProductContext={auditData}
-      />
-
-      <ExportPackModal
-        isOpen={isExportPackOpen}
-        onClose={() => setIsExportPackOpen(false)}
-        exportPack={auditData?.export_pack}
-        productTitle={currentInput.title}
-      />
     </div>
   );
 }

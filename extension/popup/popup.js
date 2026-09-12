@@ -85,30 +85,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // 6. Handle Audit Button
-  auditBtn.addEventListener("click", () => {
-    auditBtn.innerText = "⚡ Auditing...";
-    auditBtn.disabled = true;
+  // 6. Handle Audit Buttons
+  const geminiBtn = document.getElementById("lx-btn-audit-gemini");
+
+  function triggerTabAudit(enableGemini) {
+    if (auditBtn) auditBtn.disabled = true;
+    if (geminiBtn) geminiBtn.disabled = true;
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tab = tabs[0];
       if (tab && tab.id) {
-        chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          func: () => {
-            const pill = document.querySelector("#lexport-pill");
-            if (pill) {
-              pill.click();
-            } else {
-              alert("LexPort content script is initializing on this page. Please refresh the page if needed.");
+        chrome.tabs.sendMessage(
+          tab.id,
+          { action: "TRIGGER_AUDIT_FROM_POPUP", enableGemini },
+          (response) => {
+            if (chrome.runtime.lastError || !response) {
+              // Fallback script execution if message listener wasn't registered yet
+              chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                func: (withGemini) => {
+                  window.__lexport_requested_gemini = withGemini;
+                  const pill = document.querySelector("#lexport-pill");
+                  if (pill) pill.click();
+                },
+                args: [enableGemini]
+              });
             }
+            setTimeout(() => {
+              window.close();
+            }, 300);
           }
-        }, () => {
-          setTimeout(() => {
-            window.close(); // Close popup once drawer is opened on tab
-          }, 300);
-        });
+        );
       }
     });
-  });
+  }
+
+  if (auditBtn) {
+    auditBtn.addEventListener("click", () => {
+      auditBtn.innerText = "⚡ Scanning...";
+      triggerTabAudit(false);
+    });
+  }
+
+  if (geminiBtn) {
+    geminiBtn.addEventListener("click", () => {
+      geminiBtn.innerText = "✨ Running Gemini AI...";
+      triggerTabAudit(true);
+    });
+  }
 });

@@ -68,26 +68,38 @@ class ComplianceSupervisor:
         target_markets = listing.destination_markets or ["US", "EU", "UK", "CA", "JP"]
         full_text = f"{listing.title}\n{listing.description}"
 
-        # 0. Single Consolidated Gemini Prompt (Attribute Extraction + Vision OCR + Remediation Rewrite)
-        u_extracted, u_packaging, u_remediation = await self.unified_engine.execute_unified_reasoning(
-            listing=listing,
-            target_markets=target_markets
-        )
+        # Check if caller explicitly requested Gemini AI Reasoning via button
+        enable_gemini = getattr(listing, "enable_gemini", False)
+        u_extracted, u_packaging, u_remediation = None, None, None
+
+        # 0. Single Consolidated Gemini Prompt (ONLY executed when enable_gemini is True)
+        if enable_gemini:
+            u_extracted, u_packaging, u_remediation = await self.unified_engine.execute_unified_reasoning(
+                listing=listing,
+                target_markets=target_markets
+            )
 
         # 1. Attribute Extraction (informal text -> structured technical parameters)
         if u_extracted:
             extracted: ExtractedAttributes = u_extracted
-        else:
+        elif enable_gemini:
             extracted: ExtractedAttributes = await self.extractor.extract(
                 title=listing.title,
                 description=listing.description,
                 raw_text=full_text
             )
+        else:
+            # Deterministic fast offline extractor (Zero LLM, 100% heuristic)
+            extracted: ExtractedAttributes = self.extractor._extract_heuristics(
+                title=listing.title,
+                description=listing.description,
+                full_text=full_text
+            )
 
         # 1b. Multi-Modal Vision OCR & Multi-Lingual Rosetta Stone Packaging Inspection
         if u_packaging:
             packaging_analysis: PackagingAnalysisResult = u_packaging
-        else:
+        elif enable_gemini:
             packaging_analysis: PackagingAnalysisResult = await self.ocr_engine.inspect_packaging(
                 image_base64=listing.image_base64,
                 image_url=listing.image_url,
@@ -97,6 +109,14 @@ class ComplianceSupervisor:
                 listing_title=listing.title,
                 category_hint=listing.category_hint or "cosmetics",
                 target_markets=target_markets
+            )
+        else:
+            # Deterministic fast packaging inspection (Zero LLM)
+            packaging_analysis: PackagingAnalysisResult = self.ocr_engine._synthesize_packaging_analysis(
+                title=listing.title,
+                category=listing.category_hint or "cosmetics",
+                target_markets=target_markets,
+                barcode_raw=listing.barcode_raw,
             )
 
         # 1c. 3-Way Triangulation (Listing Copy vs Physical Packaging Reality vs Destination Law)
@@ -251,8 +271,17 @@ class ComplianceSupervisor:
         # 9. Remediation / Auto-Rewrite Engine
         if u_remediation:
             remediation_result: RemediationResult = u_remediation
-        else:
+        elif enable_gemini:
             remediation_result: RemediationResult = await self.rewriter.rewrite(
+                title=listing.title,
+                description=listing.description,
+                extracted=extracted,
+                violations=critical_violations,
+                target_markets=target_markets,
+            )
+        else:
+            # Deterministic fast offline rewriter (Zero LLM)
+            remediation_result: RemediationResult = self.rewriter._rewrite_fallback(
                 title=listing.title,
                 description=listing.description,
                 extracted=extracted,
@@ -317,4 +346,5 @@ class ComplianceSupervisor:
             trade_economics=trade_economics,
             citations=citations_list,
             is_hash_valid=True,
+            ai_reasoning_applied=bool(u_extracted),
         )

@@ -1,7 +1,15 @@
-import { ListingInput, AuditResponse, PresetListing, TradeEconomicsItem, ProductComplianceVerificationResponse, VerificationPreset } from './types';
+import { 
+  ListingInput, 
+  AuditResponse, 
+  PresetListing, 
+  TradeEconomicsItem, 
+  ProductComplianceVerificationResponse, 
+  VerificationPreset 
+} from './types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
+// ── Core Compliance Audit ───────────────────────────────
 export async function runComplianceAudit(input: ListingInput): Promise<AuditResponse> {
   const res = await fetch(`${API_BASE}/compliance/audit`, {
     method: 'POST',
@@ -15,12 +23,26 @@ export async function runComplianceAudit(input: ListingInput): Promise<AuditResp
   return res.json();
 }
 
+export async function fetchInspections(): Promise<any[]> {
+  const res = await fetch(`${API_BASE}/compliance/inspections`);
+  if (!res.ok) throw new Error('Backend failed to fetch inspections');
+  return res.json();
+}
+
+export async function fetchInspectionById(inspectionId: string): Promise<any> {
+  const res = await fetch(`${API_BASE}/compliance/inspections/${encodeURIComponent(inspectionId)}`);
+  if (!res.ok) throw new Error('Failed to fetch inspection');
+  return res.json();
+}
+
+// ── Listings / Presets ───────────────────────────────────
 export async function fetchPresets(): Promise<PresetListing[]> {
   const res = await fetch(`${API_BASE}/listings/presets`);
   if (!res.ok) throw new Error('Failed to fetch presets');
   return res.json();
 }
 
+// ── Scraper ──────────────────────────────────────────────
 export async function scrapeListingUrl(url: string): Promise<any> {
   const res = await fetch(`${API_BASE}/scraper/scrape`, {
     method: 'POST',
@@ -31,6 +53,7 @@ export async function scrapeListingUrl(url: string): Promise<any> {
   return res.json();
 }
 
+// ── Hash Chain ───────────────────────────────────────────
 export async function verifyComplianceHash(payload: any): Promise<any> {
   const res = await fetch(`${API_BASE}/hashes/verify`, {
     method: 'POST',
@@ -47,6 +70,17 @@ export async function getHashChain(): Promise<any> {
   return res.json();
 }
 
+export async function getRules(country?: string, category?: string): Promise<any[]> {
+  const params = new URLSearchParams();
+  if (country && country !== 'ALL') params.append('country', country);
+  if (category && category !== 'ALL') params.append('category', category);
+  const qs = params.toString() ? `?${params.toString()}` : '';
+  const res = await fetch(`${API_BASE}/compliance/rules${qs}`);
+  if (!res.ok) throw new Error('Failed to fetch rules library');
+  return res.json();
+}
+
+// ── Regulatory Simulator ─────────────────────────────────
 export async function getSimulationStatus(): Promise<Record<string, boolean>> {
   const res = await fetch(`${API_BASE}/simulator/status`);
   if (!res.ok) throw new Error('Failed to fetch simulation status');
@@ -63,6 +97,7 @@ export async function toggleSimulation(simulationId: string, isActive: boolean):
   return res.json();
 }
 
+// ── Intelligence / Copilot NL-to-SQL ─────────────────────
 export async function queryIntelligence(query: string): Promise<any> {
   const res = await fetch(`${API_BASE}/intelligence/query`, {
     method: 'POST',
@@ -76,6 +111,43 @@ export async function queryIntelligence(query: string): Promise<any> {
   return res.json();
 }
 
+// ── HS Code Classification ──────────────────────────────
+export async function fetchHsClassification(query: string, categoryHint?: string): Promise<any> {
+  const res = await fetch(`${API_BASE}/intelligence/classify-hs`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, category_hint: categoryHint }),
+  });
+  if (!res.ok) throw new Error('Failed to classify HS code');
+  return res.json();
+}
+
+// ── AI Description Generator ─────────────────────────────
+export async function generateDescription(
+  params: string | { title: string; key_features?: string; target_market?: string },
+  keywords?: string
+): Promise<any> {
+  const title = typeof params === 'string' ? params : params.title;
+  const kw = typeof params === 'string' ? (keywords || '') : (params.key_features || '');
+  const market = typeof params === 'object' && params.target_market ? params.target_market : 'US';
+  
+  const res = await fetch(`${API_BASE}/intelligence/generate-description`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ product_name: title, keywords: kw, target_market: market }),
+  });
+  if (!res.ok) throw new Error('Failed to generate description');
+  return res.json();
+}
+
+// ── Heat Map ─────────────────────────────────────────────
+export async function fetchHeatmapData(): Promise<any[]> {
+  const res = await fetch(`${API_BASE}/compliance/heatmap`);
+  if (!res.ok) throw new Error('Failed to fetch heatmap data');
+  return res.json();
+}
+
+// ── Reports / PDF ─────────────────────────────────────────
 export async function downloadPdfReport(auditData: AuditResponse): Promise<void> {
   const res = await fetch(`${API_BASE}/reports/pdf`, {
     method: 'POST',
@@ -94,6 +166,21 @@ export async function downloadPdfReport(auditData: AuditResponse): Promise<void>
   window.URL.revokeObjectURL(downloadUrl);
 }
 
+// ── Economics & Markets ──────────────────────────────────
+export async function fetchEconomics(hsCode?: string): Promise<any> {
+  const url = hsCode ? `${API_BASE}/economics?hs_code=${encodeURIComponent(hsCode)}` : `${API_BASE}/economics`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Failed to fetch economics');
+  return res.json();
+}
+
+export async function fetchMarketEconomicsReference(): Promise<Record<string, any>> {
+  const res = await fetch(`${API_BASE}/economics/markets`);
+  if (!res.ok) throw new Error('Failed to fetch market economics reference');
+  return res.json();
+}
+
+// ── Chatbot & Trade Advisor ──────────────────────────────
 export async function sendChatMessage(message: string, history?: any[], context?: any): Promise<any> {
   const res = await fetch(`${API_BASE}/chatbot/message`, {
     method: 'POST',
@@ -136,7 +223,7 @@ export async function fetchSupportedCountries(): Promise<any> {
   return res.json();
 }
 
-// ── Compliance Confidence & Dependency Graph API ──
+// ── Compliance Confidence & Dependency Graph API ──────────
 export async function fetchComplianceConfidence(
   auditData: any,
   targetMarket?: string,
@@ -213,11 +300,3 @@ export async function fetchVerificationPresets(): Promise<VerificationPreset[]> 
   if (!res.ok) throw new Error('Failed to fetch verification presets');
   return res.json();
 }
-
-export async function fetchMarketEconomicsReference(): Promise<Record<string, any>> {
-  const res = await fetch(`${API_BASE}/economics/markets`);
-  if (!res.ok) throw new Error('Failed to fetch market economics reference');
-  return res.json();
-}
-
-

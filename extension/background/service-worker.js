@@ -129,6 +129,7 @@ async function handleAuditListing(listingPayload, tabId) {
   if (!listingPayload.country_of_origin) {
     listingPayload.country_of_origin = profile.originCountry || "India";
   }
+  listingPayload.enable_gemini = Boolean(listingPayload.enable_gemini);
 
   console.log(`[LexPort Service Worker] Calling ${apiUrl}/compliance/audit for seller ${profile.sellerId}...`);
 

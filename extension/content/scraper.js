@@ -212,7 +212,11 @@
         closeDrawer();
       } else {
         openDrawer();
-        if (!currentAudit && !isAuditing) {
+        if (window.__lexport_requested_gemini !== undefined) {
+          const withGemini = window.__lexport_requested_gemini;
+          window.__lexport_requested_gemini = undefined;
+          triggerAudit({ enableGemini: withGemini });
+        } else if (!currentAudit && !isAuditing) {
           renderPreScanView();
         }
       }
@@ -258,9 +262,14 @@
 
         <div class="lx-product-title-row" style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
           <span class="lx-product-title-text" id="lx-drawer-title">Detecting product listing...</span>
-          <button id="lx-btn-rescan" style="display:none; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38BDF8; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0;">
-            🔄 Re-Scan
-          </button>
+          <div style="display: flex; gap: 6px; flex-shrink: 0;">
+            <button id="lx-btn-rescan" style="display:none; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38BDF8; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap;" title="Re-scan with deterministic statutory rules">
+              ⚡ Scan
+            </button>
+            <button id="lx-btn-header-gemini" style="display:none; background: linear-gradient(135deg, rgba(79, 70, 229, 0.35), rgba(6, 182, 212, 0.35)); border: 1px solid #818CF8; color: #C7D2FE; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap;" title="Run Gemini AI multi-agent deep reasoning">
+              ✨ Gemini AI
+            </button>
+          </div>
         </div>
         <div class="lx-market-chips">
           <span class="lx-market-chip ${selectedMarkets.includes('US') ? 'lx-active' : ''}" data-market="US" style="cursor:pointer;" title="Click to toggle US compliance review">🇺🇸 US</span>
@@ -296,8 +305,9 @@
     // Bind Close Event
     drawer.querySelector("#lx-close-btn").addEventListener("click", closeDrawer);
 
-    // Bind Re-Scan Event
-    drawer.querySelector("#lx-btn-rescan")?.addEventListener("click", triggerAudit);
+    // Bind Re-Scan Events
+    drawer.querySelector("#lx-btn-rescan")?.addEventListener("click", () => triggerAudit({ enableGemini: false }));
+    drawer.querySelector("#lx-btn-header-gemini")?.addEventListener("click", () => triggerAudit({ enableGemini: true }));
 
     // Bind Market Chips Toggle Events
     const marketChips = drawer.querySelectorAll(".lx-market-chip");
@@ -378,19 +388,27 @@
           </div>
         </div>
 
-        <!-- THE DEDICATED START SCAN BUTTON -->
-        <button class="lx-btn-primary" id="lx-btn-start-scan" style="width: 100%; padding: 14px; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35); cursor: pointer; border-radius: 10px;">
-          <span>⚡</span>
-          <span>Start Compliance Scan</span>
-        </button>
+        <!-- TWO DEDICATED BUTTONS: DETERMINISTIC & GEMINI LLM -->
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button class="lx-btn-primary" id="lx-btn-start-scan" style="width: 100%; padding: 13px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35); cursor: pointer; border-radius: 8px;">
+            <span>⚡</span>
+            <span>Start Statutory Scan (Deterministic — 0ms LLM)</span>
+          </button>
+          <button class="lx-btn-gemini" id="lx-btn-start-gemini" style="width: 100%; padding: 13px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #4F46E5, #06B6D4); color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);">
+            <span>✨</span>
+            <span>Run Gemini AI Deep Reasoning (LLM)</span>
+          </button>
+        </div>
 
-        <div style="font-size: 11px; color: #64748B; margin-top: 12px;">
-          🔒 Scanning will not start until you click this button.
+        <div style="font-size: 11px; color: #64748B; margin-top: 12px; line-height: 1.4;">
+          🔒 Deterministic scan audits 82+ statutory rules with 0 LLM calls.<br>
+          ✨ Click <strong>Run Gemini AI</strong> only when you want multi-agent LLM reasoning.
         </div>
       </div>
     `;
 
-    drawerBody.querySelector("#lx-btn-start-scan")?.addEventListener("click", triggerAudit);
+    drawerBody.querySelector("#lx-btn-start-scan")?.addEventListener("click", () => triggerAudit({ enableGemini: false }));
+    drawerBody.querySelector("#lx-btn-start-gemini")?.addEventListener("click", () => triggerAudit({ enableGemini: true }));
   }
 
   function updateHeaderSellerInfo() {
@@ -424,19 +442,21 @@
   /**
    * 4. Trigger Audit via Background Service Worker
    */
-  async function triggerAudit() {
+  async function triggerAudit(options = {}) {
     if (isAuditing) return;
     isAuditing = true;
+    const enableGemini = Boolean(options.enableGemini);
 
     const pill = document.querySelector("#lexport-pill");
     if (pill) {
       pill.className = "lx-status-auditing";
-      pill.querySelector(".lx-pill-label").innerText = "Auditing Law...";
+      pill.querySelector(".lx-pill-label").innerText = enableGemini ? "Gemini Reasoning..." : "Auditing Law...";
     }
 
     const drawerTitle = document.querySelector("#lx-drawer-title");
     const drawerBody = document.querySelector("#lx-drawer-body");
     const listingData = scrapeListingData();
+    listingData.enable_gemini = enableGemini;
 
     if (drawerTitle) {
       drawerTitle.innerText = listingData.title;
@@ -445,9 +465,9 @@
     if (drawerBody) {
       drawerBody.innerHTML = `
         <div style="text-align: center; padding: 60px 20px;">
-          <div style="font-size: 28px; margin-bottom: 12px; animation: lx-pulse 1.2s infinite;">🛡️</div>
-          <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Auditing Against 5 Government Codices</div>
-          <div style="font-size: 12px; color: #94A3B8;">Checking eCFR (US), EUR-Lex (EU), Health Canada, and Japan PMDA...</div>
+          <div style="font-size: 28px; margin-bottom: 12px; animation: lx-pulse 1.2s infinite;">${enableGemini ? '✨' : '🛡️'}</div>
+          <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">${enableGemini ? 'Executing Single-Prompt Gemini AI Reasoning' : 'Auditing Against 5 Government Codices'}</div>
+          <div style="font-size: 12px; color: #94A3B8;">${enableGemini ? 'Multi-agent attribute extraction, vision packaging audit & statutory rewrite...' : 'Checking eCFR (US), EUR-Lex (EU), Health Canada, and Japan PMDA (0ms LLM)...'}</div>
         </div>
       `;
     }
@@ -462,6 +482,8 @@
           currentAudit = response.audit;
           const rescanBtn = document.querySelector("#lx-btn-rescan");
           if (rescanBtn) rescanBtn.style.display = "block";
+          const headerGeminiBtn = document.querySelector("#lx-btn-header-gemini");
+          if (headerGeminiBtn) headerGeminiBtn.style.display = "block";
           updatePillVerdict(currentAudit);
           renderActiveTab();
           updateDeepLink(currentAudit.inspection_id);
@@ -475,12 +497,18 @@
                 <div style="margin-top: 10px; font-size: 11px; color: #94A3B8;">
                   Make sure your FastAPI server is running with: <code>py -3.10 -m uvicorn backend.api.main:app --reload</code>
                 </div>
-                <button class="lx-btn-primary" id="lx-retry-btn" style="margin-top: 14px; width: 100%;">
-                  🔄 Retry Audit
-                </button>
+                <div style="display: flex; gap: 8px; margin-top: 14px;">
+                  <button class="lx-btn-primary" id="lx-retry-btn" style="flex: 1;">
+                    🔄 Retry Statutory
+                  </button>
+                  <button class="lx-btn-gemini" id="lx-retry-gemini-btn" style="flex: 1; background: linear-gradient(135deg, #4F46E5, #06B6D4); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; padding: 10px;">
+                    ✨ Retry Gemini AI
+                  </button>
+                </div>
               </div>
             `;
-            drawerBody.querySelector("#lx-retry-btn")?.addEventListener("click", triggerAudit);
+            drawerBody.querySelector("#lx-retry-btn")?.addEventListener("click", () => triggerAudit({ enableGemini: false }));
+            drawerBody.querySelector("#lx-retry-gemini-btn")?.addEventListener("click", () => triggerAudit({ enableGemini: true }));
           }
           if (pill) {
             pill.className = "lx-status-warning";
@@ -573,7 +601,27 @@
       ? `Includes $${(fees.inventory_risk_usd || 0).toLocaleString()} inventory at risk + $${(fees.port_demurrage_quarantine_usd || 0).toLocaleString()} demurrage + $${(fees.statutory_civil_penalties_usd || 0).toLocaleString()} statutory penalties.`
       : `Zero customs hold exposure detected. Product pre-cleared for cross-border export.`;
 
+    const geminiBannerHtml = currentAudit.ai_reasoning_applied
+      ? `
+        <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #34D399;">
+          <span>✨ <strong>Gemini AI Active:</strong> Multi-agent grounded reasoning applied</span>
+          <span style="font-family: monospace; background: rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px;">Tier 2 Grounded</span>
+        </div>
+      `
+      : `
+        <div style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.16), rgba(6, 182, 212, 0.16)); border: 1px solid rgba(79, 70, 229, 0.4); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: #818CF8;">✨ Enhance with Gemini LLM</div>
+            <div style="font-size: 10px; color: #94A3B8;">Run AI semantic intent extraction & rewrite</div>
+          </div>
+          <button id="lx-btn-radar-gemini" style="background: linear-gradient(135deg, #4F46E5, #06B6D4); color: white; border: none; font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; box-shadow: 0 2px 8px rgba(79,70,229,0.3);">
+            ✨ Run Gemini
+          </button>
+        </div>
+      `;
+
     container.innerHTML = `
+      ${geminiBannerHtml}
       <div class="lx-radar-card">
         <div class="lx-gauge-wrapper">
           <svg class="lx-gauge-svg" width="90" height="90">
@@ -631,6 +679,8 @@
         </div>
       </div>
     `;
+
+    container.querySelector("#lx-btn-radar-gemini")?.addEventListener("click", () => triggerAudit({ enableGemini: true }));
   }
 
   function renderRemediationTab(container) {
@@ -647,7 +697,27 @@
           "Pre-Flight Cleared: Clean structure and function claims optimized for compliant Amazon marketplace listing."
         ];
 
+    const geminiRemedyBanner = currentAudit.ai_reasoning_applied
+      ? `
+        <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #34D399;">
+          <span>✨ <strong>Gemini AI Auto-Rewrite Active:</strong> AI-scrubbed bullets ready</span>
+          <span style="font-family: monospace; background: rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px;">Single-Prompt Verified</span>
+        </div>
+      `
+      : `
+        <div style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.16), rgba(6, 182, 212, 0.16)); border: 1px solid rgba(79, 70, 229, 0.4); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: #818CF8;">✨ Enhance Bullets with Gemini LLM</div>
+            <div style="font-size: 10px; color: #94A3B8;">Generate custom AI bullets & contextual diffs</div>
+          </div>
+          <button id="lx-btn-remedy-gemini" style="background: linear-gradient(135deg, #4F46E5, #06B6D4); color: white; border: none; font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; box-shadow: 0 2px 8px rgba(79,70,229,0.3);">
+            ✨ Run Gemini Rewrite
+          </button>
+        </div>
+      `;
+
     container.innerHTML = `
+      ${geminiRemedyBanner}
       <div class="lx-remediation-actions">
         <button class="lx-btn-primary" id="lx-btn-replace-page">
           ⚡ Replace in Amazon Page
@@ -699,6 +769,11 @@
       navigator.clipboard.writeText(bullets.join("\n\n"));
       e.target.innerText = "✓ Copied!";
       setTimeout(() => { e.target.innerText = "📋 Copy 5 Bullets"; }, 2000);
+    });
+
+    // Bind Gemini Rewrite Action
+    container.querySelector("#lx-btn-remedy-gemini")?.addEventListener("click", () => {
+      triggerAudit({ enableGemini: true });
     });
   }
 
@@ -875,6 +950,24 @@
       renderPreScanView();
     }
   }, 1500);
+
+  // 7. Popup & Background Message Listener
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "TRIGGER_AUDIT_FROM_POPUP") {
+      openDrawer();
+      triggerAudit({ enableGemini: Boolean(request.enableGemini) });
+      sendResponse({ success: true });
+      return true;
+    }
+    if (request.action === "OPEN_DRAWER") {
+      openDrawer();
+      if (!currentAudit && !isAuditing) {
+        renderPreScanView();
+      }
+      sendResponse({ success: true });
+      return true;
+    }
+  });
 
   // Self-initialization
   injectFloatingPill();

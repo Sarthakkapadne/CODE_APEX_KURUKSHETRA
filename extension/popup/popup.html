@@ -50,9 +50,14 @@
     <div class="lx-card">
       <div class="lx-card-header">Active Marketplace Listing</div>
       <div class="lx-page-title" id="lx-active-title">Detecting page...</div>
-      <button class="lx-btn-audit" id="lx-btn-audit-tab">
-        ⚡ Start Compliance Scan
-      </button>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+        <button class="lx-btn-audit" id="lx-btn-audit-tab" style="cursor: pointer;" title="Instant deterministic review against government codices">
+          ⚡ Start Statutory Scan (Deterministic — 0ms)
+        </button>
+        <button class="lx-btn-gemini" id="lx-btn-audit-gemini" style="background: linear-gradient(135deg, #4F46E5, #06B6D4); color: white; border: none; border-radius: 8px; padding: 10px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);" title="Run consolidated Gemini AI multi-agent reasoning & statutory rewrite">
+          ✨ Run Gemini AI Deep Reasoning (LLM)
+        </button>
+      </div>
     </div>
 
     <!-- Destination Markets -->

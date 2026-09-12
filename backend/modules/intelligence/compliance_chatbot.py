@@ -69,8 +69,7 @@ class ComplianceChatbot:
         self.doc_engine = DocumentMatrixEngine()
         self.models_to_try = [
             "gemini-3.6-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-flash-latest"
+            "gemini-3.5-flash"
         ]
         self._rules_cache: Dict[str, Any] = {}
         self._trade_cache: Dict[str, Any] = {}

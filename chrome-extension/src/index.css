@@ -1,0 +1,301 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --navy: #0F172A;
+  --bg: #F8FAFC;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #F8FAFC;
+  color: #0F172A;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #F1F5F9; border-radius: 9999px; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* ── Sidebar scrollbar ── */
+.sidebar-scroll::-webkit-scrollbar { width: 3px; }
+.sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 9999px; }
+
+/* ── Glassmorphism Panels ── */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.97);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -6px rgba(37, 99, 235, 0.10), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+  border-color: rgba(147, 197, 253, 0.7);
+}
+
+/* ── Background Patterns ── */
+.radial-bg {
+  background-image: radial-gradient(circle at 50% 0%, rgba(219, 234, 254, 0.45) 0%, rgba(248, 250, 252, 0) 65%);
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 45%, #F0F9FF 100%);
+}
+
+/* ── Glow Effects ── */
+.blue-glow {
+  box-shadow: 0 0 30px -8px rgba(37, 99, 235, 0.30);
+}
+
+.blue-gradient-text {
+  background: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Animated Gradient Orb (Hero) ── */
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(20px, -15px) scale(1.04); }
+  66%       { transform: translate(-15px, 10px) scale(0.97); }
+}
+
+.hero-orb {
+  animation: orbFloat 12s ease-in-out infinite;
+}
+
+/* ── Status Badge System ── */
+.badge-pass {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80;
+}
+.badge-warn {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/80;
+}
+.badge-fail {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80;
+}
+.badge-esc {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80;
+}
+
+/* ── Pulsing Status Dots ── */
+.pulse-dot-green { @apply relative flex h-2 w-2; }
+.pulse-dot-green::before {
+  content: '';
+  @apply absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping;
+}
+.pulse-dot-green::after {
+  content: '';
+  @apply relative inline-flex h-2 w-2 rounded-full bg-emerald-500;
+}
+
+.pulse-dot-blue { @apply relative flex h-2 w-2; }
+.pulse-dot-blue::before {
+  content: '';
+  @apply absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75 animate-ping;
+}
+.pulse-dot-blue::after {
+  content: '';
+  @apply relative inline-flex h-2 w-2 rounded-full bg-blue-600;
+}
+
+.pulse-dot-amber { @apply relative flex h-2 w-2; }
+.pulse-dot-amber::before {
+  content: '';
+  @apply absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 animate-ping;
+}
+.pulse-dot-amber::after {
+  content: '';
+  @apply relative inline-flex h-2 w-2 rounded-full bg-amber-500;
+}
+
+/* ── Shimmer Skeleton Loader ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E8EFFE 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: 12px;
+}
+
+/* ── Drawer Slide-In ── */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes slideInUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+@keyframes countUp {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+.animate-slide-in-right { animation: slideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-slide-in-up    { animation: slideInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-in        { animation: fadeIn 0.3s ease-in-out forwards; }
+.animate-scale-in       { animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-count-up       { animation: countUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+/* ── Feature Cards Hover Lift ── */
+.feature-card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s ease;
+}
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -6px rgba(37, 99, 235, 0.10), 0 2px 6px -2px rgba(0,0,0,0.04);
+}
+
+/* ── Chat Message Bubbles ── */
+.chat-user {
+  background: #2563EB;
+  color: #FFFFFF;
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 4px 14px -4px rgba(37, 99, 235, 0.30);
+}
+.chat-user p { color: #FFFFFF !important; }
+.chat-user .text-slate-400 { color: rgba(255,255,255,0.6) !important; }
+
+.chat-assistant {
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px 18px 18px 18px;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Compliance Matrix ── */
+.matrix-container {
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
+  overflow-x: auto;
+}
+.matrix-container thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #F8FAFC;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Notification Badge ── */
+.notif-dot {
+  @apply absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500 border-2 border-white;
+}
+
+/* ── Country Readiness Bar ── */
+.readiness-bar {
+  height: 6px;
+  border-radius: 9999px;
+  background: #E2E8F0;
+  overflow: hidden;
+}
+.readiness-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Confidence Ring ── */
+.confidence-ring {
+  transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Progress Step Connector ── */
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, #BFDBFE, #E2E8F0);
+}
+.step-connector.active { background: linear-gradient(90deg, #2563EB, #93C5FD); }
+
+/* ── Matrix Cell Status Colors ── */
+.cell-pass       { @apply bg-emerald-50 text-emerald-700 border-emerald-200; }
+.cell-warning    { @apply bg-amber-50 text-amber-700 border-amber-200; }
+.cell-violation  { @apply bg-rose-50 text-rose-700 border-rose-200; }
+.cell-escalation { @apply bg-indigo-50 text-indigo-700 border-indigo-200; }
+
+/* ── PDF Preview Overlay ── */
+.pdf-preview-overlay {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Tooltip ── */
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+  z-index: 999;
+}
+.tooltip-trigger:hover .tooltip,
+.tooltip-trigger:focus-within .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ── Hero Floating Card Animation ── */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes floatX {
+  0%, 100% { transform: translateX(0px); }
+  50%       { transform: translateX(5px); }
+}
+.float-card-1 { animation: floatY 5s ease-in-out infinite; }
+.float-card-2 { animation: floatY 6s ease-in-out infinite 1s; }
+.float-card-3 { animation: floatX 7s ease-in-out infinite 0.5s; }
+
+/* ── Audit Progress Steps ── */
+@keyframes stepPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
+}
+.step-active {
+  animation: stepPulse 1.5s ease-in-out infinite;
+}
+
+/* ── Input focus enhancement ── */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+}
+
+/* ── Prevent layout shift on scrollbar appear ── */
+html { scroll-behavior: smooth; }
+
+/* ── Table zebra stripes ── */
+.table-zebra tbody tr:nth-child(even) { background-color: #F8FAFC; }
+.table-zebra tbody tr:hover           { background-color: #EFF6FF; transition: background-color 0.15s ease; }

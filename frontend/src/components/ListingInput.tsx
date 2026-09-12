@@ -14,10 +14,15 @@ interface ListingInputProps {
 const DEFAULT_MARKETS = [
   { code: 'US', name: 'United States', flag: '🇺🇸', standard: 'FDA / EPA / CPSC' },
   { code: 'EU', name: 'European Union', flag: '🇪🇺', standard: 'EC 1223 / CE / RoHS' },
+  { code: 'DE', name: 'Germany', flag: '🇩🇪', standard: 'BfR / VerpackG / ElektroG' },
   { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', standard: 'OPSS / UKCA / GB BPR' },
   { code: 'CA', name: 'Canada', flag: '🇨🇦', standard: 'Health Canada / CCPSA' },
   { code: 'JP', name: 'Japan', flag: '🇯🇵', standard: 'PMDA / PSE / METI' },
   { code: 'AU', name: 'Australia', flag: '🇦🇺', standard: 'TGA / ACCC / ABF' },
+  { code: 'IN', name: 'India', flag: '🇮🇳', standard: 'CBIC / FSSAI / CDSCO / BIS' },
+  { code: 'CN', name: 'China', flag: '🇨🇳', standard: 'GACC / NMPA / SAMR / CCC' },
+  { code: 'VN', name: 'Vietnam', flag: '🇻🇳', standard: 'Customs / DAV / CR Mark' },
+  { code: 'BR', name: 'Brazil', flag: '🇧🇷', standard: 'Receita Federal / ANVISA' },
 ];
 
 export default function ListingInput({ onAudit, isLoading, onScrape }: ListingInputProps) {
@@ -139,6 +144,7 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
       source_url: activeTab === 'url' ? urlInput : undefined,
       image_url: selectedImageUrl || undefined,
       images: scrapedImages.length > 0 ? scrapedImages : undefined,
+      enable_gemini: true,
     });
   };
 

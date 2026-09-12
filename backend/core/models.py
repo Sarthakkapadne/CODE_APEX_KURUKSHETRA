@@ -18,6 +18,7 @@ class ListingInput(BaseModel):
     front_image_base64: Optional[str] = None
     back_image_base64: Optional[str] = None
     barcode_raw: Optional[str] = None
+    enable_gemini: Optional[bool] = False
 
 
 class ExtractedAttributes(BaseModel):
@@ -285,3 +286,4 @@ class AuditResponse(BaseModel):
     trade_economics: List[TradeEconomicsItem] = []
     citations: List[str] = []
     is_hash_valid: bool = True
+    ai_reasoning_applied: bool = False

@@ -679,3 +679,16 @@
   border-color: rgba(59, 130, 246, 0.7);
   transform: translateY(-1px);
 }
+
+.lx-btn-gemini {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lx-btn-gemini:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.lx-btn-gemini:active {
+  transform: translateY(0);
+}

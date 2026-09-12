@@ -31,15 +31,30 @@ const MARKET_FLAGS: Record<string, string> = {
 };
 
 interface ComplianceMatrixProps {
-  auditData: AuditResponse | null;
+  auditData?: AuditResponse | null;
+  matrix?: Record<string, ComplianceCheckResult[]>;
+  destinationMarkets?: string[];
+  summaryByCountry?: Record<string, { pass: number; warning: number; violation: number; escalation: number }>;
   selectedCountryFilter?: string | null;
   onSelectFix?: (fixText: string) => void;
 }
 
-export default function ComplianceMatrix({ auditData, selectedCountryFilter, onSelectFix }: ComplianceMatrixProps) {
+export default function ComplianceMatrix({
+  auditData,
+  matrix,
+  destinationMarkets,
+  summaryByCountry,
+  selectedCountryFilter,
+  onSelectFix
+}: ComplianceMatrixProps) {
   const [selectedCheck, setSelectedCheck] = useState<ComplianceCheckResult | null>(null);
 
-  if (!auditData) {
+  const activeMatrix = matrix || auditData?.matrix;
+  const countries = destinationMarkets || auditData?.destination_markets || [];
+  const activeSummary = summaryByCountry || auditData?.summary_by_country || {};
+  const overallVerdict = auditData?.overall_verdict || 'COMPLIANCE AUDIT';
+
+  if (!activeMatrix || countries.length === 0) {
     return (
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-500">
         Run an inspection audit to populate the simultaneous multi-market compliance matrix.
@@ -47,11 +62,9 @@ export default function ComplianceMatrix({ auditData, selectedCountryFilter, onS
     );
   }
 
-  const countries = auditData.destination_markets || [];
-
   // Helper to find relevant checks for a (country, category) cell
   const getCellChecks = (country: string, category: string): ComplianceCheckResult[] => {
-    const list = auditData.matrix?.[country] || [];
+    const list = activeMatrix[country] || [];
     return list.filter(item => item.category === category);
   };
 
@@ -84,15 +97,15 @@ export default function ComplianceMatrix({ auditData, selectedCountryFilter, onS
         <div className="flex items-center space-x-2 self-start sm:self-auto">
           <span className="text-xs font-semibold text-slate-400">Overall Clearance:</span>
           <span className={`px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider border ${
-            auditData.overall_verdict === 'COMPLIANT'
+            overallVerdict === 'COMPLIANT'
               ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-              : auditData.overall_verdict === 'IMPORT_PROHIBITED'
+              : overallVerdict === 'IMPORT_PROHIBITED'
               ? 'bg-rose-500/20 text-rose-400 border-rose-500/40 animate-pulse'
-              : auditData.overall_verdict === 'REMEDIATION_REQUIRED'
+              : overallVerdict === 'REMEDIATION_REQUIRED'
               ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
               : 'bg-purple-500/20 text-purple-400 border-purple-500/40'
           }`}>
-            {auditData.overall_verdict.replace('_', ' ')}
+            {overallVerdict.replace('_', ' ')}
           </span>
         </div>
       </div>
@@ -106,7 +119,7 @@ export default function ComplianceMatrix({ auditData, selectedCountryFilter, onS
                 Regulatory Category
               </th>
               {countries.map(code => {
-                const summary = auditData.summary_by_country[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
+                const summary = activeSummary[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
                 const isColSelected = selectedCountryFilter === code;
                 return (
                   <th key={code} className={`py-3 px-3 text-center border-l border-slate-800/60 transition-all ${
