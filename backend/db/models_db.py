@@ -88,3 +88,83 @@ class AuditHashBlock(Base):
     payload_canonical = Column(Text, nullable=False)
     timestamp_utc = Column(String(50), nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class RuleRecord(Base):
+    __tablename__ = "rules"
+
+    id = Column(String(50), primary_key=True)  # rule_id / check_code
+    country_code = Column(String(10), nullable=False, index=True)
+    category = Column(String(100), nullable=False, index=True)
+    name = Column(String(255), nullable=False)
+    directive_code = Column(String(255), nullable=True)
+    statute_citation = Column(String(255), nullable=True)
+    severity = Column(String(50), default="violation")
+    condition_type = Column(String(100), default="claim_detection")
+    required_field = Column(String(100), nullable=True)
+    expected_requirement = Column(Text, nullable=True)
+    explanation = Column(Text, nullable=True)
+    fix_suggestion = Column(Text, nullable=True)
+    conditions_json = Column(Text, default="{}")
+    requirements_json = Column(Text, default="[]")
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class TradeMarketRecord(Base):
+    __tablename__ = "trade_markets"
+
+    country_code = Column(String(10), primary_key=True)
+    country_name = Column(String(100), nullable=False)
+    flag = Column(String(20), nullable=False)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    governing_agency = Column(String(255), nullable=False)
+    currency_code = Column(String(10), default="USD")
+    currency_symbol = Column(String(10), default="$")
+    usd_exchange_rate = Column(Float, default=1.0)
+    de_minimis_threshold_usd = Column(Float, default=800.0)
+    de_minimis_description = Column(String(255), default="$800 Section 321")
+    standard_duty_rate = Column(String(100), default="3-6%")
+    standard_duty_pct = Column(Float, default=0.04)
+    vat_gst_rate = Column(String(100), default="0%")
+    vat_gst_pct = Column(Float, default=0.0)
+    air_transit_days = Column(Integer, default=3)
+    ocean_transit_days = Column(Integer, default=24)
+    complexity_score = Column(Integer, default=50)
+    trade_status = Column(String(50), default="open")
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class RequiredDocumentRecord(Base):
+    __tablename__ = "required_documents"
+
+    id = Column(String(50), primary_key=True)
+    country_code = Column(String(10), nullable=False, index=True)
+    category = Column(String(100), nullable=False, index=True)
+    doc_name = Column(String(255), nullable=False)
+    is_mandatory = Column(Boolean, default=True)
+    statutory_citation = Column(String(255), nullable=True)
+    governing_agency = Column(String(255), nullable=True)
+    issuing_authority = Column(String(255), nullable=True)
+    description = Column(Text, nullable=True)
+    seller_action_needed = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class ListingPresetRecord(Base):
+    __tablename__ = "listing_presets"
+
+    id = Column(String(100), primary_key=True)
+    title = Column(String(500), nullable=False)
+    description = Column(Text, nullable=False)
+    brand_name = Column(String(255), default="Generic Brand")
+    category = Column(String(100), default="cosmetics")
+    price = Column(Float, default=29.99)
+    currency = Column(String(10), default="USD")
+    country_of_origin = Column(String(100), default="India")
+    source_url = Column(String(1000), nullable=True)
+    icon = Column(String(20), default="📦")
+    sub_label = Column(String(255), nullable=True)
+    images_json = Column(Text, default="[]")
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
