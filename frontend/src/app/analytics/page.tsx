@@ -135,7 +135,7 @@ function AnalyticsContent() {
                             dataKey={result.y_axis}
                             nameKey={result.x_axis} 
                             stroke="none"
-                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            label={({ name, percent }: { name?: string; percent?: number }) => `${name ?? ''} ${((percent ?? 0) * 100).toFixed(0)}%`}
                           >
                             {result.data.map((_: any, index: number) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

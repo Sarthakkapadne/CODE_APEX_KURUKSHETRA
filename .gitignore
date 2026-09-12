@@ -1,8 +1,13 @@
 # Node dependencies & Next.js build
 node_modules/
 frontend/node_modules/
+my_frontend/node_modules/
+my_frontend_backup/node_modules/
+chrome-extension/node_modules/
 .next/
 frontend/.next/
+my_frontend/.next/
+my_frontend_backup/.next/
 out/
 frontend/out/
 
