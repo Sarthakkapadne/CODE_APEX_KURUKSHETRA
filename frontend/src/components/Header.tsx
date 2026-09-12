@@ -11,6 +11,7 @@ interface HeaderProps {
   viewMode: ViewMode;
   onToggleViewMode: (mode: ViewMode) => void;
   onOpenIntelligence: () => void;
+  onOpenChatbot?: () => void;
   onOpenHashVerifier: () => void;
   onOpenExportPack?: () => void;
   onExportPdf: () => void;
@@ -23,6 +24,7 @@ export default function Header({
   viewMode,
   onToggleViewMode,
   onOpenIntelligence,
+  onOpenChatbot,
   onOpenHashVerifier,
   onOpenExportPack,
   onExportPdf,
@@ -116,14 +118,27 @@ export default function Header({
             </span>
           </button>
 
+          {/* Compliance & Trade AI Chatbot */}
+          {onOpenChatbot && (
+            <button
+              onClick={onOpenChatbot}
+              className="flex items-center space-x-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 via-indigo-600 to-purple-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-500/25 ring-1 ring-white/20 transition-all hover:scale-102"
+              title="Open Compliance & Trade AI Chatbot"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-sky-200 animate-pulse" />
+              <span className="hidden sm:inline">Compliance Chatbot</span>
+              <span className="sm:hidden">Chatbot</span>
+            </button>
+          )}
+
           {/* AI Copilot */}
           <button
             onClick={onOpenIntelligence}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-indigo-950/60 border border-indigo-700/60 hover:bg-indigo-900/60 hover:border-indigo-400 text-indigo-200 text-xs font-bold transition-all shadow-sm"
-            title="Ask Regulatory AI Copilot"
+            title="Ask Regulatory AI Copilot (NL-to-SQL)"
           >
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="hidden sm:inline">AI Copilot</span>
+            <span className="hidden sm:inline">NL-to-SQL</span>
           </button>
 
           {/* 1-Click Amazon & Shopify Export Pack */}

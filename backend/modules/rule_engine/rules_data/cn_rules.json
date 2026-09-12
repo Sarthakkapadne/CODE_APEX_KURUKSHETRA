@@ -1,0 +1,314 @@
+{
+  "country_code": "CN",
+  "country_name": "China",
+  "regulatory_bodies": [
+    "SAMR (State Administration for Market Regulation)",
+    "GACC (General Administration of Customs of China)",
+    "NMPA (National Medical Products Administration)",
+    "MIIT",
+    "CNCA"
+  ],
+  "rules": [
+    {
+      "rule_code": "CN-CERT-01",
+      "rule_id": "CN-CERT-01",
+      "market": "China",
+      "country_code": "CN",
+      "name": "China Compulsory Certification (CCC Mark) for Toys & Walkers",
+      "title": "China Compulsory Certification (CCC Mark) for Toys & Walkers",
+      "directive_code": "Regulations on Compulsory Product Certification / CNCA-C22-01:2020",
+      "statute_citation": "Regulations on Compulsory Product Certification / CNCA-C22-01:2020",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "toys",
+        "children's products",
+        "baby_walker"
+      ],
+      "trigger_terms": [
+        "non-ccc toy china",
+        "unregistered baby walker china"
+      ],
+      "severity": "violation",
+      "expected_requirement": "All toys and wheeled strollers/walkers must hold China Compulsory Certification (CCC) and bear the CCC mark before customs entry.",
+      "explanation": "Importing or selling toys without CCC certification is strictly prohibited. Goods are denied entry at GACC ports and subject to severe administrative penalties.",
+      "fix_suggestion": "Obtain CCC factory audit and type test report according to GB 6675 standards and display CCC mark.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "China",
+          "CN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-CERT-CCC",
+          "name": "China Compulsory Certification (CCC)",
+          "type": "marking",
+          "mandatory": true,
+          "description": "CCC certificate and physical CCC mark.",
+          "standards": [
+            "GB 6675",
+            "CNCA Rules"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "CN-COSM-01",
+      "rule_id": "CN-COSM-01",
+      "market": "China",
+      "country_code": "CN",
+      "name": "NMPA Cosmetic Notification & Filing (CSAR)",
+      "title": "NMPA Cosmetic Notification & Filing (CSAR)",
+      "directive_code": "Cosmetic Supervision and Administration Regulation (CSAR, State Council Decree No. 727)",
+      "statute_citation": "Cosmetic Supervision and Administration Regulation (CSAR, State Council Decree No. 727)",
+      "category": "Classification Status",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty",
+        "creams",
+        "personal_care",
+        "haircare",
+        "body"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Imported ordinary cosmetics must be filed with NMPA and obtain an electronic filing voucher before commercial importation.",
+      "explanation": "Selling imported cosmetics in China without NMPA filing or appointment of a Domestic Responsible Person is an illegal act under CSAR.",
+      "fix_suggestion": "Appoint a Chinese domestic responsible person, compile cosmetic safety dossier, and complete online NMPA filing.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "China",
+          "CN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LIC-NMPA",
+          "name": "NMPA Filing Voucher",
+          "type": "registration",
+          "mandatory": true,
+          "description": "NMPA electronic filing record.",
+          "standards": [
+            "CSAR Decree 727"
+          ]
+        }
+      ],
+      "required_field": "nmpa_filing_voucher"
+    },
+    {
+      "rule_code": "CN-CLAIM-01",
+      "rule_id": "CN-CLAIM-01",
+      "market": "China",
+      "country_code": "CN",
+      "name": "PRC Advertising Law Medical Claim Ban on Consumer Products",
+      "title": "PRC Advertising Law Medical Claim Ban on Consumer Products",
+      "directive_code": "Advertising Law of the People's Republic of China, Article 17",
+      "statute_citation": "Advertising Law of the People's Republic of China, Article 17",
+      "category": "Claim Wording",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "cures arthritis",
+        "treats arthritis",
+        "heals chronic pain",
+        "medical anti-inflammatory china"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Advertising for non-medical products must not involve disease treatment functions or use medical jargon that confuses goods with pharmaceuticals.",
+      "explanation": "Advertising cosmetics or wellness balms with claims to cure arthritis or heal chronic inflammation violates Article 17 with fines up to 1 million RMB.",
+      "fix_suggestion": "Remove therapeutic and curative terms. Limit claims to daily skin moisturizing and skin protection.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "China",
+          "CN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-AD-SUBSTANTIATION",
+          "name": "NMPA Claim Efficacy Substantiation",
+          "type": "document",
+          "mandatory": true,
+          "description": "Efficacy evaluation summary published on NMPA portal.",
+          "standards": [
+            "CSAR Art 22"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "CN-LBL-01",
+      "rule_id": "CN-LBL-01",
+      "market": "China",
+      "country_code": "CN",
+      "name": "Mandatory Simplified Chinese Labeling Standard (GB 5296)",
+      "title": "Mandatory Simplified Chinese Labeling Standard (GB 5296)",
+      "directive_code": "GB 5296.1-2012 / GB 5296.3-2008 (Instructions for Use of Products of Consumer Interest)",
+      "statute_citation": "GB 5296.1-2012 / GB 5296.3-2008 (Instructions for Use of Products of Consumer Interest)",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "toys",
+        "kitchenware",
+        "electronics",
+        "household"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "All imported consumer goods must have instructions and labels in standardized Simplified Chinese characters containing product name, manufacturer/importer address, net content, shelf life, and safety warnings.",
+      "explanation": "Goods entering general trade in China without Chinese labels cannot pass GACC customs inspection.",
+      "fix_suggestion": "Affix compliant Simplified Chinese label adhering to GB 5296 standards on the smallest retail packaging unit.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "China",
+          "CN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-CHINESE",
+          "name": "Simplified Chinese Label Verification",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Standardized Chinese label per GB 5296.",
+          "standards": [
+            "GB 5296.1-2012"
+          ]
+        }
+      ],
+      "required_field": "simplified_chinese_label"
+    },
+    {
+      "rule_code": "CN-FOOD-01",
+      "rule_id": "CN-FOOD-01",
+      "market": "China",
+      "country_code": "CN",
+      "name": "GB 4806 Food Contact Materials Safety Standard",
+      "title": "GB 4806 Food Contact Materials Safety Standard",
+      "directive_code": "GB 4806.1-2016 / GB 4806.9-2016 (National Food Safety Standard for Food Contact Materials)",
+      "statute_citation": "GB 4806.1-2016 / GB 4806.9-2016 (National Food Safety Standard for Food Contact Materials)",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "kitchenware",
+        "cutting_boards"
+      ],
+      "trigger_terms": [
+        "heavy metal leaching china",
+        "toxic bamboo adhesive china"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Food contact cutting boards and kitchen utensils must comply with sensory requirements, migration limits, and declaration of compliance (DoC).",
+      "explanation": "Bamboo/wood cutting boards must not release sensory abnormalities, chemical migrants, or heavy metals exceeding GB 4806 limits.",
+      "fix_suggestion": "Verify compliance with GB 4806 testing and provide a formal Declaration of Compliance (DoC).",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "China",
+          "CN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-GB4806",
+          "name": "GB 4806 Food Contact Test Report",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Food contact test report & DoC.",
+          "standards": [
+            "GB 4806.1"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "CN-HAZ-01",
+      "rule_id": "CN-HAZ-01",
+      "market": "China",
+      "country_code": "CN",
+      "name": "GB 31241 Safety Standard for Lithium-ion Cells & Batteries",
+      "title": "GB 31241 Safety Standard for Lithium-ion Cells & Batteries",
+      "directive_code": "GB 31241-2022 (Lithium-ion Cells and Batteries Used in Portable Electronic Equipment)",
+      "statute_citation": "GB 31241-2022 (Lithium-ion Cells and Batteries Used in Portable Electronic Equipment)",
+      "category": "Hazmat/Shipping",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "hazmat_check",
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Lithium-ion batteries in consumer electronic devices must meet GB 31241 testing and CCC certification requirements.",
+      "explanation": "GACC customs requires verified safety testing and CCC certificate for lithium-ion power banks and portable electronic batteries.",
+      "fix_suggestion": "Test battery cells against GB 31241 and obtain CCC certification for the power pack.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "China",
+          "CN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-GB31241",
+          "name": "GB 31241 Battery Safety Test",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "GB 31241 test certificate.",
+          "standards": [
+            "GB 31241-2022"
+          ]
+        }
+      ]
+    }
+  ]
+}

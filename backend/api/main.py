@@ -21,7 +21,7 @@ from backend.db.session import engine, async_session
 from backend.db.models_db import Base
 from backend.db.seed_data import seed_database
 from backend.api.routers import (
-    compliance, listings, hashes, economics, simulator, reports, scraper, intelligence
+    compliance, listings, hashes, economics, simulator, reports, scraper, intelligence, chatbot, confidence, verification
 )
 
 settings = get_settings()
@@ -88,6 +88,11 @@ app.include_router(simulator.router,    prefix="/simulator",    tags=["Regulator
 app.include_router(reports.router,      prefix="/reports",      tags=["PDF Reports & Dossiers"])
 app.include_router(scraper.router,      prefix="/scraper",      tags=["E-Commerce Scraper"])
 app.include_router(intelligence.router, prefix="/intelligence", tags=["Intelligence Copilot"])
+app.include_router(chatbot.router,      prefix="/chatbot",      tags=["Compliance & Trade Chatbot"])
+app.include_router(confidence.router,   prefix="/compliance",   tags=["Compliance Confidence"])
+app.include_router(confidence.router,   prefix="/api",          tags=["Compliance Confidence API"])
+app.include_router(verification.router, prefix="/api/compliance", tags=["Rule Verification API"])
+app.include_router(verification.router, prefix="/compliance",     tags=["Rule Verification"])
 
 
 @app.get("/", tags=["Health"])

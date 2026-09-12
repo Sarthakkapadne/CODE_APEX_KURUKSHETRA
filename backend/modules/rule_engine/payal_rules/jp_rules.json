@@ -1,0 +1,48 @@
+{
+  "country_code": "JP",
+  "country_name": "Japan",
+  "regulatory_bodies": ["MHLW", "PMDA", "METI", "Japan Customs"],
+  "rules": [
+    {
+      "rule_code": "JP-CLASS-01",
+      "category": "Classification Status",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Pharmaceutical and Medical Devices Act (PMD Act) Article 2",
+      "title": "Cosmetics vs Quasi-Drug (Iyakubugaihin) Boundary",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
+      "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "antibacterial on skin", "whitening active"],
+      "severity": "violation",
+      "expected_requirement": "Quasi-Drug (Iyakubugaihin) pre-market approval required from MHLW/PMDA for active therapeutic, medicinal, or pharmacological claims.",
+      "explanation": "Japanese law strictly delineates Cosmetics (mild action only) from Quasi-drugs and Pharmaceuticals. Therapeutic claims are strictly prohibited for cosmetics and require years of clinical data for Quasi-drug approval.",
+      "fix_suggestion": "Tone down claims to basic skin moisturizing, cleansing, or beautifying expressions permitted under MHLW Notification No. 1339."
+    },
+    {
+      "rule_code": "JP-LBL-01",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "PMD Act Article 61 / Consumer Affairs Agency Act",
+      "title": "Mandatory Japanese Language Labeling & Licensed In-Country Caretaker (MAH)",
+      "condition_type": "mandatory_field",
+      "required_field": "japanese_labeling_mah",
+      "severity": "violation",
+      "expected_requirement": "Label in Japanese language with name and address of the licensed Marketing Authorization Holder (Seizouhanbaigyou).",
+      "explanation": "Imported cosmetics and goods cannot be sold in Japan with English-only labels. An authorized Japanese entity holding a primary distributor license must attach a compliant Japanese label.",
+      "fix_suggestion": "Partner with a licensed Japanese import distributor (MAH) to attach mandatory Japanese legal labels upon arrival."
+    },
+    {
+      "rule_code": "JP-CERT-01",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 3 Escalation",
+      "statute_citation": "Electrical Appliance and Material Safety Act (DENAN Law) / METI",
+      "title": "Mandatory PSE Mark Certification for Electrical Devices",
+      "condition_type": "certification_check",
+      "target_categories": ["electronics", "heated_devices", "rechargeable"],
+      "trigger_terms": ["lithium", "rechargeable battery", "li-ion", "heated wand", "electrical"],
+      "severity": "escalation",
+      "expected_requirement": "Circle PSE (Non-Specified Electrical Appliances) or Diamond PSE (Specified Electrical Appliances) mark and METI business notification.",
+      "explanation": "Electric consumer appliances and lithium-ion batteries with high volumetric energy density (>=400 Wh/L) must conform to Japanese technical standards and bear the PSE mark.",
+      "fix_suggestion": "Conduct testing against DENAN Ordinance Article 1 and affix the Circle PSE symbol."
+    }
+  ]
+}

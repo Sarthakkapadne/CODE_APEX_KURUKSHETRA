@@ -24,6 +24,9 @@ import MultiPackagingDropzone from '../components/MultiPackagingDropzone';
 import DocumentChecklist from '../components/DocumentChecklist';
 import dynamic from 'next/dynamic';
 import { ExportPackModal } from '../components/ExportPackModal';
+import ComplianceChatbotModal from '../components/ComplianceChatbotModal';
+import ComplianceConfidenceDashboard from '../components/ComplianceConfidenceDashboard';
+import RuleVerificationView from '../components/RuleVerificationView';
 import { ListingInput as ListingInputType, AuditResponse, TradeEconomicsItem } from '../lib/types';
 import { CASE_PRESETS } from '../lib/presets';
 import { runComplianceAudit, scrapeListingUrl, downloadPdfReport } from '../lib/api';
@@ -41,11 +44,14 @@ const LeafletComplianceMap = dynamic(() => import('../components/LeafletComplian
 const COUNTRY_FLAGS: Record<string, { flag: string; name: string }> = {
   US: { flag: '🇺🇸', name: 'United States' },
   EU: { flag: '🇪🇺', name: 'European Union' },
-  CA: { flag: '🇨🇦', name: 'Canada' },
   UK: { flag: '🇬🇧', name: 'United Kingdom' },
+  CA: { flag: '🇨🇦', name: 'Canada' },
   JP: { flag: '🇯🇵', name: 'Japan' },
   AU: { flag: '🇦🇺', name: 'Australia' },
   IN: { flag: '🇮🇳', name: 'India' },
+  DE: { flag: '🇩🇪', name: 'Germany' },
+  CN: { flag: '🇨🇳', name: 'China' },
+  VN: { flag: '🇻🇳', name: 'Vietnam' },
 };
 
 export default function HomePage() {
@@ -55,7 +61,7 @@ export default function HomePage() {
     brand_name: CASE_PRESETS[0].brand_name,
     price: CASE_PRESETS[0].price,
     country_of_origin: CASE_PRESETS[0].country_of_origin,
-    destination_markets: ['US', 'EU', 'UK', 'CA', 'JP', 'AU'],
+    destination_markets: ['US', 'EU', 'UK', 'CA', 'JP', 'AU', 'IN', 'DE', 'CN', 'VN'],
   });
 
 
@@ -69,13 +75,17 @@ export default function HomePage() {
   // Map switcher state: 'compliance' (CartoDB Dark Matter) | 'trade_corridors' (Leaflet distances)
   const [mapMode, setMapMode] = useState<'compliance' | 'trade_corridors'>('compliance');
 
+  // Filter for Market Entry Feasibility cards
+  const [feasibilityFilter, setFeasibilityFilter] = useState<'all' | 'blocked' | 'warning' | 'cleared'>('all');
+
   // Workspace active tab for deep inspection
-  const [activeTab, setActiveTab] = useState<'matrix' | 'customs_radar' | 'packaging' | 'documents' | 'remediation' | 'economics'>('matrix');
+  const [activeTab, setActiveTab] = useState<'matrix' | 'confidence' | 'verification' | 'customs_radar' | 'packaging' | 'documents' | 'remediation' | 'economics'>('matrix');
 
   // Modals & Interactivity
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
   const [isHashVerifierOpen, setIsHashVerifierOpen] = useState<boolean>(false);
   const [isExportPackOpen, setIsExportPackOpen] = useState<boolean>(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState<boolean>(false);
   const [selectedHeatmapCountry, setSelectedHeatmapCountry] = useState<string | null>(null);
 
   // Toast feedback state
@@ -143,6 +153,7 @@ export default function HomePage() {
         viewMode={viewMode}
         onToggleViewMode={setViewMode}
         onOpenIntelligence={() => setIsCopilotOpen(true)}
+        onOpenChatbot={() => setIsChatbotOpen(true)}
         onOpenHashVerifier={() => setIsHashVerifierOpen(true)}
         onOpenExportPack={() => setIsExportPackOpen(true)}
         onExportPdf={handleExportPdf}
@@ -238,74 +249,209 @@ export default function HomePage() {
                 </span>
               </div>
 
-              {/* Grid of Clean Status Cards */}
+              {/* Filter Tabs & Summary Counts */}
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center space-x-1.5 bg-slate-950/70 p-1 rounded-xl border border-slate-800 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setFeasibilityFilter('all')}
+                    className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+                      feasibilityFilter === 'all'
+                        ? 'bg-slate-800 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    All Markets ({auditData.destination_markets.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeasibilityFilter('cleared')}
+                    className={`px-2.5 py-1 rounded-lg font-medium transition-all flex items-center gap-1 ${
+                      feasibilityFilter === 'cleared'
+                        ? 'bg-emerald-950/80 border border-emerald-500/50 text-emerald-300'
+                        : 'text-emerald-400/80 hover:text-emerald-300'
+                    }`}
+                  >
+                    <span>✅ Cleared</span>
+                    <span className="text-[10px] px-1.5 py-0.2 bg-emerald-900/50 rounded-full font-mono">
+                      {auditData.destination_markets.filter(code => {
+                        const counts = auditData.summary_by_country?.[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
+                        return counts.violation === 0 && counts.escalation === 0 && counts.warning === 0;
+                      }).length}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeasibilityFilter('warning')}
+                    className={`px-2.5 py-1 rounded-lg font-medium transition-all flex items-center gap-1 ${
+                      feasibilityFilter === 'warning'
+                        ? 'bg-amber-950/80 border border-amber-500/50 text-amber-300'
+                        : 'text-amber-400/80 hover:text-amber-300'
+                    }`}
+                  >
+                    <span>⚠️ Warning</span>
+                    <span className="text-[10px] px-1.5 py-0.2 bg-amber-900/50 rounded-full font-mono">
+                      {auditData.destination_markets.filter(code => {
+                        const counts = auditData.summary_by_country?.[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
+                        return (counts.violation === 0 && counts.escalation === 0) && counts.warning > 0;
+                      }).length}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeasibilityFilter('blocked')}
+                    className={`px-2.5 py-1 rounded-lg font-medium transition-all flex items-center gap-1 ${
+                      feasibilityFilter === 'blocked'
+                        ? 'bg-rose-950/80 border border-rose-500/50 text-rose-300'
+                        : 'text-rose-400/80 hover:text-rose-300'
+                    }`}
+                  >
+                    <span>⛔ Blocked</span>
+                    <span className="text-[10px] px-1.5 py-0.2 bg-rose-900/50 rounded-full font-mono">
+                      {auditData.destination_markets.filter(code => {
+                        const counts = auditData.summary_by_country?.[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
+                        return counts.violation > 0 || counts.escalation > 0;
+                      }).length}
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Grid of Clean Status Cards Grounded in Real Rules */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {auditData.destination_markets.map(code => {
-                  const meta = COUNTRY_FLAGS[code] || { flag: '🌐', name: code };
-                  const counts = auditData.summary_by_country?.[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
-                  const eco = auditData.trade_economics?.find((e: TradeEconomicsItem) => e.country_code === code);
+                {auditData.destination_markets
+                  .filter(code => {
+                    if (feasibilityFilter === 'all') return true;
+                    const counts = auditData.summary_by_country?.[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
+                    const isBlocked = counts.violation > 0 || counts.escalation > 0;
+                    const isWarning = counts.warning > 0 && !isBlocked;
+                    const isCleared = !isBlocked && !isWarning;
+                    if (feasibilityFilter === 'blocked') return isBlocked;
+                    if (feasibilityFilter === 'warning') return isWarning;
+                    if (feasibilityFilter === 'cleared') return isCleared;
+                    return true;
+                  })
+                  .map(code => {
+                    const meta = COUNTRY_FLAGS[code] || { flag: '🌐', name: code };
+                    const counts = auditData.summary_by_country?.[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
+                    const eco = auditData.trade_economics?.find((e: TradeEconomicsItem) => e.country_code === code);
+                    const checks = auditData.matrix?.[code] || [];
+                    const violations = checks.filter(c => c.status === 'violation' || c.status === 'escalation');
+                    const warnings = checks.filter(c => c.status === 'warning');
 
-                  const isBlocked = counts.violation > 0 || counts.escalation > 0;
-                  const isWarning = counts.warning > 0 && !isBlocked;
-                  const isCleared = !isBlocked && !isWarning;
+                    const isBlocked = counts.violation > 0 || counts.escalation > 0;
+                    const isWarning = counts.warning > 0 && !isBlocked;
+                    const isCleared = !isBlocked && !isWarning;
 
-                  return (
-                    <div
-                      key={code}
-                      className={`p-4 rounded-xl border transition-all ${
-                        isBlocked
-                          ? 'bg-rose-950/20 border-rose-500/40 hover:border-rose-400'
-                          : isWarning
-                          ? 'bg-amber-950/20 border-amber-500/40 hover:border-amber-400'
-                          : 'bg-emerald-950/20 border-emerald-500/40 hover:border-emerald-400'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-2xl">{meta.flag}</span>
-                          <div>
-                            <strong className="text-xs text-white block">{meta.name}</strong>
-                            <span className="text-[10px] text-slate-400 font-mono">Market Code: {code}</span>
+                    // Extract actual statutory findings dynamically from rules
+                    const primaryIssue = violations[0] || warnings[0];
+                    const statutoryCitation = primaryIssue?.rule_citation;
+                    const findingExplanation = primaryIssue?.explanation || primaryIssue?.extracted_value;
+                    const fixTip = primaryIssue?.fix_suggestion;
+
+                    return (
+                      <div
+                        key={code}
+                        className={`p-4 rounded-xl border flex flex-col justify-between transition-all ${
+                          isBlocked
+                            ? 'bg-rose-950/20 border-rose-500/40 hover:border-rose-400'
+                            : isWarning
+                            ? 'bg-amber-950/20 border-amber-500/40 hover:border-amber-400'
+                            : 'bg-emerald-950/20 border-emerald-500/40 hover:border-emerald-400'
+                        }`}
+                      >
+                        <div>
+                          {/* Header: Flag + Name + Status Badge */}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-2xl">{meta.flag}</span>
+                              <div>
+                                <strong className="text-xs text-white block">{meta.name}</strong>
+                                <span className="text-[10px] text-slate-400 font-mono">Market Code: {code}</span>
+                              </div>
+                            </div>
+
+                            {/* Plain Status Badge */}
+                            <span className={`text-[10px] font-bold uppercase px-2.5 py-1 rounded-full border shrink-0 ${
+                              isBlocked
+                                ? 'bg-rose-500/20 text-rose-300 border-rose-500/50'
+                                : isWarning
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/50'
+                                : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
+                            }`}>
+                              {isBlocked ? '⛔ Blocked (Fix Needed)' : isWarning ? '⚠️ Fix Before Ship' : '✅ 100% Cleared'}
+                            </span>
+                          </div>
+
+                          {/* De Minimis, Duty & Statutory Checks count */}
+                          <div className="mt-3 pt-2.5 border-t border-slate-800/80 space-y-1.5 text-xs">
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="text-slate-400">De Minimis:</span>
+                              <strong className="text-slate-200 font-mono">
+                                {eco ? `${eco.de_minimis_currency} ${eco.de_minimis_threshold}` : 'Standard'}
+                              </strong>
+                            </div>
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="text-slate-400">Customs Duty:</span>
+                              <strong className="text-slate-200 font-mono">
+                                {eco?.estimated_duty_rate || 'Standard Rate'}
+                              </strong>
+                            </div>
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="text-slate-400">Statutory Checks:</span>
+                              <span className="font-mono text-[10px] text-slate-300">
+                                {counts.pass} Passed
+                                {counts.warning > 0 && <span className="text-amber-400 ml-1">· {counts.warning} Warn</span>}
+                                {(counts.violation + counts.escalation) > 0 && (
+                                  <span className="text-rose-400 ml-1">· {counts.violation + counts.escalation} Blocked</span>
+                                )}
+                              </span>
+                            </div>
+
+                            {/* Statutory Citation Badge if present */}
+                            {statutoryCitation && (
+                              <div className="pt-1">
+                                <span className={`inline-block text-[10px] font-mono font-bold px-2 py-0.5 rounded border truncate max-w-full ${
+                                  isBlocked
+                                    ? 'bg-rose-950/60 text-rose-300 border-rose-500/40'
+                                    : 'bg-amber-950/60 text-amber-300 border-amber-500/40'
+                                }`}>
+                                  Citation: {statutoryCitation}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Dynamic Explanation text from real statutory findings */}
+                            <p className="text-[11px] text-slate-300 leading-relaxed pt-1">
+                              {isBlocked
+                                ? (findingExplanation || 'Critical roadblock: Mandatory statutory requirement not met. Product cannot clear customs in this jurisdiction.')
+                                : isWarning
+                                ? (findingExplanation || 'Pre-shipment review required: Adjust packaging disclosures or claims prior to dispatch.')
+                                : (eco?.recommendation_summary || '100% Cleared: Fully eligible for duty-free de minimis import clearance with zero customs holds.')}
+                            </p>
+
+                            {/* Actionable fix tip if blocked or warning */}
+                            {fixTip && (
+                              <div className="mt-1.5 p-2 rounded-lg bg-slate-950/70 border border-slate-800/80 text-[10px] text-slate-300 flex items-start gap-1.5">
+                                <span className="text-sky-400 font-bold shrink-0">Action:</span>
+                                <span>{fixTip}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
 
-                        {/* Plain Status Badge */}
-                        <span className={`text-[10px] font-bold uppercase px-2.5 py-1 rounded-full border ${
-                          isBlocked
-                            ? 'bg-rose-500/20 text-rose-300 border-rose-500/50'
-                            : isWarning
-                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/50'
-                            : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
-                        }`}>
-                          {isBlocked ? '⛔ Blocked (Fix Needed)' : isWarning ? '⚠️ Fix Before Ship' : '✅ 100% Cleared'}
-                        </span>
-                      </div>
-
-                      <div className="mt-3 pt-2.5 border-t border-slate-800/80 space-y-1.5 text-xs">
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">De Minimis:</span>
-                          <strong className="text-slate-200 font-mono">
-                            {eco ? `${eco.de_minimis_currency} ${eco.de_minimis_threshold}` : 'Standard'}
-                          </strong>
+                        {/* Marketplace Sale Feasibility Footer */}
+                        <div className="mt-3 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px]">
+                          <span className="text-slate-500">Marketplace Feasibility:</span>
+                          <span className={`font-semibold ${
+                            isBlocked ? 'text-rose-400' : isWarning ? 'text-amber-400' : 'text-emerald-400'
+                          }`}>
+                            {isBlocked ? 'Unsellable (Detention Risk)' : isWarning ? 'Conditional Clearance' : 'Approved to Sell'}
+                          </span>
                         </div>
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">Customs Duty:</span>
-                          <strong className="text-slate-200 font-mono">
-                            {eco?.estimated_duty_rate || 'Standard Rate'}
-                          </strong>
-                        </div>
-
-                        <p className="text-[11px] text-slate-300 leading-relaxed pt-1">
-                          {isBlocked
-                            ? 'Critical roadblock: Unapproved medical or labeling claims will trigger customs detention. Apply 1-click fix below.'
-                            : isWarning
-                            ? 'Minor adjustment: Review net quantity or bilingual text on package to guarantee fast green-lane clearance.'
-                            : 'Fully eligible for duty-free de minimis import clearance with zero customs holds.'}
-                        </p>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
             </div>
 
@@ -610,6 +756,18 @@ export default function HomePage() {
               {[
                 { id: 'matrix', label: 'Compliance Matrix', icon: Scale, badge: auditData?.overall_verdict },
                 { 
+                  id: 'confidence', 
+                  label: 'Confidence Meter & Graph', 
+                  icon: ShieldCheck, 
+                  badge: 'Explainable DAG' 
+                },
+                { 
+                  id: 'verification', 
+                  label: 'Rule-by-Rule Verification', 
+                  icon: CheckSquare, 
+                  badge: 'Deterministic' 
+                },
+                { 
                   id: 'customs_radar', 
                   label: 'Customs Seizure Radar & HTS', 
                   icon: ShieldAlert, 
@@ -682,6 +840,14 @@ export default function HomePage() {
                   />
                 )}
 
+                {activeTab === 'confidence' && (
+                  <ComplianceConfidenceDashboard auditData={auditData} />
+                )}
+
+                {activeTab === 'verification' && (
+                  <RuleVerificationView auditData={auditData} />
+                )}
+
                 {activeTab === 'customs_radar' && (
                   <div className="space-y-4">
                     <CustomsSeizureRadar radar={auditData.customs_radar} />
@@ -723,7 +889,7 @@ export default function HomePage() {
                 )}
 
                 {activeTab === 'economics' && (
-                  <TradeEconomicsAdvisor economics={auditData.trade_economics} />
+                  <TradeEconomicsAdvisor economics={auditData.trade_economics} auditData={auditData} />
                 )}
               </>
             ) : (
@@ -748,13 +914,45 @@ export default function HomePage() {
 
       {/* ── Floating Toast Alert ── */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl bg-emerald-600 text-white font-bold shadow-2xl flex items-center gap-2 border border-emerald-400/50 animate-slideInUp">
+        <div className="fixed bottom-20 right-6 z-50 px-4 py-3 rounded-2xl bg-emerald-600 text-white font-bold shadow-2xl flex items-center gap-2 border border-emerald-400/50 animate-slideInUp">
           <CheckCircle2 className="w-4 h-4 text-emerald-200" />
           <span>{toastMessage}</span>
         </div>
       )}
 
+      {/* ── Floating AI Compliance Chatbot Launcher ── */}
+      <button
+        type="button"
+        onClick={() => setIsChatbotOpen(true)}
+        aria-label="Open AI Compliance & Trade Chatbot"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 hover:from-sky-500 hover:via-indigo-500 hover:to-purple-500 text-white font-semibold text-sm shadow-2xl shadow-indigo-600/40 hover:shadow-indigo-500/60 hover:scale-105 active:scale-95 border border-sky-300/30 transition-all duration-200 group"
+      >
+        <span className="relative flex h-2.5 w-2.5">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+        </span>
+        <Sparkles className="w-4 h-4 text-sky-200 group-hover:rotate-12 transition-transform" />
+        <span className="font-medium">Compliance Chatbot</span>
+      </button>
+
       {/* ── Global Modals ── */}
+      <ComplianceChatbotModal
+        isOpen={isChatbotOpen}
+        onClose={() => setIsChatbotOpen(false)}
+        initialProductContext={auditData ? {
+          title: currentInput.title,
+          price: currentInput.price,
+          country_of_origin: currentInput.country_of_origin,
+          destination_market: currentInput.destination_markets[0] || 'US',
+          category: auditData.extracted_attributes?.category,
+        } : {
+          title: currentInput.title,
+          price: currentInput.price,
+          country_of_origin: currentInput.country_of_origin,
+          destination_market: 'US',
+        }}
+      />
+
       <HashVerificationModal
         isOpen={isHashVerifierOpen}
         onClose={() => setIsHashVerifierOpen(false)}

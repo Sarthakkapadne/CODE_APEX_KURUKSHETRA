@@ -1,0 +1,313 @@
+{
+  "country_code": "DE",
+  "country_name": "Germany",
+  "regulatory_bodies": [
+    "BfR (Federal Institute for Risk Assessment)",
+    "BAuA (Federal Institute for Occupational Safety and Health)",
+    "ZSVR (LUCID Register)",
+    "German Customs (Zoll)",
+    "Stiftung EAR"
+  ],
+  "rules": [
+    {
+      "rule_code": "DE-PACK-01",
+      "rule_id": "DE-PACK-01",
+      "market": "Germany",
+      "country_code": "DE",
+      "name": "VerpackG Mandatory Registration in the LUCID Register & Dual System",
+      "title": "VerpackG Mandatory Registration in the LUCID Register & Dual System",
+      "directive_code": "Verpackungsgesetz (VerpackG) § 9 & § 7",
+      "statute_citation": "Verpackungsgesetz (VerpackG) § 9 & § 7",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "toys",
+        "kitchenware",
+        "electronics",
+        "household"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Every manufacturer or cross-border online seller shipping packaged goods to German consumers must be registered in the public LUCID register and participate in a dual system for packaging waste recycling.",
+      "explanation": "Non-registered sellers face a nationwide sales ban on all marketplaces (Amazon, eBay), fines up to €200,000, and marketplace account suspensions under VerpackG § 34.",
+      "fix_suggestion": "Register on the ZSVR LUCID portal, obtain a registration number, and contract with an accredited German dual system (e.g., Interseroh, Der Grüne Punkt).",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Germany",
+          "DE"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-REG-LUCID",
+          "name": "ZSVR LUCID Registration Certificate",
+          "type": "registration",
+          "mandatory": true,
+          "description": "Public LUCID packaging register number.",
+          "standards": [
+            "VerpackG § 9"
+          ]
+        }
+      ],
+      "required_field": "lucid_registration_number"
+    },
+    {
+      "rule_code": "DE-ELEC-01",
+      "rule_id": "DE-ELEC-01",
+      "market": "Germany",
+      "country_code": "DE",
+      "name": "ElektroG Mandatory WEEE Registration with Stiftung EAR",
+      "title": "ElektroG Mandatory WEEE Registration with Stiftung EAR",
+      "directive_code": "Elektro- und Elektronikgerätegesetz (ElektroG) § 6",
+      "statute_citation": "Elektro- und Elektronikgerätegesetz (ElektroG) § 6",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "certification_check",
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand",
+        "electrical"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Producers and cross-border sellers of electronic appliances must register with Stiftung EAR and obtain a WEEE registration number before offering electrical goods in Germany.",
+      "explanation": "Offering electronic devices without Stiftung EAR registration constitutes an administrative offence under ElektroG and results in instant marketplace delisting and customs confiscation.",
+      "fix_suggestion": "Appoint an authorized representative in Germany and secure a Stiftung EAR WEEE registration number.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Germany",
+          "DE"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-REG-EAR",
+          "name": "Stiftung EAR WEEE Registration",
+          "type": "registration",
+          "mandatory": true,
+          "description": "WEEE registration number.",
+          "standards": [
+            "ElektroG § 6"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "DE-LBL-01",
+      "rule_id": "DE-LBL-01",
+      "market": "Germany",
+      "country_code": "DE",
+      "name": "ProdSG § 6 Mandatory German Language Safety Instructions",
+      "title": "ProdSG § 6 Mandatory German Language Safety Instructions",
+      "directive_code": "Produktsicherheitsgesetz (ProdSG) § 6",
+      "statute_citation": "Produktsicherheitsgesetz (ProdSG) § 6",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "toys",
+        "electronics",
+        "kitchenware",
+        "household"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Consumer products must have operating instructions, safety warnings, and contact details of the EU manufacturer/importer in the German language.",
+      "explanation": "Products distributed in Germany with English-only safety warnings fail ProdSG requirements and are blocked by German market surveillance authorities.",
+      "fix_suggestion": "Provide accurate German translations for all operating manuals, safety warnings, and dosage directions.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Germany",
+          "DE"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-GERMAN",
+          "name": "German Language Safety Instructions",
+          "type": "marking",
+          "mandatory": true,
+          "description": "German text for warnings and manuals.",
+          "standards": [
+            "ProdSG § 6"
+          ]
+        }
+      ],
+      "required_field": "german_language_instructions"
+    },
+    {
+      "rule_code": "DE-FOOD-01",
+      "rule_id": "DE-FOOD-01",
+      "market": "Germany",
+      "country_code": "DE",
+      "name": "LFGB §§ 30/31 Food Contact Safety & German Knife-and-Fork Conformity",
+      "title": "LFGB §§ 30/31 Food Contact Safety & German Knife-and-Fork Conformity",
+      "directive_code": "Lebensmittel-, Bedarfsgegenstände- und Futtermittelgesetzbuch (LFGB) §§ 30/31",
+      "statute_citation": "Lebensmittel-, Bedarfsgegenstände- und Futtermittelgesetzbuch (LFGB) §§ 30/31",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "kitchenware",
+        "cutting_boards"
+      ],
+      "trigger_terms": [
+        "toxic bamboo finish germany",
+        "formaldehyde release cutting board"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Food contact articles must satisfy LFGB testing, proving no toxic migration of sensory substances, heavy metals, or volatile organic compounds into food.",
+      "explanation": "German customs and trade inspectors routinely test bamboo and wooden cutting boards for formaldehyde and PCP migration. Non-compliant items receive instant import bans.",
+      "fix_suggestion": "Provide LFGB accredited laboratory test report according to BfR Recommendations for food contact materials.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Germany",
+          "DE"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-LFGB",
+          "name": "LFGB Migration Certificate",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "LFGB sensory and migration testing.",
+          "standards": [
+            "LFGB §§ 30/31"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "DE-CLAIM-01",
+      "rule_id": "DE-CLAIM-01",
+      "market": "Germany",
+      "country_code": "DE",
+      "name": "Heilmittelwerbegesetz (HWG) § 3 Strict Advertising Restrictions",
+      "title": "Heilmittelwerbegesetz (HWG) § 3 Strict Advertising Restrictions",
+      "directive_code": "Heilmittelwerbegesetz (HWG) § 3 / Gesetz gegen den unlauteren Wettbewerb (UWG)",
+      "statute_citation": "Heilmittelwerbegesetz (HWG) § 3 / Gesetz gegen den unlauteren Wettbewerb (UWG)",
+      "category": "Claim Wording",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "cures arthritis",
+        "heilt arthritis",
+        "schmerzlinderung medizin",
+        "cures joint inflammation"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Strict ban on misleading health claims, cure promises, or disease relief advertising for non-prescription consumer products.",
+      "explanation": "Promising that a cosmetic cream 'heals arthritis' violates HWG § 3, exposing the seller to competitor cease-and-desist warnings (Abmahnung) with legal costs.",
+      "fix_suggestion": "Replace disease cure claims with cosmetic structure/function soothing descriptions.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Germany",
+          "DE"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-HWG",
+          "name": "HWG Compliant Advertising Verification",
+          "type": "document",
+          "mandatory": true,
+          "description": "Compliant advertising copy.",
+          "standards": [
+            "HWG § 3"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "DE-HAZ-01",
+      "rule_id": "DE-HAZ-01",
+      "market": "Germany",
+      "country_code": "DE",
+      "name": "Batteriegesetz (BattG) Battery Register Notification",
+      "title": "Batteriegesetz (BattG) Battery Register Notification",
+      "directive_code": "Batteriegesetz (BattG) § 4",
+      "statute_citation": "Batteriegesetz (BattG) § 4",
+      "category": "Hazmat/Shipping",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "hazmat_check",
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Producers and importers of batteries must be registered with Stiftung EAR and participate in a battery take-back scheme.",
+      "explanation": "Distributing rechargeable battery wands in Germany without BattG registration triggers immediate marketplace sanctions.",
+      "fix_suggestion": "Register battery models on the Stiftung EAR portal and contract with a recognized battery disposal system.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Germany",
+          "DE"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-REG-BATTG",
+          "name": "BattG Battery Registration",
+          "type": "registration",
+          "mandatory": true,
+          "description": "Stiftung EAR BattG registration.",
+          "standards": [
+            "BattG § 4"
+          ]
+        }
+      ]
+    }
+  ]
+}

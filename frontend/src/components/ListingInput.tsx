@@ -17,6 +17,10 @@ const AVAILABLE_MARKETS = [
   { code: 'CA', name: 'Canada', flag: '🇨🇦', standard: 'Health Canada / CCPSA' },
   { code: 'JP', name: 'Japan', flag: '🇯🇵', standard: 'PMDA / PSE / METI' },
   { code: 'AU', name: 'Australia', flag: '🇦🇺', standard: 'TGA / ACCC / ABF' },
+  { code: 'IN', name: 'India', flag: '🇮🇳', standard: 'CDSCO / BIS / FSSAI' },
+  { code: 'DE', name: 'Germany', flag: '🇩🇪', standard: 'BfR / VerpackG / WEEE' },
+  { code: 'CN', name: 'China', flag: '🇨🇳', standard: 'NMPA / CCC / GACC' },
+  { code: 'VN', name: 'Vietnam', flag: '🇻🇳', standard: 'DAV / CR / STAMEQ' },
 ];
 
 export default function ListingInput({ onAudit, isLoading, onScrape }: ListingInputProps) {
@@ -33,7 +37,9 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
   const [brandName, setBrandName] = useState(CASE_PRESETS[0].brand_name);
   const [price, setPrice] = useState<number | undefined>(CASE_PRESETS[0].price);
   const [countryOfOrigin, setCountryOfOrigin] = useState(CASE_PRESETS[0].country_of_origin);
-  const [selectedMarkets, setSelectedMarkets] = useState<string[]>(['US', 'EU', 'UK', 'CA', 'JP', 'AU']);
+  const [selectedMarkets, setSelectedMarkets] = useState<string[]>([
+    'US', 'EU', 'UK', 'CA', 'JP', 'AU', 'IN', 'DE', 'CN', 'VN'
+  ]);
 
   const handleSelectPreset = (preset: PresetListing) => {
     setSelectedPresetId(preset.id);
@@ -45,6 +51,17 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
     setScrapedPreview(null);
     setScrapeError(null);
     if (preset.source_url) setUrlInput(preset.source_url);
+
+    // Auto-trigger compliance audit so the entire dashboard updates dynamically
+    onAudit({
+      title: preset.title,
+      description: preset.description,
+      brand_name: preset.brand_name,
+      price: preset.price,
+      country_of_origin: preset.country_of_origin,
+      destination_markets: selectedMarkets,
+      source_url: preset.source_url,
+    });
   };
 
   const handleToggleMarket = (code: string) => {
@@ -113,13 +130,14 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
           <span className="text-[11px] text-slate-500 font-medium">Select a case study to stress-test LexPort</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
           {[
+            { id: 'preset-hair-dryer', icon: '💨', label: 'Hair Dryer', sub: 'EU LVD & REACH Plastic' },
             { id: 'preset-ayurvedic-cream', icon: '🌿', label: 'Ayurvedic Cream', sub: 'US FDA Drug vs Cosmetic' },
-            { id: 'preset-baby-walker', icon: '🚼', label: 'Baby Walker', sub: 'Canada Criminal Ban vs US/UK' },
+            { id: 'preset-baby-walker', icon: '🚼', label: 'Baby Walker', sub: 'Canada Criminal Ban' },
             { id: 'preset-cutting-board', icon: '🔪', label: 'Bamboo Board', sub: 'US EPA Pesticide Trap' },
-            { id: 'preset-sleep-positioner', icon: '🛌', label: 'Infant Sleep Wedge', sub: 'Safe Sleep Act Recall' },
-            { id: 'preset-heated-eye-wand', icon: '⚡', label: 'Heated Eye Wand', sub: 'Lithium Hazmat / CE Mark' },
+            { id: 'preset-sleep-positioner', icon: '🛌', label: 'Sleep Wedge', sub: 'Safe Sleep Act Recall' },
+            { id: 'preset-heated-eye-wand', icon: '⚡', label: 'Heated Wand', sub: 'Lithium Hazmat / CE' },
           ].map(p => {
             const isSelected = selectedPresetId === p.id;
             return (

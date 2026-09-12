@@ -1,0 +1,311 @@
+{
+  "country_code": "VN",
+  "country_name": "Vietnam",
+  "regulatory_bodies": [
+    "STAMEQ (Standards, Metrology and Quality)",
+    "General Department of Vietnam Customs",
+    "Ministry of Health (MoH / DAV)",
+    "Ministry of Industry and Trade (MoIT)",
+    "MIC"
+  ],
+  "rules": [
+    {
+      "rule_code": "VN-TOY-01",
+      "rule_id": "VN-TOY-01",
+      "market": "Vietnam",
+      "country_code": "VN",
+      "name": "Mandatory CR Conformity Mark for Children's Toys (QCVN 3:2019/BKHCN)",
+      "title": "Mandatory CR Conformity Mark for Children's Toys (QCVN 3:2019/BKHCN)",
+      "directive_code": "National Technical Regulation QCVN 3:2019/BKHCN / Circular 09/2019/TT-BKHCN",
+      "statute_citation": "National Technical Regulation QCVN 3:2019/BKHCN / Circular 09/2019/TT-BKHCN",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "toys",
+        "children's products"
+      ],
+      "trigger_terms": [
+        "non-cr toy vietnam",
+        "uncertified toy vietnam"
+      ],
+      "severity": "violation",
+      "expected_requirement": "All toys manufactured domestically or imported into Vietnam must undergo state quality inspection, conform to QCVN 3:2019/BKHCN, and bear the CR Conformity Mark.",
+      "explanation": "Importing toys without the CR mark and certificate of conformity is a violation of Circular 09/2019/TT-BKHCN; uncertified consignments are held by Vietnam Customs.",
+      "fix_suggestion": "Submit product samples to an accredited Vietnamese conformity assessment body, receive the Certificate of Conformity, and affix the CR Mark.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Vietnam",
+          "VN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-MARK-CR",
+          "name": "CR Conformity Mark & Certificate",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Affixed CR mark and certificate.",
+          "standards": [
+            "QCVN 3:2019/BKHCN"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "VN-LBL-01",
+      "rule_id": "VN-LBL-01",
+      "market": "Vietnam",
+      "country_code": "VN",
+      "name": "Mandatory Vietnamese Sub-Labeling (Nhãn Phụ) Standard",
+      "title": "Mandatory Vietnamese Sub-Labeling (Nhãn Phụ) Standard",
+      "directive_code": "Decree No. 43/2017/ND-CP & Decree No. 111/2021/ND-CP on Goods Labels",
+      "statute_citation": "Decree No. 43/2017/ND-CP & Decree No. 111/2021/ND-CP on Goods Labels",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "toys",
+        "kitchenware",
+        "electronics",
+        "household"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Imported goods must have supplementary Vietnamese sub-labels (Nhãn phụ) displaying product name, origin, name and address of importer, manufacturing date, expiry, and safety warnings.",
+      "explanation": "Under Decree 43/2017, commercial goods sold in Vietnam without complete Vietnamese sub-labels are penalized and prohibited from retail circulation.",
+      "fix_suggestion": "Attach a supplementary Vietnamese label (Nhãn phụ) to the retail packaging prior to customs release and marketplace distribution.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Vietnam",
+          "VN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-VIETNAMESE",
+          "name": "Vietnamese Sub-Label (Nhãn phụ)",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Supplementary label in Vietnamese.",
+          "standards": [
+            "Decree 43/2017/ND-CP"
+          ]
+        }
+      ],
+      "required_field": "vietnamese_sub_label"
+    },
+    {
+      "rule_code": "VN-COSM-01",
+      "rule_id": "VN-COSM-01",
+      "market": "Vietnam",
+      "country_code": "VN",
+      "name": "Mandatory Cosmetic Product Proclamation (Notification)",
+      "title": "Mandatory Cosmetic Product Proclamation (Notification)",
+      "directive_code": "Circular No. 06/2011/TT-BYT on Cosmetic Management / Drug Administration of Vietnam (DAV)",
+      "statute_citation": "Circular No. 06/2011/TT-BYT on Cosmetic Management / Drug Administration of Vietnam (DAV)",
+      "category": "Classification Status",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty",
+        "creams",
+        "personal_care",
+        "haircare",
+        "body"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Imported cosmetics must have a Cosmetic Product Proclamation Report (Phiếu công bố sản phẩm mỹ phẩm) approved by the Drug Administration of Vietnam (DAV) with a valid receipt number.",
+      "explanation": "Cosmetic consignments without an approved DAV proclamation receipt number cannot clear Vietnam Customs.",
+      "fix_suggestion": "Obtain a Certificate of Free Sale (CFS) from origin country and submit online proclamation via the National Single Window portal to obtain the DAV receipt number.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Vietnam",
+          "VN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LIC-DAV",
+          "name": "DAV Cosmetic Proclamation Receipt",
+          "type": "registration",
+          "mandatory": true,
+          "description": "Approved DAV proclamation number.",
+          "standards": [
+            "Circular 06/2011/TT-BYT"
+          ]
+        }
+      ],
+      "required_field": "vietnam_dav_proclamation"
+    },
+    {
+      "rule_code": "VN-CLAIM-01",
+      "rule_id": "VN-CLAIM-01",
+      "market": "Vietnam",
+      "country_code": "VN",
+      "name": "Law on Advertising Prohibition of False Curative Claims",
+      "title": "Law on Advertising Prohibition of False Curative Claims",
+      "directive_code": "Law on Advertising No. 16/2012/QH13 / Circular 06/2011/TT-BYT",
+      "statute_citation": "Law on Advertising No. 16/2012/QH13 / Circular 06/2011/TT-BYT",
+      "category": "Claim Wording",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "chữa viêm khớp",
+        "cures arthritis vietnam",
+        "điều trị triệt để"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Prohibition of advertising that misleads consumers into believing cosmetic products have therapeutic, healing, or disease-curing medicinal properties.",
+      "explanation": "Labeling cosmetic pain creams with claims to permanently cure arthritis or treat illnesses violates Vietnam advertising and drug safety laws.",
+      "fix_suggestion": "Adjust product copy to describe moisturizing, skin softening, or gentle massage benefits.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Vietnam",
+          "VN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-AD-VN",
+          "name": "DAV Certified Advertising Content",
+          "type": "document",
+          "mandatory": true,
+          "description": "Pre-approved advertising copy.",
+          "standards": [
+            "Law No. 16/2012/QH13"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "VN-FOOD-01",
+      "rule_id": "VN-FOOD-01",
+      "market": "Vietnam",
+      "country_code": "VN",
+      "name": "QCVN 12 Food Contact Safety Standards for Kitchenware",
+      "title": "QCVN 12 Food Contact Safety Standards for Kitchenware",
+      "directive_code": "National Technical Regulation QCVN 12-1:2011/BYT / Food Safety Law No. 55/2010/QH12",
+      "statute_citation": "National Technical Regulation QCVN 12-1:2011/BYT / Food Safety Law No. 55/2010/QH12",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "kitchenware",
+        "cutting_boards"
+      ],
+      "trigger_terms": [
+        "toxic cutting board vietnam",
+        "heavy metal kitchenware vn"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Kitchen utensils, wooden boards, and food contact packaging must pass safety and hygiene tests under QCVN 12-1:2011/BYT.",
+      "explanation": "Food contact articles releasing toxic chemical residues or heavy metals fail state food safety inspection.",
+      "fix_suggestion": "Test cutting boards for heavy metal migration and chemical leaching at an authorized MoH testing center.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Vietnam",
+          "VN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-QCVN12",
+          "name": "QCVN 12-1:2011 Test Report",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Food safety test certificate.",
+          "standards": [
+            "QCVN 12-1:2011/BYT"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "VN-ELEC-01",
+      "rule_id": "VN-ELEC-01",
+      "market": "Vietnam",
+      "country_code": "VN",
+      "name": "MIC Type Approval & Conformity Mark for Electronics",
+      "title": "MIC Type Approval & Conformity Mark for Electronics",
+      "directive_code": "Circular No. 02/2024/TT-BTTTT / Ministry of Information and Communications (MIC)",
+      "statute_citation": "Circular No. 02/2024/TT-BTTTT / Ministry of Information and Communications (MIC)",
+      "category": "Hazmat/Shipping",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "hazmat_check",
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Rechargeable electronic and wireless consumer products must obtain MIC Type Approval and Declaration of Conformity with the ICT conformity mark (Dấu hợp quy).",
+      "explanation": "Customs requires Type Approval certificates for devices containing lithium batteries and wireless transmitters before clearance.",
+      "fix_suggestion": "Conduct testing at an MIC-designated laboratory, file Declaration of Conformity, and affix ICT conformity mark.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Vietnam",
+          "VN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-MIC-ICT",
+          "name": "MIC Type Approval & ICT Mark",
+          "type": "marking",
+          "mandatory": true,
+          "description": "MIC Type Approval and ICT mark.",
+          "standards": [
+            "Circular 02/2024/TT-BTTTT"
+          ]
+        }
+      ]
+    }
+  ]
+}

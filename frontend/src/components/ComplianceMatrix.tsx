@@ -27,6 +27,11 @@ const MARKET_FLAGS: Record<string, string> = {
   UK: '🇬🇧',
   CA: '🇨🇦',
   JP: '🇯🇵',
+  AU: '🇦🇺',
+  IN: '🇮🇳',
+  DE: '🇩🇪',
+  CN: '🇨🇳',
+  VN: '🇻🇳',
 };
 
 export default function ComplianceMatrix({ auditData, selectedCountryFilter, onSelectFix }: ComplianceMatrixProps) {

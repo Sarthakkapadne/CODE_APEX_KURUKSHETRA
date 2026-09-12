@@ -1,212 +1,837 @@
 {
   "country_code": "US",
   "country_name": "United States",
-  "regulatory_bodies": ["FDA", "EPA", "CPSC", "FTC", "CBP"],
+  "regulatory_bodies": [
+    "FDA (Food and Drug Administration)",
+    "EPA (Environmental Protection Agency)",
+    "CPSC (Consumer Product Safety Commission)",
+    "FTC (Federal Trade Commission)",
+    "CBP (Customs and Border Protection)",
+    "DOT / FAA"
+  ],
   "rules": [
     {
       "rule_code": "US-CLASS-01",
+      "rule_id": "US-CLASS-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "EPA FIFRA Antimicrobial / Pesticide Registration Trigger",
+      "title": "EPA FIFRA Antimicrobial / Pesticide Registration Trigger",
+      "directive_code": "40 CFR § 152.15 / FIFRA Section 2(t)",
+      "statute_citation": "40 CFR § 152.15 / FIFRA Section 2(t)",
       "category": "Classification Status",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "40 CFR § 152.15 / FIFRA Section 2(t)",
-      "title": "EPA FIFRA Antimicrobial / Pesticide Registration Trigger",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["kitchenware", "household", "cleaning", "cutting_boards", "surface_sprays", "apparel"],
+      "target_categories": [
+        "kitchenware",
+        "household",
+        "cleaning",
+        "cutting_boards",
+        "surface_sprays",
+        "apparel"
+      ],
       "trigger_terms": [
-        "antibacterial", "kills germs", "kills 99.9%", "antimicrobial", "pesticidal",
-        "eliminates bacteria", "disinfects", "kills mrsa", "airborne viruses",
-        "shielding covid-19", "mildew cleaning", "mold killing", "disinfectant spray",
-        "eradicates hepatitis", "eradicates toxic black mold"
+        "antibacterial",
+        "kills germs",
+        "kills 99.9%",
+        "antimicrobial",
+        "pesticidal",
+        "eliminates bacteria",
+        "disinfects",
+        "kills mrsa",
+        "airborne viruses",
+        "shielding covid-19",
+        "mildew cleaning",
+        "mold killing",
+        "disinfectant spray",
+        "eradicates hepatitis",
+        "eradicates toxic black mold"
       ],
       "severity": "violation",
       "expected_requirement": "EPA FIFRA Registration Number & Establishment Number required for antimicrobial claims on inanimate surfaces.",
       "explanation": "Under 40 CFR § 152.15, products claiming to kill, inhibit, or eliminate microorganisms on inanimate surfaces are classified as pesticides/antimicrobials under FIFRA. Selling without EPA registration causes immediate US customs seizure and marketplace delisting.",
-      "fix_suggestion": "Remove antimicrobial/germ-killing claims or rephrase to 'cleans surfaces naturally' without pesticidal or pathogen eradication claims."
+      "fix_suggestion": "Remove antimicrobial/germ-killing claims or rephrase to 'cleans surfaces naturally' without pesticidal or pathogen eradication claims.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-REG-EPA",
+          "name": "EPA Pesticide Registration",
+          "type": "registration",
+          "mandatory": true,
+          "description": "EPA Registration & Establishment Number.",
+          "standards": [
+            "FIFRA Sec 3",
+            "40 CFR 152"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-CLAIM-01",
+      "rule_id": "US-CLAIM-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "FDA Unapproved New Drug Claim Prohibition",
+      "title": "FDA Unapproved New Drug Claim Prohibition",
+      "directive_code": "21 U.S.C. § 321(g)(1) / 21 CFR § 201.128",
+      "statute_citation": "21 U.S.C. § 321(g)(1) / 21 CFR § 201.128",
       "category": "Claim Wording",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "21 U.S.C. § 321(g)(1) / 21 CFR § 201.128",
-      "title": "FDA Unapproved New Drug Claim Prohibition",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness", "consumer electronics", "wearables"],
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "ayurvedic",
+        "wellness",
+        "consumer electronics",
+        "wearables"
+      ],
       "trigger_terms": [
-        "cures", "cures arthritis", "treats eczema", "cures diabetes", "prevents infection",
-        "eliminates pain", "anti-inflammatory medicine", "heals arthritis", "diagnose hypertension",
-        "cardiac arrhythmias", "diagnose", "regrows bald", "reverse male pattern", "minoxidil",
-        "kills toenail fungus", "psoriasis", "insomnia", "replaces prescription sedatives"
+        "cures",
+        "cures arthritis",
+        "treats eczema",
+        "cures diabetes",
+        "prevents infection",
+        "eliminates pain",
+        "anti-inflammatory medicine",
+        "heals arthritis",
+        "diagnose hypertension",
+        "cardiac arrhythmias",
+        "diagnose",
+        "regrows bald",
+        "reverse male pattern",
+        "minoxidil",
+        "kills toenail fungus",
+        "psoriasis",
+        "insomnia",
+        "replaces prescription sedatives"
       ],
       "severity": "violation",
       "expected_requirement": "Cosmetic and dietary supplement claims must be restricted to structure/function support, not disease treatment, diagnosis, or cure.",
       "explanation": "Claiming to 'cure', 'treat', 'diagnose', or 'prevent' a disease or medical condition legally reclassifies a cosmetic or device into an unapproved new drug or uncleared medical device under the FD&C Act.",
-      "fix_suggestion": "Replace disease claims with compliant structure/function language: replace 'cures arthritis / eliminates pain' with 'formulated to support joint comfort and soothe tired muscles'."
+      "fix_suggestion": "Replace disease claims with compliant structure/function language: replace 'cures arthritis / eliminates pain' with 'formulated to support joint comfort and soothe tired muscles'.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-NDA",
+          "name": "FDA Drug Approval / Monograph",
+          "type": "document",
+          "mandatory": true,
+          "description": "FDA New Drug Application or OTC Monograph verification.",
+          "standards": [
+            "21 U.S.C. 355"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-CHEM-01",
+      "rule_id": "US-CHEM-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "FDA Absolute Ban on Lead Acetate in Hair Dyes",
+      "title": "FDA Absolute Ban on Lead Acetate in Hair Dyes",
+      "directive_code": "21 CFR § 73.2396 / FDA Final Rule 83 FR 54665",
+      "statute_citation": "21 CFR § 73.2396 / FDA Final Rule 83 FR 54665",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "21 CFR § 73.2396 / FDA Final Rule 83 FR 54665",
-      "title": "FDA Absolute Ban on Lead Acetate in Hair Dyes",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "haircare", "skincare"],
-      "trigger_terms": ["lead acetate"],
+      "target_categories": [
+        "cosmetics",
+        "haircare",
+        "skincare"
+      ],
+      "trigger_terms": [
+        "lead acetate"
+      ],
       "severity": "violation",
       "expected_requirement": "Prohibited color additive. Lead acetate is banned from use in cosmetics in the United States.",
       "explanation": "FDA repealed authorization for lead acetate in hair dyes due to data establishing neurotoxic risks.",
-      "fix_suggestion": "Reformulate hair coloring product to remove lead acetate and utilize FDA-approved color additives."
+      "fix_suggestion": "Reformulate hair coloring product to remove lead acetate and utilize FDA-approved color additives.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-NO-LEAD-ACETATE",
+          "name": "Lead Acetate Lab Assay",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Chemical test confirming zero lead acetate.",
+          "standards": [
+            "21 CFR 73.2396"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-CHEM-02",
+      "rule_id": "US-CHEM-02",
+      "market": "United States",
+      "country_code": "US",
+      "name": "Federal Prohibition of Mercury and Unapproved Corticosteroids in Cosmetics",
+      "title": "Federal Prohibition of Mercury and Unapproved Corticosteroids in Cosmetics",
+      "directive_code": "21 CFR § 700.13 / Minamata Convention on Mercury",
+      "statute_citation": "21 CFR § 700.13 / Minamata Convention on Mercury",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "21 CFR § 700.13 / Minamata Convention on Mercury",
-      "title": "Federal Prohibition of Mercury and Unapproved Corticosteroids in Cosmetics",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare"],
-      "trigger_terms": ["mercury", "mercurous chloride", "clobetasol", "clobetasol propionate"],
+      "target_categories": [
+        "cosmetics",
+        "skincare"
+      ],
+      "trigger_terms": [
+        "mercury",
+        "mercurous chloride",
+        "clobetasol",
+        "clobetasol propionate"
+      ],
       "severity": "violation",
       "expected_requirement": "Mercury content must be strictly under 1 ppm; potent corticosteroids are prescription drugs strictly prohibited in cosmetics.",
       "explanation": "Cosmetics containing mercury or clobetasol are adulterated under Section 501 of the FD&C Act and trigger immediate import detention.",
-      "fix_suggestion": "Immediately eliminate mercury compounds and prescription corticosteroid actives from cosmetic formulations."
+      "fix_suggestion": "Immediately eliminate mercury compounds and prescription corticosteroid actives from cosmetic formulations.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-MERCURY-COSMETICS",
+          "name": "Heavy Metals ICP-MS Screen",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Laboratory assay proving mercury < 1 ppm.",
+          "standards": [
+            "21 CFR 700.13"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-TOY-01",
+      "rule_id": "US-TOY-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "CPSC Prohibition of Small Parts Choking Hazards on Infant Toys",
+      "title": "CPSC Prohibition of Small Parts Choking Hazards on Infant Toys",
+      "directive_code": "16 CFR Part 1501 / CPSIA Small Parts Regulation",
+      "statute_citation": "16 CFR Part 1501 / CPSIA Small Parts Regulation",
       "category": "Safety/Certifications",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "16 CFR Part 1501 / CPSIA Small Parts Regulation",
-      "title": "CPSC Prohibition of Small Parts Choking Hazards on Infant Toys",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["children's products", "toys"],
-      "trigger_terms": ["glued button eyes", "button eyes for newborn", "detachable button eyes", "glued button"],
+      "target_categories": [
+        "children's products",
+        "toys"
+      ],
+      "trigger_terms": [
+        "glued button eyes",
+        "button eyes for newborn",
+        "detachable button eyes",
+        "glued button"
+      ],
       "severity": "violation",
       "expected_requirement": "Toys intended for children under 3 must not have small detachable components that fit into the small parts cylinder.",
       "explanation": "Glued plastic button eyes fail CPSC tension tests and present fatal choking hazards to infants under 36 months.",
-      "fix_suggestion": "Use embroidered eyes or safety-locked molded components passing ASTM F963 pull tests."
+      "fix_suggestion": "Use embroidered eyes or safety-locked molded components passing ASTM F963 pull tests.",
+      "conditions": {
+        "category": "children's products",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-SMALL-PARTS",
+          "name": "Small Parts Test (16 CFR 1501)",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "CPSC laboratory small parts cylinder test report.",
+          "standards": [
+            "16 CFR 1501"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-TOY-02",
+      "rule_id": "US-TOY-02",
+      "market": "United States",
+      "country_code": "US",
+      "name": "Total Lead Content Prohibition in Children's Surface Coatings (>90 ppm)",
+      "title": "Total Lead Content Prohibition in Children's Surface Coatings (>90 ppm)",
+      "directive_code": "16 CFR Part 1303 / 15 U.S.C. § 1278a",
+      "statute_citation": "16 CFR Part 1303 / 15 U.S.C. § 1278a",
       "category": "Safety/Certifications",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "16 CFR Part 1303 / 15 U.S.C. § 1278a",
-      "title": "Total Lead Content Prohibition in Children's Surface Coatings (>90 ppm)",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["children's products", "toys"],
-      "trigger_terms": ["1500ppm lead", "lead paint", "lead-containing paint"],
+      "target_categories": [
+        "children's products",
+        "toys"
+      ],
+      "trigger_terms": [
+        "1500ppm lead",
+        "lead paint",
+        "lead-containing paint"
+      ],
       "severity": "violation",
       "expected_requirement": "Lead in paint and surface coatings on children's products must not exceed 90 ppm (0.009%).",
       "explanation": "Coatings exceeding 90 ppm lead violate CPSIA and constitute banned hazardous substances under the Federal Hazardous Substances Act.",
-      "fix_suggestion": "Formulate decorative paint with non-toxic lead-free pigments and secure CPSC lab test certification."
+      "fix_suggestion": "Formulate decorative paint with non-toxic lead-free pigments and secure CPSC lab test certification.",
+      "conditions": {
+        "category": "children's products",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-LEAD-COATING",
+          "name": "Total Lead Paint Analysis",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Lead <= 90 ppm tested by CPSC accepted lab.",
+          "standards": [
+            "16 CFR 1303"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-TOY-03",
+      "rule_id": "US-TOY-03",
+      "market": "United States",
+      "country_code": "US",
+      "name": "CPSC Prohibition of Children's Toys Containing Banned Phthalates (>0.1%)",
+      "title": "CPSC Prohibition of Children's Toys Containing Banned Phthalates (>0.1%)",
+      "directive_code": "16 CFR Part 1307 / CPSIA Section 108",
+      "statute_citation": "16 CFR Part 1307 / CPSIA Section 108",
       "category": "Safety/Certifications",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "16 CFR Part 1307 / CPSIA Section 108",
-      "title": "CPSC Prohibition of Children's Toys Containing Banned Phthalates (>0.1%)",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["children's products", "toys"],
-      "trigger_terms": ["dehp", "8% dehp", "80,000 ppm", "phthalate plasticized"],
+      "target_categories": [
+        "children's products",
+        "toys"
+      ],
+      "trigger_terms": [
+        "dehp plasticizer 5%",
+        "dinp additive",
+        "phthalate soft vinyl",
+        "dehp 2%"
+      ],
       "severity": "violation",
-      "expected_requirement": "Concentration of DEHP, DBP, BBP, DINP, DIBP, DPENP, DHEXP, and DCHP must not exceed 0.1% (1000 ppm).",
-      "explanation": "8% DEHP drastically exceeds the 0.1% legal limit, making the toy an illegal prohibited hazardous substance.",
-      "fix_suggestion": "Substitute ortho-phthalates with compliant plasticizers such as ATBC, DOTP, or food-grade silicone."
+      "expected_requirement": "Children's toys and childcare articles must not contain concentrations >0.1% of 8 prohibited phthalates (DEHP, DBP, BBP, DINP, DIBP, DPENP, DHEXP, DCHP).",
+      "explanation": "Phthalates are endocrine disruptors prohibited by federal statute in accessible plasticized components of children's toys.",
+      "fix_suggestion": "Utilize non-phthalate plasticizers such as ATBC, DOTP, or bio-based citric acid esters.",
+      "conditions": {
+        "category": "children's products",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-PHTHALATES-US",
+          "name": "CPSC Phthalate Screening",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Verification that 8 restricted phthalates are below 0.1%.",
+          "standards": [
+            "16 CFR 1307"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-ING-01",
+      "rule_id": "US-ING-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "Hydrogen Peroxide Direct-to-Consumer Threshold",
+      "title": "Hydrogen Peroxide Direct-to-Consumer Threshold",
+      "directive_code": "21 CFR § 700.35 / FDA Dental Bleaching Monograph",
+      "statute_citation": "21 CFR § 700.35 / FDA Dental Bleaching Monograph",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "21 CFR § 310.545(a)(18)(vi) / OTC Monograph",
-      "title": "Hydrogen Peroxide Direct-to-Consumer Threshold",
       "condition_type": "concentration_limit",
-      "ingredient_name": "hydrogen peroxide",
-      "max_concentration": 14.0,
+      "target_categories": [
+        "cosmetics"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
-      "expected_requirement": "Maximum 14.0% w/w for OTC consumer whitening products; must include specific safety warnings.",
-      "explanation": "US FDA permits OTC teeth whitening products containing up to 14% hydrogen peroxide, but concentrations above this threshold are restricted to professional dental use.",
-      "fix_suggestion": "Ensure hydrogen peroxide content does not exceed 14.0% for US consumer distribution."
+      "expected_requirement": "Maximum 14.0% hydrogen peroxide for over-the-counter retail dental whitening without prescription supervision.",
+      "explanation": "Over 14% hydrogen peroxide presents severe soft-tissue chemical burns and requires professional dental dispensation.",
+      "fix_suggestion": "Formulate OTC consumer teeth whitening products to <= 14% hydrogen peroxide or equivalent carbamide peroxide.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-H2O2-US",
+          "name": "Hydrogen Peroxide Concentration Assay",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "H2O2 assay <= 14.0% w/w.",
+          "standards": [
+            "USP monograph"
+          ]
+        }
+      ],
+      "ingredient_name": "hydrogen peroxide",
+      "max_concentration": 14.0
     },
     {
       "rule_code": "US-ING-02",
+      "rule_id": "US-ING-02",
+      "market": "United States",
+      "country_code": "US",
+      "name": "Camphor Concentration Limit for Topical Analgesics",
+      "title": "Camphor Concentration Limit for Topical Analgesics",
+      "directive_code": "21 CFR § 341.74 / 21 CFR § 310.545",
+      "statute_citation": "21 CFR § 341.74 / 21 CFR § 310.545",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "21 CFR § 310.545(b) - Topical Analgesic Monograph",
-      "title": "Camphor Concentration Limit for Topical Analgesics",
       "condition_type": "concentration_limit",
-      "ingredient_name": "camphor",
-      "max_concentration": 11.0,
+      "target_categories": [
+        "cosmetics"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
-      "expected_requirement": "Maximum 11.0% camphor concentration in topical consumer products.",
-      "explanation": "Topical preparations containing greater than 11% camphor are considered misbranded and dangerous to public health due to seizure and toxicity risks under 21 CFR § 310.545.",
-      "fix_suggestion": "Reformulate product to ensure camphor content is under 11.0%."
+      "expected_requirement": "Maximum 11.0% camphor in topical consumer OTC analgesic products.",
+      "explanation": "FDA regulations cap topical camphor at 11% to prevent systemic neurotoxicity and pediatric seizure risk.",
+      "fix_suggestion": "Limit camphor active ingredient concentration to <= 11.0% on product packaging and formulation specs.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-CAMPHOR-US",
+          "name": "Camphor Assay",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Camphor <= 11.0%.",
+          "standards": [
+            "21 CFR 341.74"
+          ]
+        }
+      ],
+      "ingredient_name": "camphor",
+      "max_concentration": 11.0
     },
     {
       "rule_code": "US-LBL-01",
+      "rule_id": "US-LBL-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "US Customs Mandatory Country of Origin Marking",
+      "title": "US Customs Mandatory Country of Origin Marking",
+      "directive_code": "19 U.S.C. § 1304 / 19 CFR Part 134",
+      "statute_citation": "19 U.S.C. § 1304 / 19 CFR Part 134",
       "category": "Mandatory Labeling",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "19 U.S.C. § 1304 / 19 CFR Part 134",
-      "title": "US Customs Mandatory Country of Origin Marking",
       "condition_type": "mandatory_field",
-      "required_field": "country_of_origin",
+      "target_categories": [],
+      "trigger_terms": [],
       "severity": "violation",
-      "expected_requirement": "Every article of foreign origin imported into the US must be marked with the English name of the country of origin.",
-      "explanation": "Section 304 of the Tariff Act of 1930 requires clear marking in English ('Made in [Country]' or 'Product of [Country]'). Failure leads to a 10% marking duty or CBP rejection at the port of entry.",
-      "fix_suggestion": "Explicitly declare 'Made in [Country of Origin]' on product packaging and listing description."
+      "expected_requirement": "Every imported article must be marked in a conspicuous place legibly, indelibly, and permanently indicating the English country of origin (e.g. 'Made in Vietnam').",
+      "explanation": "Tariff Act Section 304 mandates that all imported merchandise bear indelible country of origin markings to notify the ultimate purchaser in the US.",
+      "fix_suggestion": "Add permanent 'Made in [Country]' or 'Product of [Country]' marking to product packaging and individual retail unit.",
+      "conditions": {
+        "category": "general",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-ORIGIN-US",
+          "name": "Country of Origin Marking",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Permanent English marking 'Made in [Country]'.",
+          "standards": [
+            "19 CFR 134"
+          ]
+        }
+      ],
+      "required_field": "country_of_origin"
     },
     {
       "rule_code": "US-LBL-02",
+      "rule_id": "US-LBL-02",
+      "market": "United States",
+      "country_code": "US",
+      "name": "Net Quantity Dual Unit Declaration (US Customary & Metric)",
+      "title": "Net Quantity Dual Unit Declaration (US Customary & Metric)",
+      "directive_code": "15 U.S.C. § 1453 / 16 CFR Part 500 (Fair Packaging and Labeling Act)",
+      "statute_citation": "15 U.S.C. § 1453 / 16 CFR Part 500 (Fair Packaging and Labeling Act)",
       "category": "Mandatory Labeling",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "16 CFR § 500.6 / Fair Packaging and Labeling Act (FPLA)",
-      "title": "Net Quantity Dual Unit Declaration (US Customary & Metric)",
       "condition_type": "mandatory_field",
-      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "food", "grocery", "supplements", "liquids", "consumables", "personal care", "wellness"],
-      "required_field": "net_quantity_dual",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "food",
+        "cleaning",
+        "household"
+      ],
+      "trigger_terms": [],
       "severity": "warning",
-      "expected_requirement": "Net quantity must be declared in both US Customary units (fl oz, oz, lb) and Metric units (ml, g).",
-      "explanation": "FPLA mandates dual declaration for consumer packaged goods sold across US interstate commerce.",
-      "fix_suggestion": "Add dual net quantity declaration, e.g., 'Net Wt. 3.4 oz (100 g)' or '3.38 fl oz (100 ml)'."
+      "expected_requirement": "Net quantity statement on principal display panel must express weight or volume in BOTH US Customary units (oz/fl oz/lb) and Metric units (g/ml/kg).",
+      "explanation": "FPLA mandates dual declaration of net quantity so US consumers can compare unit prices accurately without mental metric conversion.",
+      "fix_suggestion": "Update net contents label to include dual units, e.g., 'Net Wt. 4.0 oz (113 g)' or '8.0 fl oz (236 ml)'.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-NETQTY-US",
+          "name": "Dual Net Quantity Declaration",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Dual statement in US Customary & Metric units.",
+          "standards": [
+            "16 CFR 500.6"
+          ]
+        }
+      ],
+      "required_field": "net_quantity_dual"
     },
     {
       "rule_code": "US-CERT-01",
-      "category": "Safety/Certifications",
-      "trust_tier": "Tier 3 Escalation",
-      "statute_citation": "Safe Sleep for Babies Act of 2021 (H.R. 3182) / 16 CFR Part 1236",
+      "rule_id": "US-CERT-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "Infant Sleep Positioner and Inclined Sleeper Ban",
       "title": "Infant Sleep Positioner and Inclined Sleeper Ban",
+      "directive_code": "16 CFR Part 1236 / Safe Sleep for Babies Act of 2021 (H.R. 3182)",
+      "statute_citation": "16 CFR Part 1236 / Safe Sleep for Babies Act of 2021 (H.R. 3182)",
+      "category": "Classification Status",
+      "trust_tier": "Tier 1 Deterministic",
       "condition_type": "product_type_ban",
-      "target_categories": ["infant_sleep", "sleep_positioners", "baby_sleep"],
-      "trigger_terms": ["sleep positioner", "inclined sleeper", "infant sleep wedge", "nest sleeper"],
+      "target_categories": [
+        "sleep_positioner",
+        "inclined_sleeper",
+        "nursery",
+        "baby_gear",
+        "wedge_pillow",
+        "toys"
+      ],
+      "trigger_terms": [
+        "sleep positioner",
+        "inclined sleeper",
+        "infant wedge pillow",
+        "anti-roll infant wedge",
+        "crib wedge",
+        "sleep wedge"
+      ],
       "severity": "violation",
-      "expected_requirement": "Total federal ban on inclined sleepers (>10 degrees) and infant sleep positioners in the United States.",
-      "explanation": "The Safe Sleep for Babies Act banned all infant sleep positioners regardless of marketing claims due to documented suffocation hazards.",
-      "fix_suggestion": "This product category cannot be sold in the United States. Do not list in the US market."
+      "expected_requirement": "ABSOLUTE BAN: Infant sleep positioners and inclined sleepers with sleep surface >10 degrees are banned hazardous products under CPSA Section 8.",
+      "explanation": "Federal law strictly prohibits the manufacture, sale, or distribution of inclined sleep products and crib sleep positioners due to infant positional asphyxiation fatalities.",
+      "fix_suggestion": "Cease sales immediately and remove product from US marketplace. This product cannot be lawfully marketed for infant sleep in the US.",
+      "conditions": {
+        "category": "sleep_positioner",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-BAN-SLEEPER-US",
+          "name": "Banned Product Affirmation",
+          "type": "document",
+          "mandatory": true,
+          "description": "Prohibited under Safe Sleep for Babies Act.",
+          "standards": [
+            "16 CFR 1236"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-CERT-02",
+      "rule_id": "US-CERT-02",
+      "market": "United States",
+      "country_code": "US",
+      "name": "CPSC Safety Standard for Infant Walkers (Certification Escalation)",
+      "title": "CPSC Safety Standard for Infant Walkers (Certification Escalation)",
+      "directive_code": "16 CFR Part 1216 / ASTM F977-18 Standard Safety Specification",
+      "statute_citation": "16 CFR Part 1216 / ASTM F977-18 Standard Safety Specification",
       "category": "Safety/Certifications",
       "trust_tier": "Tier 3 Escalation",
-      "statute_citation": "16 CFR Part 1216 / ASTM F977-18",
-      "title": "CPSC Safety Standard for Infant Walkers (Certification Escalation)",
       "condition_type": "certification_check",
-      "target_categories": ["baby_walker", "infant_walker", "toys"],
-      "trigger_terms": ["baby walker", "infant walker", "activity walker"],
+      "target_categories": [
+        "baby_walker",
+        "infant_walker",
+        "toys"
+      ],
+      "trigger_terms": [
+        "baby walker",
+        "infant walker",
+        "activity walker"
+      ],
       "severity": "escalation",
-      "expected_requirement": "Children's Product Certificate (CPC) issued by a CPSC-accepted 3rd-party testing laboratory verifying ASTM F977 stair-fall test compliance.",
-      "explanation": "Baby walkers ARE legal in the US, but MUST possess a valid Children's Product Certificate (CPC) and undergo stair-fall friction testing.",
-      "fix_suggestion": "Obtain accredited CPSC 3rd-party lab test report and issue Children's Product Certificate (CPC) prior to shipping."
+      "expected_requirement": "Children's Product Certificate (CPC) issued by manufacturer/importer based on accredited CPSC laboratory testing to ASTM F977.",
+      "explanation": "Infant walkers are regulated durable nursery goods requiring stair fall prevention testing, tip resistance, and a formal CPC certificate before CBP import entry.",
+      "fix_suggestion": "Obtain an accredited ISO 17025 test report for ASTM F977-18 and publish a formal Children's Product Certificate (CPC).",
+      "conditions": {
+        "category": "baby_walker",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-CPC-US",
+          "name": "Children's Product Certificate (CPC)",
+          "type": "document",
+          "mandatory": true,
+          "description": "CPSC accredited lab CPC.",
+          "standards": [
+            "16 CFR 1216",
+            "ASTM F977"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "US-HAZ-01",
+      "rule_id": "US-HAZ-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "Lithium Battery Hazardous Materials Transport Standard",
+      "title": "Lithium Battery Hazardous Materials Transport Standard",
+      "directive_code": "49 CFR § 173.185 / UN Manual of Tests and Criteria Section 38.3",
+      "statute_citation": "49 CFR § 173.185 / UN Manual of Tests and Criteria Section 38.3",
       "category": "Hazmat/Shipping",
       "trust_tier": "Tier 3 Escalation",
-      "statute_citation": "49 CFR § 173.185 / UN Manual of Tests and Criteria Section 38.3",
-      "title": "Lithium Battery Hazardous Materials Transport Standard",
       "condition_type": "hazmat_check",
-      "target_categories": ["electronics", "heated_devices", "rechargeable"],
-      "trigger_terms": ["lithium", "rechargeable battery", "li-ion", "heated wand"],
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
       "severity": "escalation",
-      "expected_requirement": "UN 38.3 Lithium Battery Test Summary, Watt-hour rating <= 100 Wh, and UN3481 package handling label.",
-      "explanation": "Rechargeable lithium battery devices are Class 9 Dangerous Goods. Cross-border air freight requires verified UN 38.3 test summaries from the cell manufacturer.",
-      "fix_suggestion": "Obtain UN 38.3 Test Summary report from battery supplier and apply IATA Lithium Battery Mark."
+      "expected_requirement": "UN 38.3 Test Summary (UNTS) document, Class 9 Hazmat shipping labels, and watt-hour rating markings on battery cells.",
+      "explanation": "DOT PHMSA and FAA strictly govern air and parcel shipping of lithium ion batteries to prevent in-flight thermal runaway and fire events.",
+      "fix_suggestion": "Secure UN 38.3 battery test summary from battery cell manufacturer and apply lithium battery mark (UN 3481) to shipping boxes.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-UN383-US",
+          "name": "UN 38.3 Battery Test Summary",
+          "type": "document",
+          "mandatory": true,
+          "description": "Signed UN 38.3 test summary.",
+          "standards": [
+            "49 CFR 173.185",
+            "UN 38.3"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "US-FOOD-01",
+      "rule_id": "US-FOOD-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "FDA Food Contact Surface Extraction & Resin Safety for Kitchenware",
+      "title": "FDA Food Contact Surface Extraction & Resin Safety for Kitchenware",
+      "directive_code": "21 CFR § 178.3800 / 21 CFR § 175.300",
+      "statute_citation": "21 CFR § 178.3800 / 21 CFR § 175.300",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "kitchenware",
+        "cutting_boards",
+        "tableware"
+      ],
+      "trigger_terms": [
+        "toxic wood finish",
+        "industrial varnish on food board",
+        "chemical solvent finish",
+        "lead glaze"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Food contact materials (bamboo, wood finishes, mineral oils) must meet FDA 21 CFR extraction testing for food contact safety.",
+      "explanation": "Cutting boards and food utensils coated with unapproved resins or toxic finishes adulterate food under Section 402(a)(6) of the FD&C Act.",
+      "fix_suggestion": "Use food-grade mineral oil, pure beeswax, or FDA-cleared food contact finishes with certified extraction test reports.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-FDA-FCM",
+          "name": "FDA 21 CFR 175.300 Extraction Test",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Extractables within statutory tolerances.",
+          "standards": [
+            "21 CFR 175.300"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "US-MOCRA-01",
+      "rule_id": "US-MOCRA-01",
+      "market": "United States",
+      "country_code": "US",
+      "name": "MoCRA Mandatory Safety Substantiation & US Contact Labeling",
+      "title": "MoCRA Mandatory Safety Substantiation & US Contact Labeling",
+      "directive_code": "Modernization of Cosmetics Regulation Act of 2022 (FD&C Act Chapter VI)",
+      "statute_citation": "Modernization of Cosmetics Regulation Act of 2022 (FD&C Act Chapter VI)",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty"
+      ],
+      "trigger_terms": [],
+      "severity": "warning",
+      "expected_requirement": "Label must contain a domestic address, domestic phone number, or electronic contact information through which the responsible person can receive adverse event reports.",
+      "explanation": "MoCRA requires all cosmetic packaging to provide accessible US contact information for mandatory serious adverse event reporting to FDA within 15 business days.",
+      "fix_suggestion": "Print US contact address, toll-free phone number, or website reporting link on cosmetic outer carton.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United States",
+          "US"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-MOCRA",
+          "name": "MoCRA Adverse Event Contact",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Domestic contact info on retail pack.",
+          "standards": [
+            "FD&C Act Sec 605"
+          ]
+        }
+      ],
+      "required_field": "us_contact_for_adverse_events"
     }
   ]
 }

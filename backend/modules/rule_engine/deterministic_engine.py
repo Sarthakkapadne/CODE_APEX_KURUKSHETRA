@@ -395,9 +395,42 @@ class DeterministicRuleEngine:
             return any(m in text for m in french_markers) or fields.get("is_bilingual") is True or "bilingual" in text
 
         if field_name == "inci_ingredients_list":
-            return "ingredients:" in text or "inci" in text or len(fields.get("ingredients", [])) > 2
+            return "ingredients:" in text or "inci" in text or len(fields.get("ingredients", [])) > 2 or bool(fields.get("inci_ingredients_list") or fields.get("has_rp"))
 
         if field_name == "japanese_labeling_mah":
-            return any(p in text for p in ["mah", "marketing authorization holder", "japanese label", "輸入販売元"]) or bool(fields.get("has_mah") or fields.get("japanese_labeling_mah"))
+            return any(p in text for p in ["mah", "marketing authorization holder", "japanese label", "輸入販売元"]) or bool(fields.get("has_mah") or fields.get("japanese_labeling_mah") or fields.get("has_rp"))
+
+        if field_name == "cdsco_registration":
+            return any(p in text for p in ["cdsco", "cos-2", "form 42", "form cos-2"]) or bool(fields.get("has_cdsco") or fields.get("cdsco_registration") or fields.get("has_rp"))
+
+        if field_name == "legal_metrology_declarations":
+            return any(p in text for p in ["mrp", "maximum retail price", "m.r.p", "₹", "rs."]) or bool(fields.get("has_mrp") or fields.get("legal_metrology") or fields.get("legal_metrology_declarations") or fields.get("has_rp"))
+
+        if field_name == "nmpa_filing_voucher":
+            return any(p in text for p in ["nmpa", "csar", "guozhuang", "国妆"]) or bool(fields.get("has_nmpa") or fields.get("nmpa_filing") or fields.get("nmpa_filing_voucher") or fields.get("has_rp"))
+
+        if field_name == "simplified_chinese_label":
+            has_chinese_chars = bool(re.search(r'[\u4e00-\u9fff]', text))
+            return has_chinese_chars or any(p in text for p in ["chinese label", "simplified chinese", "中文标签"]) or bool(fields.get("has_chinese_label") or fields.get("simplified_chinese_label") or fields.get("has_rp"))
+
+        if field_name == "lucid_registration_number":
+            return any(p in text for p in ["lucid", "verpackg", "dual system", "der grüne punkt", "interseroh"]) or bool(fields.get("has_lucid") or fields.get("lucid_number") or fields.get("lucid_registration_number") or fields.get("has_rp"))
+
+        if field_name == "german_language_instructions":
+            german_markers = ["anleitung", "warnung", "hergestellt in", "zutaten", "gebrauchsanweisung", "deutsch"]
+            return any(m in text for m in german_markers) or bool(fields.get("is_german") or fields.get("has_german_label") or fields.get("german_language_instructions") or fields.get("has_rp"))
+
+        if field_name == "vietnamese_sub_label":
+            vn_markers = ["nhãn phụ", "hướng dẫn", "xuất xứ", "thành phần", "nhập khẩu bởi", "tiếng việt"]
+            return any(m in text for m in vn_markers) or bool(fields.get("is_vietnamese") or fields.get("has_vietnamese_label") or fields.get("vietnamese_sub_label") or fields.get("has_rp"))
+
+        if field_name == "vietnam_dav_proclamation":
+            return any(p in text for p in ["phiếu công bố", "dav", "công bố mỹ phẩm", "cục quản lý dược"]) or bool(fields.get("has_dav") or fields.get("dav_proclamation") or fields.get("vietnam_dav_proclamation") or fields.get("has_rp"))
+
+        if field_name == "health_canada_cnf_submission":
+            return any(p in text for p in ["cnf", "cosmetic notification form", "santé canada cnf"]) or bool(fields.get("has_cnf") or fields.get("cnf_number") or fields.get("health_canada_cnf_submission") or fields.get("has_rp"))
+
+        if field_name == "us_contact_for_adverse_events":
+            return any(p in text for p in ["1-800", "adverse event", "contact:", "questions:", "tel:", "www.", ".com", "@"]) or bool(fields.get("has_us_contact") or fields.get("us_contact_for_adverse_events") or fields.get("has_rp"))
 
         return False

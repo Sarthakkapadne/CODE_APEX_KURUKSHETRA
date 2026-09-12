@@ -81,6 +81,33 @@ export const JURISDICTION_MARKETS: Record<string, MarketComplianceNode> = {
     defaultDeMinimis: '₹0 INR (Standard Clearance)',
     defaultDuty: 'Standard BCD + SWS + IGST',
   },
+  DE: {
+    code: 'DE',
+    name: 'Germany',
+    flag: '🇩🇪',
+    coordinates: [51.16, 10.45],
+    agency: 'BfR / VerpackG LUCID / ElektroG',
+    defaultDeMinimis: '€0 VAT / €150 Duty (IOSS)',
+    defaultDuty: '0% duty under €150, 19% MwSt',
+  },
+  CN: {
+    code: 'CN',
+    name: 'China',
+    flag: '🇨🇳',
+    coordinates: [35.86, 104.19],
+    agency: 'GACC / NMPA / SAMR',
+    defaultDeMinimis: '50 RMB (~$7 USD)',
+    defaultDuty: '9.1% preferential CBEC rate',
+  },
+  VN: {
+    code: 'VN',
+    name: 'Vietnam',
+    flag: '🇻🇳',
+    coordinates: [14.05, 108.27],
+    agency: 'General Dept of Vietnam Customs / DAV',
+    defaultDeMinimis: '1,000,000 VND (~$40 USD)',
+    defaultDuty: '0% under 1M VND, 8-10% VAT',
+  },
 };
 
 export interface LeafletComplianceMapProps {

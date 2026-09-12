@@ -1,76 +1,412 @@
 {
   "country_code": "CA",
   "country_name": "Canada",
-  "regulatory_bodies": ["Health Canada", "CBSA", "Competition Bureau Canada"],
+  "regulatory_bodies": [
+    "Health Canada (Santé Canada)",
+    "CBSA (Canada Border Services Agency)",
+    "Competition Bureau Canada",
+    "Transport Canada",
+    "PMRA"
+  ],
   "rules": [
     {
       "rule_code": "CA-BAN-01",
+      "rule_id": "CA-BAN-01",
+      "market": "Canada",
+      "country_code": "CA",
+      "name": "Absolute Statutory Ban on Baby Walkers in Canada",
+      "title": "Absolute Statutory Ban on Baby Walkers in Canada",
+      "directive_code": "Canada Consumer Product Safety Act (CCPSA) Schedule 2, Item 15",
+      "statute_citation": "Canada Consumer Product Safety Act (CCPSA) Schedule 2, Item 15",
       "category": "Classification Status",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Canada Consumer Product Safety Act (CCPSA) Schedule 2, Item 15",
-      "title": "ABSOLUTE STATUTORY BAN ON BABY WALKERS IN CANADA",
       "condition_type": "product_type_ban",
-      "target_categories": ["baby_walker", "infant_walker", "toys"],
-      "trigger_terms": ["baby walker", "infant walker", "wheeled walker for babies", "activity walker"],
+      "target_categories": [
+        "baby_walker",
+        "infant_walker",
+        "toys"
+      ],
+      "trigger_terms": [
+        "baby walker",
+        "infant walker",
+        "wheeled walker for babies",
+        "activity walker"
+      ],
       "severity": "violation",
       "expected_requirement": "CRIMINAL PROHIBITION: Baby walkers cannot be imported, advertised, or sold in Canada under any circumstances.",
       "explanation": "Canada banned baby walkers in April 2004 under the Hazardous Products Act and reaffirmed it in Schedule 2 of the CCPSA. It is an offense to import or sell a baby walker in Canada, punishable by fines up to CAD $100,000 and imprisonment. Even if certified compliant to US ASTM F977 or European EN 1273, the product is 100% illegal in Canada.",
-      "fix_suggestion": "DO NOT IMPORT OR SHIP TO CANADA. Exclude Canada from shipping zones immediately."
+      "fix_suggestion": "DO NOT IMPORT OR SHIP TO CANADA. Exclude Canada from shipping zones immediately.",
+      "conditions": {
+        "category": "baby_walker",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Canada",
+          "CA"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-BAN-CA-WALKER",
+          "name": "CCPSA Schedule 2 Item 15 Ban",
+          "type": "document",
+          "mandatory": true,
+          "description": "Prohibited from Canadian market.",
+          "standards": [
+            "CCPSA Schedule 2"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "CA-LBL-01",
+      "rule_id": "CA-LBL-01",
+      "market": "Canada",
+      "country_code": "CA",
+      "name": "Mandatory English/French Bilingual Packaging & Description",
+      "title": "Mandatory English/French Bilingual Packaging & Description",
+      "directive_code": "Consumer Packaging and Labelling Act (R.S.C. 1985, c. C-38), Section 6",
+      "statute_citation": "Consumer Packaging and Labelling Act (R.S.C. 1985, c. C-38), Section 6",
       "category": "Mandatory Labeling",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Consumer Packaging and Labelling Act (R.S.C. 1985, c. C-38), Section 6",
-      "title": "Mandatory English/French Bilingual Packaging & Description",
       "condition_type": "mandatory_field",
-      "required_field": "bilingual_en_fr",
+      "target_categories": [],
+      "trigger_terms": [],
       "severity": "violation",
       "expected_requirement": "All mandatory label information (product identity, net quantity, instructions, warnings) must be displayed in both English and French with equal prominence.",
       "explanation": "Federal Canadian law strictly mandates bilingual packaging across all provinces. Unilingual English labels are regularly stopped at CBSA ports of entry and subject to corrective labeling orders.",
-      "fix_suggestion": "Add accurate Canadian French translations alongside English text for all label declarations, instructions, and net quantity statements."
+      "fix_suggestion": "Add accurate Canadian French translations alongside English text for all label declarations, instructions, and net quantity statements.",
+      "conditions": {
+        "category": "general",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Canada",
+          "CA"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-BILINGUAL-CA",
+          "name": "Bilingual Packaging Certification",
+          "type": "marking",
+          "mandatory": true,
+          "description": "English/French dual declarations.",
+          "standards": [
+            "CPLA Sec 6",
+            "Quebec Bill 96"
+          ]
+        }
+      ],
+      "required_field": "bilingual_en_fr"
     },
     {
       "rule_code": "CA-ING-01",
+      "rule_id": "CA-ING-01",
+      "market": "Canada",
+      "country_code": "CA",
+      "name": "Health Canada 3.0% Camphor Concentration Cap",
+      "title": "Health Canada 3.0% Camphor Concentration Cap",
+      "directive_code": "Health Canada Cosmetic Ingredient Hotlist - Camphor Entry",
+      "statute_citation": "Health Canada Cosmetic Ingredient Hotlist - Camphor Entry",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Health Canada Cosmetic Ingredient Hotlist - Camphor Entry",
-      "title": "Health Canada 3.0% Camphor Concentration Cap",
       "condition_type": "concentration_limit",
-      "ingredient_name": "camphor",
-      "max_concentration": 3.0,
+      "target_categories": [
+        "cosmetics"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
       "expected_requirement": "Maximum 3.0% camphor in topical cosmetics. Concentrations exceeding 3% are prohibited for cosmetics.",
       "explanation": "Health Canada's Hotlist restricts camphor in cosmetics to <= 3%. If camphor exceeds 3%, the formulation is classified as a Natural Health Product (NHP) or drug requiring an NPN license.",
-      "fix_suggestion": "Ensure camphor does not exceed 3.0% for cosmetic distribution in Canada, or apply for an NPN license."
+      "fix_suggestion": "Ensure camphor does not exceed 3.0% for cosmetic distribution in Canada, or apply for an NPN license.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Canada",
+          "CA"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-CAMPHOR-CA",
+          "name": "Camphor Hotlist Screen",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Camphor concentration <= 3.0%.",
+          "standards": [
+            "Health Canada Hotlist"
+          ]
+        }
+      ],
+      "ingredient_name": "camphor",
+      "max_concentration": 3.0
     },
     {
       "rule_code": "CA-CLASS-01",
+      "rule_id": "CA-CLASS-01",
+      "market": "Canada",
+      "country_code": "CA",
+      "name": "Natural Health Product (NHP) Licensing Requirement for Therapeutic Claims",
+      "title": "Natural Health Product (NHP) Licensing Requirement for Therapeutic Claims",
+      "directive_code": "Food and Drugs Act (R.S.C. 1985, c. F-27) Section 3 & Schedule A",
+      "statute_citation": "Food and Drugs Act (R.S.C. 1985, c. F-27) Section 3 & Schedule A",
       "category": "Claim Wording",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Food and Drugs Act (R.S.C. 1985, c. F-27) Section 3 & Schedule A",
-      "title": "Natural Health Product (NHP) Licensing Requirement for Therapeutic Claims",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
-      "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "eliminates disease", "natural cure"],
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "ayurvedic",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "cures",
+        "treats",
+        "cures arthritis",
+        "heals arthritis",
+        "medicinal",
+        "eliminates disease",
+        "natural cure"
+      ],
       "severity": "violation",
       "expected_requirement": "8-digit Natural Product Number (NPN) and Canadian Site Licence required before importing products making health or therapeutic claims.",
       "explanation": "Section 3 of the Food and Drugs Act prohibits advertising treatments for Schedule A conditions (such as arthritis) to the general public without Health Canada authorization.",
-      "fix_suggestion": "Remove disease claims to remain in the cosmetic category, or secure an 8-digit NPN license prior to commercial importation."
+      "fix_suggestion": "Remove disease claims to remain in the cosmetic category, or secure an 8-digit NPN license prior to commercial importation.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Canada",
+          "CA"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LIC-NPN-CA",
+          "name": "Health Canada NPN License",
+          "type": "registration",
+          "mandatory": true,
+          "description": "8-digit Natural Product Number.",
+          "standards": [
+            "SOR/2003-196"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "CA-HAZ-01",
+      "rule_id": "CA-HAZ-01",
+      "market": "Canada",
+      "country_code": "CA",
+      "name": "Lithium Battery Air Transport Declaration",
+      "title": "Lithium Battery Air Transport Declaration",
+      "directive_code": "Transportation of Dangerous Goods (TDG) Regulations / Transport Canada",
+      "statute_citation": "Transportation of Dangerous Goods (TDG) Regulations / Transport Canada",
       "category": "Hazmat/Shipping",
       "trust_tier": "Tier 3 Escalation",
-      "statute_citation": "Transportation of Dangerous Goods (TDG) Regulations / Transport Canada",
-      "title": "Lithium Battery Air Transport Declaration",
       "condition_type": "hazmat_check",
-      "target_categories": ["electronics", "heated_devices", "rechargeable"],
-      "trigger_terms": ["lithium", "rechargeable battery", "li-ion", "heated wand"],
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
       "severity": "escalation",
       "expected_requirement": "Transport Canada TDG compliant shipping documentation and UN 38.3 testing verification.",
       "explanation": "Dangerous goods regulations mandate verified testing and labeling for lithium battery consignments entering Canadian airspace.",
-      "fix_suggestion": "Provide battery test certificate and declare under TDG special provision 34."
+      "fix_suggestion": "Provide battery test certificate and declare under TDG special provision 34.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Canada",
+          "CA"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-TDG-CA",
+          "name": "TDG UN 38.3 Verification",
+          "type": "document",
+          "mandatory": true,
+          "description": "UN 38.3 test certificate.",
+          "standards": [
+            "TDG Regulations",
+            "UN 38.3"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "CA-TOY-01",
+      "rule_id": "CA-TOY-01",
+      "market": "Canada",
+      "country_code": "CA",
+      "name": "CCPSA Heavy Metals in Surface Coatings on Toys (Lead <= 90 mg/kg)",
+      "title": "CCPSA Heavy Metals in Surface Coatings on Toys (Lead <= 90 mg/kg)",
+      "directive_code": "Toys Regulations (SOR/2011-17), Section 23",
+      "statute_citation": "Toys Regulations (SOR/2011-17), Section 23",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "toys",
+        "children's products"
+      ],
+      "trigger_terms": [
+        "lead paint",
+        "high lead pigment",
+        "toxic coating",
+        "mercury coating"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Total lead content in surface coatings must not exceed 90 mg/kg (90 ppm). Mercury must not be intentionally added.",
+      "explanation": "Health Canada rigorously prosecutes and recalls toys with lead or heavy metal migration under CCPSA Section 23.",
+      "fix_suggestion": "Ensure surface coatings pass Health Canada Product Safety Reference Manual Method C-02.2 testing.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Canada",
+          "CA"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-LEAD-CA",
+          "name": "Health Canada Method C-02.2 Test",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Total lead <= 90 mg/kg.",
+          "standards": [
+            "SOR/2011-17"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "CA-PEST-01",
+      "rule_id": "CA-PEST-01",
+      "market": "Canada",
+      "country_code": "CA",
+      "name": "Pest Control Products Act (PCPA) Treated Articles Policy",
+      "title": "Pest Control Products Act (PCPA) Treated Articles Policy",
+      "directive_code": "Pest Control Products Act (S.C. 2002, c. 28) / PMRA Regulatory Directive",
+      "statute_citation": "Pest Control Products Act (S.C. 2002, c. 28) / PMRA Regulatory Directive",
+      "category": "Classification Status",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "kitchenware",
+        "household",
+        "cutting_boards"
+      ],
+      "trigger_terms": [
+        "kills viruses",
+        "kills covid-19",
+        "eliminates e. coli",
+        "pesticidal surface",
+        "eradicates bacteria"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Public health pathogen eradication claims require PMRA registration. Preservative antimicrobial claims are allowed only if preservative is registered under PCPA.",
+      "explanation": "Health Canada's PMRA prohibits claims that treated articles protect users against human pathogens without full drug/biocide registration.",
+      "fix_suggestion": "Rephrase antimicrobial claim to specify it only protects the product itself against odor and stain-causing bacteria, not human health pathogens.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Canada",
+          "CA"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-REG-PMRA",
+          "name": "PMRA Preservative Verification",
+          "type": "registration",
+          "mandatory": true,
+          "description": "PMRA registered active.",
+          "standards": [
+            "PCPA S.C. 2002 c. 28"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "CA-COSM-01",
+      "rule_id": "CA-COSM-01",
+      "market": "Canada",
+      "country_code": "CA",
+      "name": "Mandatory Cosmetic Notification Form (CNF) Submission",
+      "title": "Mandatory Cosmetic Notification Form (CNF) Submission",
+      "directive_code": "Cosmetic Regulations (C.R.C., c. 869), Section 30",
+      "statute_citation": "Cosmetic Regulations (C.R.C., c. 869), Section 30",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "creams",
+        "beauty"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Submission of a complete Cosmetic Notification Form (CNF) to Health Canada within 10 days of first commercial sale in Canada.",
+      "explanation": "Failure to notify Health Canada of cosmetic formulations and ingredient concentrations within 10 days of importation constitutes a regulatory violation leading to border stop orders.",
+      "fix_suggestion": "Submit online CNF notification via Health Canada's portal and verify all ingredients match INCI nomenclature.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Canada",
+          "CA"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-CNF-CA",
+          "name": "Cosmetic Notification Form (CNF)",
+          "type": "registration",
+          "mandatory": true,
+          "description": "Health Canada CNF confirmation.",
+          "standards": [
+            "C.R.C., c. 869 Sec 30"
+          ]
+        }
+      ],
+      "required_field": "health_canada_cnf_submission"
     }
   ]
 }

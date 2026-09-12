@@ -1,0 +1,64 @@
+{
+  "markets": {
+    "US": {
+      "country_code": "US",
+      "country_name": "United States",
+      "de_minimis_threshold": 800.0,
+      "de_minimis_currency": "USD",
+      "vat_gst_rate": "0% Federal (State Sales Tax 0-10.25% collected by marketplace)",
+      "simplification_scheme": "Section 321 (Type 86) Duty-Free De Minimis Entry",
+      "customs_complexity_score": 2,
+      "estimated_duty_rate": "0% under $800 (Avg 3-6% above)",
+      "entry_friction_rank": 1,
+      "recommendation_summary": "Easiest expansion market due to high $800 de minimis threshold. Low-value shipments clear customs duty-free and tax-free with minimal clearance overhead under Section 321."
+    },
+    "UK": {
+      "country_code": "UK",
+      "country_name": "United Kingdom",
+      "de_minimis_threshold": 135.0,
+      "de_minimis_currency": "GBP",
+      "vat_gst_rate": "20% standard VAT",
+      "simplification_scheme": "HMRC Low Value Consignment Scheme (Marketplace VAT remittance)",
+      "customs_complexity_score": 4,
+      "estimated_duty_rate": "0% duty under £135 (VAT applies from £0)",
+      "entry_friction_rank": 2,
+      "recommendation_summary": "Highly viable market. For orders under £135, marketplaces (Amazon, eBay) collect VAT at checkout, eliminating customs clearance delays for foreign sellers."
+    },
+    "EU": {
+      "country_code": "EU",
+      "country_name": "European Union (27 Member States)",
+      "de_minimis_threshold": 0.0,
+      "de_minimis_currency": "EUR",
+      "vat_gst_rate": "19% - 25% (Avg 21% VAT depending on member state)",
+      "simplification_scheme": "Import One-Stop Shop (IOSS) for consignments up to €150",
+      "customs_complexity_score": 6,
+      "estimated_duty_rate": "0% duty under €150; VAT mandatory on all commercial imports from €0",
+      "entry_friction_rank": 3,
+      "recommendation_summary": "Moderate friction. While €0 de minimis means all goods incur VAT, using IOSS enables unified monthly VAT filing across all 27 EU nations without individual country registrations."
+    },
+    "JP": {
+      "country_code": "JP",
+      "country_name": "Japan",
+      "de_minimis_threshold": 10000.0,
+      "de_minimis_currency": "JPY (~$67 USD)",
+      "vat_gst_rate": "10% Japanese Consumption Tax (JCT)",
+      "simplification_scheme": "Simplified Tariff Schedule for consignments under ¥200,000",
+      "customs_complexity_score": 7,
+      "estimated_duty_rate": "Simplified flat tariff 3-5% or duty-free under ¥10,000",
+      "entry_friction_rank": 4,
+      "recommendation_summary": "Moderate-high friction. Japanese labeling (MAH requirement) is strictly enforced. However, consignments under ¥10,000 CIF value are exempt from customs duty and Consumption Tax."
+    },
+    "CA": {
+      "country_code": "CA",
+      "country_name": "Canada",
+      "de_minimis_threshold": 20.0,
+      "de_minimis_currency": "CAD (~$15 USD)",
+      "vat_gst_rate": "5% Federal GST + provincial taxes (PST/HST up to 15%)",
+      "simplification_scheme": "CARM (CBSA Assessment and Revenue Management) portal",
+      "customs_complexity_score": 8,
+      "estimated_duty_rate": "Avg 5-8% plus combined GST/HST on almost all parcels",
+      "entry_friction_rank": 5,
+      "recommendation_summary": "Highest friction market for small cross-border sellers. Lowest de minimis threshold ($20 CAD for non-US/MX goods) triggers tax, CBSA carrier handling fees, and mandatory English/French bilingual labeling."
+    }
+  }
+}

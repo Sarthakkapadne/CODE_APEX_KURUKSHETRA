@@ -1,0 +1,76 @@
+{
+  "country_code": "CA",
+  "country_name": "Canada",
+  "regulatory_bodies": ["Health Canada", "CBSA", "Competition Bureau Canada"],
+  "rules": [
+    {
+      "rule_code": "CA-BAN-01",
+      "category": "Classification Status",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Canada Consumer Product Safety Act (CCPSA) Schedule 2, Item 15",
+      "title": "ABSOLUTE STATUTORY BAN ON BABY WALKERS IN CANADA",
+      "condition_type": "product_type_ban",
+      "target_categories": ["baby_walker", "infant_walker", "toys"],
+      "trigger_terms": ["baby walker", "infant walker", "wheeled walker for babies", "activity walker"],
+      "severity": "violation",
+      "expected_requirement": "CRIMINAL PROHIBITION: Baby walkers cannot be imported, advertised, or sold in Canada under any circumstances.",
+      "explanation": "Canada banned baby walkers in April 2004 under the Hazardous Products Act and reaffirmed it in Schedule 2 of the CCPSA. It is an offense to import or sell a baby walker in Canada, punishable by fines up to CAD $100,000 and imprisonment. Even if certified compliant to US ASTM F977 or European EN 1273, the product is 100% illegal in Canada.",
+      "fix_suggestion": "DO NOT IMPORT OR SHIP TO CANADA. Exclude Canada from shipping zones immediately."
+    },
+    {
+      "rule_code": "CA-LBL-01",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Consumer Packaging and Labelling Act (R.S.C. 1985, c. C-38), Section 6",
+      "title": "Mandatory English/French Bilingual Packaging & Description",
+      "condition_type": "mandatory_field",
+      "required_field": "bilingual_en_fr",
+      "severity": "violation",
+      "expected_requirement": "All mandatory label information (product identity, net quantity, instructions, warnings) must be displayed in both English and French with equal prominence.",
+      "explanation": "Federal Canadian law strictly mandates bilingual packaging across all provinces. Unilingual English labels are regularly stopped at CBSA ports of entry and subject to corrective labeling orders.",
+      "fix_suggestion": "Add accurate Canadian French translations alongside English text for all label declarations, instructions, and net quantity statements."
+    },
+    {
+      "rule_code": "CA-ING-01",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Health Canada Cosmetic Ingredient Hotlist - Camphor Entry",
+      "title": "Health Canada 3.0% Camphor Concentration Cap",
+      "condition_type": "concentration_limit",
+      "ingredient_name": "camphor",
+      "max_concentration": 3.0,
+      "severity": "violation",
+      "expected_requirement": "Maximum 3.0% camphor in topical cosmetics. Concentrations exceeding 3% are prohibited for cosmetics.",
+      "explanation": "Health Canada's Hotlist restricts camphor in cosmetics to <= 3%. If camphor exceeds 3%, the formulation is classified as a Natural Health Product (NHP) or drug requiring an NPN license.",
+      "fix_suggestion": "Ensure camphor does not exceed 3.0% for cosmetic distribution in Canada, or apply for an NPN license."
+    },
+    {
+      "rule_code": "CA-CLASS-01",
+      "category": "Claim Wording",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Food and Drugs Act (R.S.C. 1985, c. F-27) Section 3 & Schedule A",
+      "title": "Natural Health Product (NHP) Licensing Requirement for Therapeutic Claims",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
+      "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "eliminates disease", "natural cure"],
+      "severity": "violation",
+      "expected_requirement": "8-digit Natural Product Number (NPN) and Canadian Site Licence required before importing products making health or therapeutic claims.",
+      "explanation": "Section 3 of the Food and Drugs Act prohibits advertising treatments for Schedule A conditions (such as arthritis) to the general public without Health Canada authorization.",
+      "fix_suggestion": "Remove disease claims to remain in the cosmetic category, or secure an 8-digit NPN license prior to commercial importation."
+    },
+    {
+      "rule_code": "CA-HAZ-01",
+      "category": "Hazmat/Shipping",
+      "trust_tier": "Tier 3 Escalation",
+      "statute_citation": "Transportation of Dangerous Goods (TDG) Regulations / Transport Canada",
+      "title": "Lithium Battery Air Transport Declaration",
+      "condition_type": "hazmat_check",
+      "target_categories": ["electronics", "heated_devices", "rechargeable"],
+      "trigger_terms": ["lithium", "rechargeable battery", "li-ion", "heated wand"],
+      "severity": "escalation",
+      "expected_requirement": "Transport Canada TDG compliant shipping documentation and UN 38.3 testing verification.",
+      "explanation": "Dangerous goods regulations mandate verified testing and labeling for lithium battery consignments entering Canadian airspace.",
+      "fix_suggestion": "Provide battery test certificate and declare under TDG special provision 34."
+    }
+  ]
+}

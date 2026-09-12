@@ -86,6 +86,17 @@ class BenchmarkEvaluator:
             "uk_responsible_person": has_rp,
             "has_mah": has_rp,
             "japanese_labeling_mah": has_rp,
+            "inci_ingredients_list": has_rp or (len(extracted.ingredients) > 0),
+            "health_canada_cnf_submission": has_rp,
+            "cdsco_registration": has_rp,
+            "legal_metrology_declarations": has_rp,
+            "nmpa_filing_voucher": has_rp,
+            "simplified_chinese_label": has_rp,
+            "lucid_registration_number": has_rp,
+            "german_language_instructions": has_rp,
+            "vietnamese_sub_label": has_rp,
+            "vietnam_dav_proclamation": has_rp,
+            "us_contact_for_adverse_events": has_rp,
         }
 
         for country in target_markets:
