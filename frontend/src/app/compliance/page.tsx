@@ -9,6 +9,7 @@ import {
 import AppShell from '../../components/layout/AppShell';
 import ComplianceMatrix from '../../components/ComplianceMatrix';
 import { fetchInspections, fetchInspectionById } from '../../lib/api';
+import { useActiveAudit } from '../../lib/ActiveAuditContext';
 import type { ComplianceCheckResult } from '../../lib/types';
 
 const MARKET_FLAGS: Record<string, string> = { 
@@ -41,6 +42,7 @@ function VerdictBadge({ verdict }: { verdict: string }) {
 }
 
 export default function CompliancePage() {
+  const { activeInspectionId, selectInspection: setActiveContextInspection } = useActiveAudit();
   const [inspections, setInspections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedInspectionId, setSelectedInspectionId] = useState<string | null>(null);
@@ -53,7 +55,7 @@ export default function CompliancePage() {
       .then(data => {
         setInspections(data);
         if (data && data.length > 0) {
-          setSelectedInspectionId(data[0].id);
+          setSelectedInspectionId(prev => prev || activeInspectionId || data[0].id);
         }
       })
       .catch(() => {})
@@ -255,8 +257,8 @@ export default function CompliancePage() {
                         <td className="px-6 py-3.5 font-mono text-primary-700">
                           {i.id}
                         </td>
-                        <td className="px-6 py-3.5 max-w-xs truncate text-slate-800 font-medium">
-                          {i.listing_id}
+                        <td className="px-6 py-3.5 max-w-xs truncate text-slate-800 font-bold">
+                          {i.listing_title || i.listing_id}
                         </td>
                         <td className="px-6 py-3.5">
                           <div className="flex items-center gap-1 flex-wrap">

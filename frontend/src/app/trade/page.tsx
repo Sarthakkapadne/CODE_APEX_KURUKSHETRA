@@ -8,6 +8,7 @@ import {
   Sparkles, HelpCircle, ArrowRight, DollarSign, Calculator, FileCheck
 } from 'lucide-react';
 import AppShell from '../../components/layout/AppShell';
+import { useActiveAudit } from '../../lib/ActiveAuditContext';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
@@ -84,6 +85,7 @@ const EXPLAINABLE_AI_RATIONALE: Record<string, { title: string; why: string; sel
 };
 
 export default function TradePage() {
+  const { activeProduct, activeAudit } = useActiveAudit();
   const [markets, setMarkets] = useState<TradeMarketItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'friction_rank' | 'complexity' | 'de_minimis'>('friction_rank');

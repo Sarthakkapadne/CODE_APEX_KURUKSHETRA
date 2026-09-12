@@ -5,6 +5,7 @@ import Link from 'next/link';
 import AppShell from '../../components/layout/AppShell';
 import { Globe, AlertTriangle, ShieldCheck, TrendingUp, Search, Loader2, RefreshCw, Layers, Navigation2, Map } from 'lucide-react';
 import { fetchHeatmapData } from '../../lib/api';
+import { useActiveAudit } from '../../lib/ActiveAuditContext';
 
 const LeafletComplianceMap = dynamic(() => import('../../components/LeafletComplianceMap'), {
   ssr: false,
@@ -30,6 +31,7 @@ const WorldComplianceHeatmap = dynamic(
 );
 
 function HeatMapContent() {
+  const { activeAudit, activeProduct, recentInspections, selectInspection, activeInspectionId } = useActiveAudit();
   const [regions, setRegions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCountry, setSelectedCountry] = useState<string>('US');
@@ -131,19 +133,75 @@ function HeatMapContent() {
         </div>
       </div>
 
+      {/* ── Active Audit Selector Banner ── */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center font-black">
+            📦
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Product GIS Audit</span>
+              {activeAudit?.overall_verdict && (
+                <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${
+                  activeAudit.overall_verdict === 'COMPLIANT'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : activeAudit.overall_verdict === 'IMPORT_PROHIBITED'
+                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}>
+                  {activeAudit.overall_verdict}
+                </span>
+              )}
+            </div>
+            <h2 className="text-sm font-black text-slate-800">
+              {activeProduct?.title || 'Live Regulatory GIS Map'}
+            </h2>
+          </div>
+        </div>
+
+        {/* Audit Selection Dropdown */}
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-semibold text-slate-500 whitespace-nowrap">Switch Audit:</label>
+          <select
+            value={activeInspectionId || ''}
+            onChange={(e) => {
+              if (e.target.value) selectInspection(e.target.value);
+            }}
+            className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 max-w-xs truncate"
+          >
+            {recentInspections.map((ins) => (
+              <option key={ins.id} value={ins.id}>
+                {ins.listing_title || ins.id} ({ins.overall_verdict || 'AUDIT'})
+              </option>
+            ))}
+            {recentInspections.length === 0 && (
+              <option value="">No past audits found</option>
+            )}
+          </select>
+          <Link
+            href="/audit/new"
+            className="text-xs font-bold bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-xl transition-colors shadow-2xs whitespace-nowrap"
+          >
+            + New Scan
+          </Link>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Main Interactive Map Column */}
         <div className="lg:col-span-2">
           {mapMode === 'leaflet' ? (
             <LeafletComplianceMap 
+              auditData={activeAudit}
               selectedCountry={selectedCountry}
               onSelectCountry={(code) => setSelectedCountry(code)}
             />
           ) : (
             <div className="rounded-3xl border border-slate-200 bg-white shadow-xl p-6 overflow-hidden min-h-[560px] flex flex-col justify-center items-center">
               <WorldComplianceHeatmap
-                auditResult={null}
+                auditResult={activeAudit}
                 selectedCountry={selectedCountry}
                 onSelectCountry={(code) => setSelectedCountry(code)}
               />

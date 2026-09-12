@@ -7,6 +7,31 @@ import {
 import { ComplianceCheckResult, AuditResponse } from '../lib/types';
 
 
+
+const FRIENDLY_RULE_TITLES: Record<string, string> = {
+  'US-CLASS-01': 'EPA Antimicrobial & Surface Pesticide Trigger (40 CFR § 152.15)',
+  'US-DRUG-01': 'FDA Unapproved New Drug & Disease Claim Prohibition (21 U.S.C. § 321)',
+  'US-LABEL-01': 'FDA Fair Packaging & Net Quantity Mandatory Declaration',
+  'US-HAZMAT-01': 'DOT / FAA Lithium Battery Hazardous Transport Mandate (49 CFR § 173.185)',
+  'US-CPSC-01': 'CPSC Consumer Product Safety Improvement Act (CPSIA) Certification',
+  'CA-ROCKER-01': 'Health Canada Banned Infant Sleep Positioner & Rocker Prohibition',
+  'CA-LANG-01': 'Canada Mandatory Bilingual English & French Packaging Declaration',
+  'CA-HOTLIST-01': 'Health Canada Cosmetic Ingredient Hotlist Chemical Restriction',
+  'CA-HAZMAT-01': 'Transport Canada Dangerous Goods Lithium Transport Standard',
+  'EU-GPSR-01': 'EU General Product Safety Regulation (GPSR) Responsible Person Mandate',
+  'EU-COSMETICS-1223': 'EU Cosmetic Regulation (EC) 1223/2009 Safety Dossier & CPNP',
+  'EU-REACH-01': 'EU REACH Annex XVII Hazardous Substance & Chemical Concentration Cap',
+  'EU-LUCID-01': 'German VerpackG LUCID Mandatory Dual-System Packaging Contract',
+  'UK-OPSS-01': 'UK OPSS Cosmetic Products Enforcement & Designated UK Responsible Person',
+  'UK-REACH-01': 'UK REACH Chemical Registration & Hazardous Concentration Limits',
+  'JP-PMDA-01': 'Japan PMDA Quasi-Drug Formulation & Active Ingredient Positive List',
+  'JP-METI-01': 'Japan METI Electrical Appliance & PSE Safety Mark Certification',
+  'IN-CDSCO-01': 'India CDSCO Mandatory Cosmetic Import Registration (Form 42)',
+  'IN-BIS-01': 'India Bureau of Indian Standards (BIS) Compulsory Registration Order',
+  'AU-TGA-01': 'Australia TGA Therapeutic Goods & Sunscreen Efficacy Verification',
+  'BR-ANVISA-01': 'Brazil ANVISA RDC 752/2022 Technical Dossier & Portuguese Labeling',
+};
+
 const CATEGORY_ROWS = [
   { id: 'Classification Status', title: '1. Classification & Category Box', desc: 'Layer 1b Cross-Border Mismatch' },
   { id: 'Claim Wording', title: '2. Marketing & Disease Claims', desc: 'Medical / Pesticidal Word Triggers' },
@@ -190,7 +215,9 @@ export default function ComplianceMatrix({
                           </span>
                         </button>
                       ) : (
-                        <span className="text-[11px] text-slate-600">—</span>
+                        <span className="text-[10px] font-medium text-slate-500 bg-slate-800/30 px-2 py-0.5 rounded" title={auditData?.destination_markets && !auditData.destination_markets.includes(code) ? "Market not selected for this audit" : "No regulatory alerts found"}>
+                          {auditData?.destination_markets && !auditData.destination_markets.includes(code) ? 'Not in Scope' : 'No Flags'}
+                        </span>
                       )}
                     </td>
                   );
@@ -250,7 +277,14 @@ export default function ComplianceMatrix({
                       {selectedCheck.status}
                     </span>
                   </div>
-                  <h3 className="text-base font-bold text-white mt-0.5">{selectedCheck.check_code}</h3>
+                  <div>
+                    <h3 className="text-sm sm:text-base font-bold text-white mt-0.5">
+                      {(selectedCheck as any).rule_name || FRIENDLY_RULE_TITLES[selectedCheck.check_code] || selectedCheck.check_code}
+                    </h3>
+                    <p className="text-[10px] font-mono text-slate-400 mt-0.5">
+                      Statutory Rule Identifier: {selectedCheck.check_code}
+                    </p>
+                  </div>
                 </div>
               </div>
               <button

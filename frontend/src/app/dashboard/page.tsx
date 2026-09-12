@@ -5,11 +5,12 @@ import {
   Plus, TrendingUp, ShieldCheck, AlertTriangle, Globe,
   FileText, RefreshCw, Eye, BarChart3, Clock, CheckCircle2,
   XCircle, ShieldAlert, ArrowRight, Download, Zap, Scale,
-  MessageSquare, Users, BookOpen, TrendingDown
+  MessageSquare, Users, BookOpen, TrendingDown, Sparkles
 } from 'lucide-react';
 import AppShell from '../../components/layout/AppShell';
 import { useAuth } from '../../lib/auth';
 import { fetchInspections } from '../../lib/api';
+import { useActiveAudit } from '../../lib/ActiveAuditContext';
 
 const MARKET_FLAGS: Record<string, string> = { US: '🇺🇸', EU: '🇪🇺', UK: '🇬🇧', CA: '🇨🇦', JP: '🇯🇵' };
 
@@ -109,6 +110,7 @@ function GreetingBanner({ name, role }: { name: string; role: string }) {
 
 function DashboardContent() {
   const { user } = useAuth();
+  const { activeAudit, activeProduct, selectInspection } = useActiveAudit();
   const [inspections, setInspections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -141,6 +143,46 @@ function DashboardContent() {
     <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6 radial-bg min-h-screen">
       {/* Greeting */}
       <GreetingBanner name={user?.name || 'there'} role={user?.role || 'seller'} />
+
+      {/* ── Active / Latest Scanned Audit Highlight Banner ── */}
+      {activeAudit && (
+        <div className="bg-gradient-to-r from-slate-900 to-indigo-950 border border-slate-800 rounded-2xl p-5 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5" /> Latest Scanned Product
+              </span>
+              <VerdictBadge verdict={activeAudit.overall_verdict} />
+            </div>
+            <h2 className="text-base font-black text-white">
+              {activeProduct?.title || 'Audited Product'}
+            </h2>
+            <p className="text-xs text-slate-400">
+              Evaluated across {(activeAudit.destination_markets || []).join(', ')} · Declared Value: ${activeProduct?.price || 34.99} {activeProduct?.currency || 'USD'}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto flex-shrink-0">
+            <Link
+              href="/compliance"
+              onClick={() => {
+                if (activeAudit.inspection_id) selectInspection(activeAudit.inspection_id);
+              }}
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-xl text-xs font-bold transition-all shadow-blue flex items-center gap-1.5"
+            >
+              <span>View 6x11 Matrix</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            <Link
+              href="/heatmap"
+              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>GIS Heatmap</span>
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -260,8 +302,8 @@ function DashboardContent() {
                 {inspections.slice(0, 8).map(ins => (
                   <tr key={ins.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-6 py-4">
-                      <p className="font-bold text-slate-800 truncate max-w-[180px]">
-                        {ins.listing_id?.slice(0, 26) || 'Product Audit'}
+                      <p className="font-bold text-slate-800 truncate max-w-[240px]">
+                        {ins.listing_title || ins.listing_id || 'Product Audit'}
                       </p>
                       <p className="text-[10px] text-slate-400 font-mono mt-0.5">{ins.id?.slice(0, 14)}…</p>
                     </td>

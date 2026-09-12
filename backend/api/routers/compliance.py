@@ -143,13 +143,24 @@ async def run_compliance_audit(
 
 @router.get("/inspections", summary="List recent compliance inspections")
 async def list_inspections(db: AsyncSession = Depends(get_db)):
-    stmt = select(Inspection).order_by(Inspection.created_at.desc()).limit(20)
+    stmt = (
+        select(Inspection, Listing)
+        .outerjoin(Listing, Inspection.listing_id == Listing.id)
+        .order_by(Inspection.created_at.desc())
+        .limit(30)
+    )
     result = await db.execute(stmt)
-    inspections = result.scalars().all()
+    rows = result.all()
     return [
         {
             "id": i.id,
             "listing_id": i.listing_id,
+            "listing_title": l.title if l else (i.listing_id or "Product Audit"),
+            "brand_name": l.brand_name if l else "",
+            "category": l.category if l else "",
+            "price": l.price if l else 29.99,
+            "currency": l.currency if l else "USD",
+            "country_of_origin": l.country_of_origin if l else "India",
             "timestamp_utc": i.timestamp_utc,
             "rule_engine_version": i.rule_engine_version,
             "compliance_hash": i.compliance_hash,
@@ -157,7 +168,7 @@ async def list_inspections(db: AsyncSession = Depends(get_db)):
             "destination_markets": json.loads(i.destination_markets or "[]"),
             "summary": i.summary,
         }
-        for i in inspections
+        for i, l in rows
     ]
 
 

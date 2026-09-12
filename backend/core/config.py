@@ -24,6 +24,14 @@ class Settings(BaseSettings):
     MAPTILER_API_KEY: str = os.getenv("MAPTILER_API_KEY", "CTTf1GnjFmqpYI0cPqIC")
     LEAFLET_API_KEY: str = os.getenv("LEAFLET_API_KEY", "CTTf1GnjFmqpYI0cPqIC")
 
+    @property
+    def gemini_model(self) -> str:
+        return self.GEMINI_MODEL
+
+    @property
+    def gemini_api_key(self) -> str:
+        return self.GEMINI_API_KEY
+
     class Config:
         env_file = str(BASE_DIR / ".env")
         extra = "allow"

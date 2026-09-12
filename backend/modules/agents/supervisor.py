@@ -68,11 +68,13 @@ class ComplianceSupervisor:
         target_markets = listing.destination_markets or ["US", "EU", "UK", "CA", "JP"]
         full_text = f"{listing.title}\n{listing.description}"
 
-        # Check if caller explicitly requested Gemini AI Reasoning via button
-        enable_gemini = getattr(listing, "enable_gemini", False)
+        # Default to Gemini AI Reasoning if GEMINI_API_KEY is configured unless explicitly set to False
+        has_gemini_key = bool(getattr(self.unified_engine.settings, "GEMINI_API_KEY", ""))
+        user_enable_gemini = getattr(listing, "enable_gemini", None)
+        enable_gemini = has_gemini_key if user_enable_gemini is None else bool(user_enable_gemini and has_gemini_key)
         u_extracted, u_packaging, u_remediation = None, None, None
 
-        # 0. Single Consolidated Gemini Prompt (ONLY executed when enable_gemini is True)
+        # 0. Single Consolidated Gemini Prompt (Executed when enable_gemini is True)
         if enable_gemini:
             u_extracted, u_packaging, u_remediation = await self.unified_engine.execute_unified_reasoning(
                 listing=listing,

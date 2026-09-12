@@ -52,6 +52,7 @@ class ComplianceCheckResult(BaseModel):
     expected_requirement: str
     explanation: str
     fix_suggestion: Optional[str] = None
+    rule_name: Optional[str] = None
 
 
 class CBPNoticeOfAction(BaseModel):

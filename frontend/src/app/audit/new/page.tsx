@@ -17,6 +17,7 @@ import CollapsibleRequirements from '../../../components/CollapsibleRequirements
 import AIDescriptionGeneratorModal from '../../../components/AIDescriptionGeneratorModal';
 import { runComplianceAudit, scrapeListingUrl, downloadPdfReport } from '../../../lib/api';
 import { AuditResponse, ListingInput } from '../../../lib/types';
+import { useActiveAudit } from '../../../lib/ActiveAuditContext';
 
 const MARKET_OPTIONS = [
   { code: 'US', name: 'United States', flag: '🇺🇸' },
@@ -148,6 +149,9 @@ function NewAuditContent() {
   const [error, setError] = useState('');
   const [auditData, setAuditData] = useState<AuditResponse | null>(null);
   const [activeResultTab, setActiveResultTab] = useState<'matrix' | 'debate' | 'remediation' | 'economics'>('matrix');
+  const { setActiveAudit, refreshInspections } = useActiveAudit();
+  const [enableGemini, setEnableGemini] = useState<boolean>(true);
+  const [scanStage, setScanStage] = useState<string>('');
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showHashModal, setShowHashModal] = useState(false);
   const [showWhatDoINeedModal, setShowWhatDoINeedModal] = useState(false);
@@ -198,6 +202,20 @@ function NewAuditContent() {
     }
     setError('');
     setIsRunning(true);
+
+    const stages = [
+      'Gemini AI analyzing product formulation & marketing intent...',
+      'Cross-referencing statutory databases (FDA, EU GPSR, Health Canada)...',
+      'Calculating Harmonized Tariff classification & duty exposure...',
+      'Anchoring SHA-256 cryptographic audit chain block...',
+    ];
+    let stageIdx = 0;
+    setScanStage(stages[0]);
+    const timer = setInterval(() => {
+      stageIdx = (stageIdx + 1) % stages.length;
+      setScanStage(stages[stageIdx]);
+    }, 700);
+
     try {
       const res = await runComplianceAudit({
         title: form.title,
@@ -209,13 +227,24 @@ function NewAuditContent() {
         category_hint: form.category_hint || undefined,
         destination_markets: selectedMarkets,
         source_url: form.source_url || undefined,
+        enable_gemini: enableGemini,
       });
+      (res as any).title = form.title;
+      (res as any).brand_name = form.brand_name;
+      (res as any).price = form.price;
+      (res as any).currency = form.currency;
+      (res as any).country_of_origin = form.country_of_origin;
+
       setAuditData(res);
+      setActiveAudit(res);
+      refreshInspections();
       setActiveResultTab('matrix');
     } catch (e: any) {
       setError(e.message || 'Audit failed. Check that backend is running.');
     } finally {
+      clearInterval(timer);
       setIsRunning(false);
+      setScanStage('');
     }
   }
 
@@ -460,8 +489,37 @@ function NewAuditContent() {
               </div>
             )}
 
-            {/* Run Button */}
-            <div className="pt-2">
+            {/* Run Button & AI Toggle */}
+            <div className="pt-2 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-indigo-50/70 border border-indigo-100 rounded-2xl">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Google Gemini 3.5 Flash AI Reasoning</p>
+                    <p className="text-[10px] text-slate-500">Autonomous intent classification, chemical hazard analysis, and compliant rewrite</p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={enableGemini}
+                    onChange={(e) => setEnableGemini(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <span className="ml-2 text-xs font-bold text-indigo-900">{enableGemini ? 'AI Active' : 'Offline Heuristics'}</span>
+                </label>
+              </div>
+
+              {isRunning && scanStage && (
+                <div className="p-3 bg-primary-50 border border-primary-100 rounded-xl flex items-center gap-3 text-xs text-primary-800 font-semibold animate-pulse">
+                  <RefreshCw className="w-4 h-4 text-primary-600 animate-spin flex-shrink-0" />
+                  <span>{scanStage}</span>
+                </div>
+              )}
+
               <button
                 onClick={runAudit}
                 disabled={isRunning}
@@ -470,7 +528,7 @@ function NewAuditContent() {
                 {isRunning ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    Executing Multi-Tier Rule Engine...
+                    Running Comprehensive Multi-Tier Audit...
                   </>
                 ) : (
                   <>

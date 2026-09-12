@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import 'leaflet/dist/leaflet.css';
 import './globals.css';
 import { AuthProvider } from '../lib/auth';
+import { ActiveAuditProvider } from '../lib/ActiveAuditContext';
 
 export const metadata: Metadata = {
   title: 'LexPort — Cross-Border Compliance Co-Pilot',
@@ -26,7 +27,9 @@ export default function RootLayout({
       </head>
       <body className="bg-lexport-bg font-sans antialiased">
         <AuthProvider>
-          {children}
+          <ActiveAuditProvider>
+            {children}
+          </ActiveAuditProvider>
         </AuthProvider>
       </body>
     </html>

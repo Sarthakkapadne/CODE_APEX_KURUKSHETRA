@@ -25,7 +25,14 @@ interface AuditResult {
   };
 }
 
-const API_BASE = 'http://127.0.0.1:8000';
+const getApiBase = () => {
+  try {
+    return localStorage.getItem('lexport_api_base') || 'http://127.0.0.1:8000';
+  } catch {
+    return 'http://127.0.0.1:8000';
+  }
+};
+const API_BASE = getApiBase();
 
 export default function App() {
   const [isScanning, setIsScanning] = useState(false);
@@ -247,47 +254,47 @@ export default function App() {
 
           {/* Audit Action Buttons */}
           <div className="space-y-2 pt-2 border-t border-slate-200">
-            {/* Standard Instant Rule Engine */}
+            {/* Primary: Gemini AI Deep Audit */}
             <button
-              onClick={() => handleAudit(false)}
+              onClick={() => handleAudit(true)}
               disabled={isScanning}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-blue flex items-center justify-center space-x-2 transition-all disabled:opacity-50"
+              className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-600 via-indigo-600 to-primary-700 hover:from-primary-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-blue flex items-center justify-center space-x-2 transition-all disabled:opacity-50"
             >
-              {isScanning && !geminiRequested ? (
+              {isScanning && geminiRequested ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin text-white" />
-                  <span>Evaluating 3-Tier Rules...</span>
+                  <span>Running Gemini 3.5 Flash Reasoning...</span>
                 </>
               ) : (
                 <>
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Run Deterministic Audit</span>
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <span>Run Gemini AI Compliance Audit</span>
                   <ArrowRight className="w-3.5 h-3.5 ml-auto" />
                 </>
               )}
             </button>
 
-            {/* Explicit Gemini LLM Button */}
+            {/* Secondary: Instant Offline Rule Evaluation */}
             <button
-              onClick={() => handleAudit(true)}
+              onClick={() => handleAudit(false)}
               disabled={isScanning}
-              className="w-full py-2 px-4 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold rounded-xl flex items-center justify-center space-x-2 transition-all disabled:opacity-50"
+              className="w-full py-2 px-4 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center justify-center space-x-2 transition-all disabled:opacity-50"
             >
-              {isScanning && geminiRequested ? (
+              {isScanning && !geminiRequested ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-amber-700" />
-                  <span>Running Gemini AI Deep Audit...</span>
+                  <Loader2 className="w-4 h-4 animate-spin text-slate-500" />
+                  <span>Checking Local Rules...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-amber-600" />
-                  <span>Run Gemini AI Deep Audit</span>
-                  <Cpu className="w-3.5 h-3.5 text-amber-600 ml-auto" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Fast Deterministic Mode (Offline)</span>
+                  <Cpu className="w-3 h-3 text-slate-400 ml-auto" />
                 </>
               )}
             </button>
             <p className="text-[9px] text-center text-slate-400">
-              Gemini LLM runs strictly on demand when clicked.
+              Powered by Google Gemini 3.5 Flash & 6-Category Statutory Engine
             </p>
           </div>
         </div>
