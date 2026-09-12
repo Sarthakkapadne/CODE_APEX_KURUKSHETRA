@@ -5,10 +5,14 @@ and statutory document checklists for cross-border e-commerce sellers.
 """
 from __future__ import annotations
 from typing import Dict, Any, List, Optional
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from pydantic import BaseModel, Field
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, or_
 
 from backend.modules.intelligence.compliance_chatbot import ComplianceChatbot
+from backend.db.session import get_db
+from backend.db.models_db import TradeMarketRecord, RequiredDocumentRecord
 
 router = APIRouter()
 _chatbot = ComplianceChatbot()
@@ -64,24 +68,86 @@ def calculate_landed_cost_and_profit(req: ProfitCalculationRequest):
         raise HTTPException(status_code=400, detail=f"Calculation error: {str(e)}")
 
 
-@router.get("/documents", summary="Retrieve mandatory compliance document checklist")
-def get_required_documents(
+@router.get("/documents", summary="Retrieve mandatory compliance document checklist dynamically from database")
+async def get_required_documents(
     category: str = Query("cosmetics", description="Product category"),
     country: Optional[str] = Query(None, description="Target country code (e.g. US, CA, EU, UK, JP, AU, IN, CN, DE, VN)"),
     country_code: Optional[str] = Query(None, description="Target country code alias"),
-    raw_text: Optional[str] = Query("", description="Optional listing description text")
+    raw_text: Optional[str] = Query("", description="Optional listing description text"),
+    db: AsyncSession = Depends(get_db)
 ):
-    """Returns official statutory document checklist, authorities, and citations."""
-    target_country = country_code or country or "US"
+    """Returns official statutory document checklist, authorities, and citations queried from SQLite database."""
+    target_country = (country_code or country or "US").upper()
     try:
-        return _chatbot.get_documents_checklist(category=category, country_code=target_country, raw_text=raw_text)
+        # First query live DB for stored statutory document records
+        stmt = select(RequiredDocumentRecord).where(
+            or_(
+                RequiredDocumentRecord.country_code == target_country,
+                RequiredDocumentRecord.country_code == "ALL"
+            )
+        )
+        res = await db.execute(stmt)
+        records = res.scalars().all()
+        
+        # Fall back or complement with deterministic document engine
+        engine_docs = _chatbot.get_documents_checklist(category=category, country_code=target_country, raw_text=raw_text)
+        
+        if records:
+            db_docs = [
+                {
+                    "doc_code": r.id,
+                    "doc_name": r.doc_name,
+                    "is_mandatory": r.is_mandatory,
+                    "statutory_citation": r.statutory_citation,
+                    "governing_agency": r.governing_agency,
+                    "issuing_authority": r.issuing_authority,
+                    "description": r.description,
+                    "seller_action_needed": r.seller_action_needed,
+                    "category": r.category,
+                    "country_code": r.country_code,
+                }
+                for r in records
+            ]
+            # Merge unique documents by doc_name or doc_code
+            seen = {d["doc_name"].lower() for d in db_docs}
+            for ed in engine_docs:
+                if ed["doc_name"].lower() not in seen:
+                    db_docs.append(ed)
+                    seen.add(ed["doc_name"].lower())
+            return db_docs
+
+        return engine_docs
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Document lookup error: {str(e)}")
 
 
-@router.get("/countries", summary="List supported destination countries and trade economic profiles")
-def list_supported_countries():
-    """Returns list of supported countries, currency codes, and de minimis profiles."""
+@router.get("/countries", summary="List supported destination countries and trade economic profiles from database")
+async def list_supported_countries(db: AsyncSession = Depends(get_db)):
+    """Returns list of supported countries, currency codes, and de minimis profiles queried dynamically from SQLite."""
+    stmt = select(TradeMarketRecord).order_by(TradeMarketRecord.country_name.asc())
+    res = await db.execute(stmt)
+    records = res.scalars().all()
+    if records:
+        profiles = [
+            {
+                "code": r.country_code,
+                "country_code": r.country_code,
+                "name": r.country_name,
+                "flag": r.flag,
+                "currency": r.currency_code,
+                "vat_gst_rate": str(r.vat_gst_rate or "0%"),
+                "estimated_duty_rate": str(r.standard_duty_rate or "0%"),
+                "de_minimis_threshold": r.de_minimis_threshold_usd,
+                "de_minimis_description": r.de_minimis_description,
+                "governing_agency": r.governing_agency,
+                "latitude": r.latitude,
+                "longitude": r.longitude,
+            }
+            for r in records
+        ]
+        return {"countries": profiles, "supported_countries": profiles}
+
+    # Fallback if DB not seeded yet
     profiles = [
         {"code": "US", "country_code": "US", "name": "United States", "flag": "🇺🇸", "currency": "USD", "vat_gst_rate": "0% (Sales Tax at checkout)", "estimated_duty_rate": "0.0%"},
         {"code": "CA", "country_code": "CA", "name": "Canada", "flag": "🇨🇦", "currency": "CAD", "vat_gst_rate": "5.0% GST", "estimated_duty_rate": "6.5%"},

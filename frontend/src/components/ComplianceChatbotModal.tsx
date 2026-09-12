@@ -147,6 +147,19 @@ export default function ComplianceChatbotModal({
   const [docCategory, setDocCategory] = useState<string>('cosmetics');
   const [docList, setDocList] = useState<any[]>([]);
   const [isDocLoading, setIsDocLoading] = useState<boolean>(false);
+  const [supportedCountries, setSupportedCountries] = useState<any[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    fetchSupportedCountries()
+      .then(data => {
+        if (active && data?.countries) {
+          setSupportedCountries(data.countries);
+        }
+      })
+      .catch(err => console.warn('Could not load countries:', err));
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -474,16 +487,26 @@ export default function ComplianceChatbotModal({
                     onChange={(e) => setCalcCountry(e.target.value)}
                     className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:ring-2 focus:ring-emerald-500"
                   >
-                    <option value="US">🇺🇸 United States (Section 321 $800 de minimis)</option>
-                    <option value="CA">🇨🇦 Canada (CAD $20 de minimis)</option>
-                    <option value="EU">🇪🇺 European Union (IOSS €150 scheme)</option>
-                    <option value="DE">🇩🇪 Germany (19% MwSt &amp; LUCID)</option>
-                    <option value="UK">🇬🇧 United Kingdom (£135 scheme)</option>
-                    <option value="JP">🇯🇵 Japan (¥10,000 de minimis)</option>
-                    <option value="AU">🇦🇺 Australia ($1,000 AUD de minimis)</option>
-                    <option value="IN">🇮🇳 India (ICEGATE &amp; BIS compliance)</option>
-                    <option value="CN">🇨🇳 China (CBEC 9.1% preferential tax)</option>
-                    <option value="VN">🇻🇳 Vietnam (1M VND de minimis)</option>
+                    {supportedCountries && supportedCountries.length > 0 ? (
+                      supportedCountries.map((c: any) => (
+                        <option key={c.code} value={c.code}>
+                          {c.flag} {c.name} ({c.de_minimis_description || c.currency})
+                        </option>
+                      ))
+                    ) : (
+                      <>
+                        <option value="US">🇺🇸 United States (Section 321 $800 de minimis)</option>
+                        <option value="CA">🇨🇦 Canada (CAD $20 de minimis)</option>
+                        <option value="EU">🇪🇺 European Union (IOSS €150 scheme)</option>
+                        <option value="DE">🇩🇪 Germany (19% MwSt &amp; LUCID)</option>
+                        <option value="UK">🇬🇧 United Kingdom (£135 scheme)</option>
+                        <option value="JP">🇯🇵 Japan (¥10,000 de minimis)</option>
+                        <option value="AU">🇦🇺 Australia ($1,000 AUD de minimis)</option>
+                        <option value="IN">🇮🇳 India (ICEGATE &amp; BIS compliance)</option>
+                        <option value="CN">🇨🇳 China (CBEC 9.1% preferential tax)</option>
+                        <option value="VN">🇻🇳 Vietnam (1M VND de minimis)</option>
+                      </>
+                    )}
                   </select>
                 </div>
 
@@ -655,16 +678,26 @@ export default function ComplianceChatbotModal({
                   onChange={(e) => setDocCountry(e.target.value)}
                   className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white"
                 >
-                  <option value="US">🇺🇸 United States</option>
-                  <option value="CA">🇨🇦 Canada</option>
-                  <option value="EU">🇪🇺 European Union</option>
-                  <option value="DE">🇩🇪 Germany</option>
-                  <option value="UK">🇬🇧 United Kingdom</option>
-                  <option value="JP">🇯🇵 Japan</option>
-                  <option value="AU">🇦🇺 Australia</option>
-                  <option value="IN">🇮🇳 India</option>
-                  <option value="CN">🇨🇳 China</option>
-                  <option value="VN">🇻🇳 Vietnam</option>
+                  {supportedCountries && supportedCountries.length > 0 ? (
+                    supportedCountries.map((c: any) => (
+                      <option key={c.code} value={c.code}>
+                        {c.flag} {c.name}
+                      </option>
+                    ))
+                  ) : (
+                    <>
+                      <option value="US">🇺🇸 United States</option>
+                      <option value="CA">🇨🇦 Canada</option>
+                      <option value="EU">🇪🇺 European Union</option>
+                      <option value="DE">🇩🇪 Germany</option>
+                      <option value="UK">🇬🇧 United Kingdom</option>
+                      <option value="JP">🇯🇵 Japan</option>
+                      <option value="AU">🇦🇺 Australia</option>
+                      <option value="IN">🇮🇳 India</option>
+                      <option value="CN">🇨🇳 China</option>
+                      <option value="VN">🇻🇳 Vietnam</option>
+                    </>
+                  )}
                 </select>
 
                 <select

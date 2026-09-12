@@ -13,6 +13,12 @@ const MARKET_FLAGS: Record<string, string> = {
   UK: '🇬🇧',
   CA: '🇨🇦',
   JP: '🇯🇵',
+  AU: '🇦🇺',
+  IN: '🇮🇳',
+  DE: '🇩🇪',
+  CN: '🇨🇳',
+  VN: '🇻🇳',
+  SG: '🇸🇬',
 };
 
 export default function TradeEconomicsAdvisor({ economics }: TradeEconomicsAdvisorProps) {

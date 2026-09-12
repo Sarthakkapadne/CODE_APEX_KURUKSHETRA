@@ -227,6 +227,17 @@ export default function LeafletTradeMap({
         if (res.ok) {
           const data = await res.json();
           setBackendMarketsData(data || {});
+          if (data) {
+            Object.entries(data).forEach(([code, m]: [string, any]) => {
+              if (m.latitude && m.longitude) {
+                COUNTRY_GEO_REGISTRY[code] = {
+                  name: m.country_name,
+                  flag: m.flag || '🌐',
+                  coordinates: [m.latitude, m.longitude],
+                };
+              }
+            });
+          }
         }
       } catch (err) {
         console.warn('Could not fetch backend markets endpoint, using auditData fallback:', err);

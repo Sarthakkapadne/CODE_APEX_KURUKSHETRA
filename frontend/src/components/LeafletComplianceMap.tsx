@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import type { AuditResponse, TradeEconomicsItem } from '../lib/types';
+import { fetchMarketEconomicsReference } from '../lib/api';
 import {
   Globe, ShieldCheck, AlertTriangle, AlertOctagon,
   MinusCircle, Filter, Maximize2, ExternalLink, Info, CheckCircle2
@@ -108,6 +109,15 @@ export const JURISDICTION_MARKETS: Record<string, MarketComplianceNode> = {
     defaultDeMinimis: '1,000,000 VND (~$40 USD)',
     defaultDuty: '0% under 1M VND, 8-10% VAT',
   },
+  SG: {
+    code: 'SG',
+    name: 'Singapore',
+    flag: '🇸🇬',
+    coordinates: [1.35, 103.82],
+    agency: 'Singapore Customs / HSA / EnterpriseSG',
+    defaultDeMinimis: '$400 SGD (~$300 USD)',
+    defaultDuty: '0% duty (except liquor/tobacco), 9% GST',
+  },
 };
 
 export interface LeafletComplianceMapProps {
@@ -129,6 +139,34 @@ export default function LeafletComplianceMap({
   const mapInstanceRef = useRef<any>(null);
   const markersRef = useRef<Record<string, any>>({});
   const [activeCountry, setActiveCountry] = useState<string | null>(selectedCountry || null);
+  const [jurisdictionMarkets, setJurisdictionMarkets] = useState<Record<string, MarketComplianceNode>>(JURISDICTION_MARKETS);
+
+  // Dynamically load all sovereign market geo-profiles from database
+  useEffect(() => {
+    let active = true;
+    fetchMarketEconomicsReference()
+      .then(mkts => {
+        if (active && mkts) {
+          const updated: Record<string, MarketComplianceNode> = {};
+          Object.entries(mkts).forEach(([code, m]: [string, any]) => {
+            updated[code] = {
+              code: m.country_code,
+              name: m.country_name,
+              flag: m.flag || '🌐',
+              coordinates: [m.latitude, m.longitude],
+              agency: m.governing_agency || 'Customs Agency',
+              defaultDeMinimis: m.de_minimis_description || `$${m.de_minimis_threshold} ${m.currency_code}`,
+              defaultDuty: m.standard_duty_rate || 'Standard Rate',
+            };
+          });
+          if (Object.keys(updated).length > 0) {
+            setJurisdictionMarkets(updated);
+          }
+        }
+      })
+      .catch(err => console.warn('Could not fetch market coordinates from db:', err));
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     if (selectedCountry !== undefined) {
@@ -153,7 +191,7 @@ export default function LeafletComplianceMap({
     const auditedMarkets = auditData?.destination_markets || ['US', 'EU', 'UK', 'CA', 'JP'];
     const summary = auditData?.summary_by_country || {};
 
-    Object.entries(JURISDICTION_MARKETS).forEach(([code, node]) => {
+    Object.entries(jurisdictionMarkets).forEach(([code, node]) => {
       const isAudited = auditedMarkets.includes(code);
       const counts = summary[code] || { pass: 0, warning: 0, violation: 0, escalation: 0 };
 
@@ -272,7 +310,7 @@ export default function LeafletComplianceMap({
       markersRef.current = {};
       const bounds = L.latLngBounds([]);
 
-      Object.entries(JURISDICTION_MARKETS).forEach(([code, node]) => {
+      Object.entries(jurisdictionMarkets).forEach(([code, node]) => {
         const info = marketStatuses[code];
         if (!info) return;
 
@@ -455,8 +493,8 @@ export default function LeafletComplianceMap({
     setActiveCountry(nextCode);
     if (onSelectCountry) onSelectCountry(nextCode || '');
 
-    if (mapInstanceRef.current && nextCode && JURISDICTION_MARKETS[nextCode]) {
-      const coords = JURISDICTION_MARKETS[nextCode].coordinates;
+    if (mapInstanceRef.current && nextCode && jurisdictionMarkets[nextCode]) {
+      const coords = jurisdictionMarkets[nextCode].coordinates;
       mapInstanceRef.current.flyTo(coords, 4, { duration: 0.8 });
       const marker = markersRef.current[nextCode];
       if (marker) marker.openPopup();
@@ -513,7 +551,7 @@ export default function LeafletComplianceMap({
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
-          {Object.entries(JURISDICTION_MARKETS).map(([code, node]) => {
+          {Object.entries(jurisdictionMarkets).map(([code, node]) => {
             const st = marketStatuses[code];
             const isSelected = activeCountry === code;
 

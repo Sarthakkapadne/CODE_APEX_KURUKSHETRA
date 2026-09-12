@@ -214,3 +214,10 @@ export async function fetchVerificationPresets(): Promise<VerificationPreset[]> 
   return res.json();
 }
 
+export async function fetchMarketEconomicsReference(): Promise<Record<string, any>> {
+  const res = await fetch(`${API_BASE}/economics/markets`);
+  if (!res.ok) throw new Error('Failed to fetch market economics reference');
+  return res.json();
+}
+
+

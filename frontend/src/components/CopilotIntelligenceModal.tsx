@@ -75,9 +75,11 @@ export default function CopilotIntelligenceModal({ isOpen, onClose }: CopilotInt
         <div className="px-5 py-2.5 bg-slate-950/60 border-b border-slate-800 flex flex-wrap gap-2 text-xs">
           <span className="text-slate-500 text-[11px] self-center">Try asking:</span>
           {[
+            'Which countries have the highest import customs tariffs?',
+            'How many statutory compliance rules are codified by country?',
+            'Compare de minimis thresholds across all markets',
             'Which destination markets have the most violations?',
             'Show distribution of check categories',
-            'What are the overall inspection verdict rates?',
           ].map((sample, idx) => (
             <button
               key={idx}

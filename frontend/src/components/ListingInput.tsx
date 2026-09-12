@@ -1,8 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Globe, Link2, FileText, Check, Loader2, ArrowRight } from 'lucide-react';
 import { ListingInput as ListingInputType, PresetListing } from '../lib/types';
 import { CASE_PRESETS } from '../lib/presets';
+import { fetchPresets, fetchMarketEconomicsReference } from '../lib/api';
 
 interface ListingInputProps {
   onAudit: (input: ListingInputType) => void;
@@ -10,7 +11,7 @@ interface ListingInputProps {
   onScrape: (url: string) => Promise<any>;
 }
 
-const AVAILABLE_MARKETS = [
+const DEFAULT_MARKETS = [
   { code: 'US', name: 'United States', flag: '🇺🇸', standard: 'FDA / EPA / CPSC' },
   { code: 'EU', name: 'European Union', flag: '🇪🇺', standard: 'EC 1223 / CE / RoHS' },
   { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', standard: 'OPSS / UKCA / GB BPR' },
@@ -21,6 +22,8 @@ const AVAILABLE_MARKETS = [
 
 export default function ListingInput({ onAudit, isLoading, onScrape }: ListingInputProps) {
   const [activeTab, setActiveTab] = useState<'text' | 'url'>('text');
+  const [presets, setPresets] = useState<PresetListing[]>(CASE_PRESETS);
+  const [availableMarkets, setAvailableMarkets] = useState(DEFAULT_MARKETS);
   const [selectedPresetId, setSelectedPresetId] = useState<string>(CASE_PRESETS[0].id);
   const [urlInput, setUrlInput] = useState<string>(CASE_PRESETS[0].source_url || '');
   const [isScraping, setIsScraping] = useState<boolean>(false);
@@ -39,6 +42,36 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
   ]);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string>('/static/demo_cream_front.jpg');
 
+  // Load presets and markets dynamically from SQLite backend database
+  useEffect(() => {
+    let active = true;
+    fetchPresets()
+      .then(dbPresets => {
+        if (active && dbPresets && dbPresets.length > 0) {
+          setPresets(dbPresets);
+        }
+      })
+      .catch(err => console.warn('Database presets load error:', err));
+
+    fetchMarketEconomicsReference()
+      .then(marketsDict => {
+        if (active && marketsDict) {
+          const list = Object.values(marketsDict).map((m: any) => ({
+            code: m.country_code,
+            name: m.country_name,
+            flag: m.flag || '🌐',
+            standard: m.governing_agency ? m.governing_agency.split('/')[0].trim() : 'Customs Standard',
+          }));
+          if (list.length > 0) {
+            setAvailableMarkets(list);
+          }
+        }
+      })
+      .catch(err => console.warn('Database markets load error:', err));
+
+    return () => { active = false; };
+  }, []);
+
   const handleSelectPreset = (preset: PresetListing) => {
     setSelectedPresetId(preset.id);
     setTitle(preset.title);
@@ -47,19 +80,12 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
     setPrice(preset.price);
     setCountryOfOrigin(preset.country_of_origin);
     if (preset.source_url) setUrlInput(preset.source_url);
-    if (preset.id.includes('walker')) {
-      const imgs = ['/static/demo_walker_front.jpg', '/static/demo_walker_label.jpg', '/static/demo_walker_specs.jpg'];
-      setScrapedImages(imgs);
-      setSelectedImageUrl(imgs[0]);
-    } else if (preset.id.includes('board')) {
-      const imgs = ['/static/demo_board_front.jpg', '/static/demo_board_label.jpg', '/static/demo_board_specs.jpg'];
-      setScrapedImages(imgs);
-      setSelectedImageUrl(imgs[0]);
-    } else {
-      const imgs = ['/static/demo_cream_front.jpg', '/static/demo_cream_back.jpg', '/static/demo_cream_box.jpg'];
-      setScrapedImages(imgs);
-      setSelectedImageUrl(imgs[0]);
-    }
+
+    const imgs = (preset as any).images && (preset as any).images.length > 0
+      ? (preset as any).images
+      : ['/static/demo_cream_front.jpg', '/static/demo_cream_back.jpg', '/static/demo_cream_box.jpg'];
+    setScrapedImages(imgs);
+    setSelectedImageUrl(imgs[0]);
   };
 
 
@@ -74,7 +100,7 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
   };
 
   const handleSelectAllMarkets = () => {
-    setSelectedMarkets(AVAILABLE_MARKETS.map(m => m.code));
+    setSelectedMarkets(availableMarkets.map((m: any) => m.code));
   };
 
   const handleScrapeUrl = async () => {
@@ -133,23 +159,13 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-          {[
-            { id: 'preset-hair-dryer', icon: '💨', label: 'Hair Dryer', sub: 'EU LVD & REACH Plastic' },
-            { id: 'preset-ayurvedic-cream', icon: '🌿', label: 'Ayurvedic Cream', sub: 'US FDA Drug vs Cosmetic' },
-            { id: 'preset-baby-walker', icon: '🚼', label: 'Baby Walker', sub: 'Canada Criminal Ban vs US/UK' },
-            { id: 'preset-cutting-board', icon: '🔪', label: 'Bamboo Board', sub: 'US EPA Pesticide Trap' },
-            { id: 'preset-sleep-positioner', icon: '🛌', label: 'Infant Sleep Wedge', sub: 'Safe Sleep Act Recall' },
-            { id: 'preset-heated-eye-wand', icon: '⚡', label: 'Heated Eye Wand', sub: 'Lithium Hazmat / CE Mark' },
-          ].map(p => {
+          {presets.map(p => {
             const isSelected = selectedPresetId === p.id;
             return (
               <button
                 key={p.id}
                 type="button"
-                onClick={() => {
-                  const target = CASE_PRESETS.find(item => item.id === p.id);
-                  if (target) handleSelectPreset(target);
-                }}
+                onClick={() => handleSelectPreset(p)}
                 className={`text-left p-2.5 rounded-xl border transition-all ${
                   isSelected
                     ? 'bg-sky-950/60 border-sky-500/80 shadow-md shadow-sky-500/10'
@@ -157,12 +173,12 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
                 }`}
               >
                 <div className="flex items-center space-x-1.5 mb-1">
-                  <span>{p.icon}</span>
+                  <span>{(p as any).icon || '📦'}</span>
                   <span className={`text-xs font-bold truncate ${isSelected ? 'text-white' : 'text-slate-300'}`}>
-                    {p.label}
+                    {(p as any).sub_label ? p.title.split(' ')[0] + ' ' + (p.title.split(' ')[1] || '') : p.title.slice(0, 16)}
                   </span>
                 </div>
-                <div className="text-[10px] text-slate-500 truncate">{p.sub}</div>
+                <div className="text-[10px] text-slate-500 truncate">{(p as any).sub_label || p.category}</div>
               </button>
             );
           })}
@@ -180,15 +196,15 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
           </div>
           <button
             type="button"
-            onClick={handleSelectAllMarkets}
+            onClick={() => setSelectedMarkets(availableMarkets.map(m => m.code))}
             className="text-[11px] text-sky-400 hover:text-sky-300 font-semibold"
           >
-            Select All 5 Markets
+            Select All Markets ({availableMarkets.length})
           </button>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-          {AVAILABLE_MARKETS.map(market => {
+          {availableMarkets.map(market => {
             const isChecked = selectedMarkets.includes(market.code);
             return (
               <button
