@@ -1,49 +1,271 @@
 {
   "country_code": "JP",
   "country_name": "Japan",
-  "regulatory_bodies": ["MHLW", "PMDA", "METI", "Japan Customs"],
+  "regulatory_bodies": [
+    "MHLW (Ministry of Health, Labour and Welfare)",
+    "PMDA (Pharmaceuticals and Medical Devices Agency)",
+    "METI (Ministry of Economy, Trade and Industry)",
+    "Consumer Affairs Agency (CAA)",
+    "Japan Customs"
+  ],
   "rules": [
     {
       "rule_code": "JP-CLASS-01",
+      "rule_id": "JP-CLASS-01",
+      "market": "Japan",
+      "country_code": "JP",
+      "name": "Cosmetics vs Quasi-Drug (Iyakubugaihin) Boundary",
+      "title": "Cosmetics vs Quasi-Drug (Iyakubugaihin) Boundary",
+      "directive_code": "Pharmaceutical and Medical Devices Act (PMD Act) Article 2",
+      "statute_citation": "Pharmaceutical and Medical Devices Act (PMD Act) Article 2",
       "category": "Classification Status",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Pharmaceutical and Medical Devices Act (PMD Act) Article 2",
-      "title": "Cosmetics vs Quasi-Drug (Iyakubugaihin) Boundary",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
-      "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "antibacterial on skin", "whitening active"],
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "ayurvedic",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "cures",
+        "treats",
+        "cures arthritis",
+        "heals arthritis",
+        "medicinal",
+        "antibacterial on skin",
+        "whitening active"
+      ],
       "severity": "violation",
       "expected_requirement": "Quasi-Drug (Iyakubugaihin) pre-market approval required from MHLW/PMDA for active therapeutic, medicinal, or pharmacological claims.",
       "explanation": "Japanese law strictly delineates Cosmetics from Quasi-drugs and Pharmaceuticals. Therapeutic claims are strictly prohibited for cosmetics.",
-      "fix_suggestion": "Tone down claims to basic skin moisturizing, cleansing, or beautifying expressions permitted under MHLW Notification No. 1339."
+      "fix_suggestion": "Tone down claims to basic skin moisturizing, cleansing, or beautifying expressions permitted under MHLW Notification No. 1339.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Japan",
+          "JP"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LIC-PMDA",
+          "name": "PMDA Quasi-Drug Approval",
+          "type": "registration",
+          "mandatory": true,
+          "description": "MHLW pre-market marketing approval.",
+          "standards": [
+            "PMD Act Art 2"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "JP-LBL-01",
+      "rule_id": "JP-LBL-01",
+      "market": "Japan",
+      "country_code": "JP",
+      "name": "Mandatory Japanese Language Labeling & Licensed In-Country Caretaker (MAH)",
+      "title": "Mandatory Japanese Language Labeling & Licensed In-Country Caretaker (MAH)",
+      "directive_code": "PMD Act Article 61 / Consumer Affairs Agency Act",
+      "statute_citation": "PMD Act Article 61 / Consumer Affairs Agency Act",
       "category": "Mandatory Labeling",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "PMD Act Article 61 / Consumer Affairs Agency Act",
-      "title": "Mandatory Japanese Language Labeling & Licensed In-Country Caretaker (MAH)",
       "condition_type": "mandatory_field",
-      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "personal_care", "haircare", "body"],
-      "required_field": "japanese_labeling_mah",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty",
+        "creams",
+        "personal_care",
+        "haircare",
+        "body"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
       "expected_requirement": "Label in Japanese language with name and address of the licensed Marketing Authorization Holder (Seizouhanbaigyou).",
       "explanation": "Imported cosmetics cannot be sold in Japan with English-only labels. An authorized Japanese entity holding a primary distributor license must attach a compliant Japanese label.",
-      "fix_suggestion": "Partner with a licensed Japanese import distributor (MAH) to attach mandatory Japanese legal labels upon arrival."
+      "fix_suggestion": "Partner with a licensed Japanese import distributor (MAH) to attach mandatory Japanese legal labels upon arrival.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Japan",
+          "JP"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-JP-MAH",
+          "name": "Japanese Legal Label (Seizouhanbaigyou)",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Affixed Japanese language label with MAH.",
+          "standards": [
+            "PMD Act Art 61"
+          ]
+        }
+      ],
+      "required_field": "japanese_labeling_mah"
     },
     {
       "rule_code": "JP-CERT-01",
+      "rule_id": "JP-CERT-01",
+      "market": "Japan",
+      "country_code": "JP",
+      "name": "Mandatory PSE Mark Certification for Electrical Devices",
+      "title": "Mandatory PSE Mark Certification for Electrical Devices",
+      "directive_code": "Electrical Appliance and Material Safety Act (DENAN Law) / METI",
+      "statute_citation": "Electrical Appliance and Material Safety Act (DENAN Law) / METI",
       "category": "Safety/Certifications",
       "trust_tier": "Tier 3 Escalation",
-      "statute_citation": "Electrical Appliance and Material Safety Act (DENAN Law) / METI",
-      "title": "Mandatory PSE Mark Certification for Electrical Devices",
       "condition_type": "certification_check",
-      "target_categories": ["electronics", "heated_devices", "rechargeable"],
-      "trigger_terms": ["lithium", "rechargeable battery", "li-ion", "heated wand", "electrical"],
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand",
+        "electrical"
+      ],
       "severity": "escalation",
       "expected_requirement": "Circle PSE (Non-Specified Electrical Appliances) or Diamond PSE (Specified Electrical Appliances) mark and METI business notification.",
       "explanation": "Electric consumer appliances and lithium-ion batteries with high volumetric energy density (>=400 Wh/L) must conform to Japanese technical standards and bear the PSE mark.",
-      "fix_suggestion": "Conduct testing against DENAN Ordinance Article 1 and affix the Circle PSE symbol."
+      "fix_suggestion": "Conduct testing against DENAN Ordinance Article 1 and affix the Circle PSE symbol.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Japan",
+          "JP"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-CERT-PSE",
+          "name": "PSE Mark Verification & METI Filing",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Circle PSE mark and METI notification.",
+          "standards": [
+            "DENAN Law"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "JP-FOOD-01",
+      "rule_id": "JP-FOOD-01",
+      "market": "Japan",
+      "country_code": "JP",
+      "name": "Japan Food Sanitation Act (JFSA) Kitchenware & Cutting Board Safety",
+      "title": "Japan Food Sanitation Act (JFSA) Kitchenware & Cutting Board Safety",
+      "directive_code": "Food Sanitation Act (Act No. 233 of 1947), Article 18",
+      "statute_citation": "Food Sanitation Act (Act No. 233 of 1947), Article 18",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "kitchenware",
+        "cutting_boards",
+        "tableware"
+      ],
+      "trigger_terms": [
+        "toxic varnish kitchenware",
+        "industrial adhesive cutting board",
+        "food contact chemical leaching"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Import notification must be filed with Quarantine Station; tableware and cutting boards must comply with dissolution tests for heavy metals and toxic additives.",
+      "explanation": "Under JFSA Article 18, wooden or synthetic food utensils and cutting boards imported for sale require inspection to ensure synthetic finishes or adhesives do not contaminate food.",
+      "fix_suggestion": "Submit 'Notification Form for Importation of Foods, etc.' to Ministry Quarantine Station with certified Japanese migration test results.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Japan",
+          "JP"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-JFSA",
+          "name": "JFSA Quarantine Import Notification",
+          "type": "document",
+          "mandatory": true,
+          "description": "Quarantine Station inspection clearance.",
+          "standards": [
+            "JFSA Art 18"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "JP-TOY-01",
+      "rule_id": "JP-TOY-01",
+      "market": "Japan",
+      "country_code": "JP",
+      "name": "Japan Toy Safety Standard (ST Mark / ST-2016)",
+      "title": "Japan Toy Safety Standard (ST Mark / ST-2016)",
+      "directive_code": "Japan Toy Association Safety Standard (ST Mark)",
+      "statute_citation": "Japan Toy Association Safety Standard (ST Mark)",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "toys",
+        "children's products"
+      ],
+      "trigger_terms": [
+        "choking toy japan",
+        "lead paint toy japan",
+        "phthalates toy japan"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Toys intended for infants and children must meet mechanical/physical safety, flammability, and chemical safety standards (ST Parts 1-3).",
+      "explanation": "Selling toys that fail chemical migration tests (e.g., heavy metals, phthalates, coloring matter) violates the Food Sanitation Act and consumer safety guidelines.",
+      "fix_suggestion": "Test through an approved laboratory to the ST Standard and affix the ST Mark.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Japan",
+          "JP"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-CERT-ST-MARK",
+          "name": "Japan ST Mark Test Report",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "ST-2016 laboratory test report.",
+          "standards": [
+            "ST Standard"
+          ]
+        }
+      ]
     }
   ]
 }

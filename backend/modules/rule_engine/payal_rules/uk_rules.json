@@ -1,0 +1,76 @@
+{
+  "country_code": "UK",
+  "country_name": "United Kingdom",
+  "regulatory_bodies": ["OPSS", "MHRA", "HSE", "Trading Standards", "HMRC"],
+  "rules": [
+    {
+      "rule_code": "UK-ING-01",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Cosmetic Products Enforcement Regulations 2013 / Schedule 34",
+      "title": "UK 0.1% Direct-to-Consumer Hydrogen Peroxide Limit",
+      "condition_type": "concentration_limit",
+      "ingredient_name": "hydrogen peroxide",
+      "max_concentration": 0.1,
+      "severity": "violation",
+      "expected_requirement": "Maximum 0.1% w/w hydrogen peroxide in consumer cosmetic/whitening products.",
+      "explanation": "Post-Brexit UK retained the EU Annex III limit. Products exceeding 0.1% cannot be sold OTC to UK consumers without a dentist's prescription.",
+      "fix_suggestion": "Formulate with <= 0.1% hydrogen peroxide or non-peroxide alternative whitening formulations."
+    },
+    {
+      "rule_code": "UK-LBL-01",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "UK Product Safety and Metrology Regulations 2019 / SCPN Portal",
+      "title": "Mandatory UK-Established Responsible Person (GB Address)",
+      "condition_type": "mandatory_field",
+      "required_field": "uk_responsible_person",
+      "severity": "violation",
+      "expected_requirement": "Name and Great Britain (England, Scotland, Wales) physical address of the UK Responsible Person.",
+      "explanation": "Following Brexit, an EU Responsible Person address is no longer valid in the UK. Products must have a UK RP and be notified on the Submit Cosmetic Product Notifications (SCPN) portal prior to marketing.",
+      "fix_suggestion": "Appoint a UK-based Responsible Person and print their GB address on packaging."
+    },
+    {
+      "rule_code": "UK-CLAIM-01",
+      "category": "Claim Wording",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "CAP Code Rule 12.1 / MHRA Borderline Guidance Note 8",
+      "title": "Medicinal Claim Prohibition for Non-Medicinal Products",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
+      "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "eliminates pain"],
+      "severity": "violation",
+      "expected_requirement": "Claims must not aver or imply prevention, treatment, or cure of human disease unless holding an MHRA Marketing Authorisation.",
+      "explanation": "The MHRA rigorously enforces Borderline Note 8. Claims to cure arthritis or eliminate joint pain will trigger Trading Standards seizures and ASA advertising bans.",
+      "fix_suggestion": "Replace medicinal wording with descriptive lifestyle phrasing: 'designed for soothing massage and muscle relaxation'."
+    },
+    {
+      "rule_code": "UK-CERT-01",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 3 Escalation",
+      "statute_citation": "BS EN 1273:2020 / UK General Product Safety Regulations 2005",
+      "title": "UK Safety Standard for Baby Walkers (BS EN 1273 Check)",
+      "condition_type": "certification_check",
+      "target_categories": ["baby_walker", "infant_walker", "toys"],
+      "trigger_terms": ["baby walker", "infant walker", "activity walker"],
+      "severity": "escalation",
+      "expected_requirement": "Technical file and test certificate demonstrating compliance with British Standard BS EN 1273:2020.",
+      "explanation": "Baby walkers are fully lawful in the UK if they pass BS EN 1273 stair safety testing. Testing documentation must be verified.",
+      "fix_suggestion": "Provide test certificate from a UKAS-accredited laboratory confirming BS EN 1273 compliance."
+    },
+    {
+      "rule_code": "UK-CLASS-01",
+      "category": "Classification Status",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "GB Biocidal Products Regulation (GB BPR) / HSE Guidance",
+      "title": "UK Classification of Antimicrobial Treated Articles",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["kitchenware", "household", "cleaning", "cutting_boards"],
+      "trigger_terms": ["antibacterial", "kills germs", "kills 99.9%", "antimicrobial"],
+      "severity": "warning",
+      "expected_requirement": "Treated article claim permitted if active substance is on GB Article 95 approved list; requires active substance name on label.",
+      "explanation": "In the UK, cutting boards with antimicrobial properties are regulated as 'treated articles' under GB BPR, NOT as pesticides. While lawful, the label must name the active substance.",
+      "fix_suggestion": "Ensure active antimicrobial substance is listed on the UK Article 95 approved list and declare its chemical name on the pack."
+    }
+  ]
+}

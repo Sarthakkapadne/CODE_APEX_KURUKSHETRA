@@ -74,5 +74,20 @@ export const CASE_PRESETS: PresetListing[] = [
     currency: "USD",
     country_of_origin: "Japan",
     source_url: "https://www.amazon.com/dp/B0EYEWAND05",
+  },
+  {
+    id: "preset-hair-dryer",
+    title: "ProDry 2200W Salon Electric Hair Dryer with Ionic Conditioning, Plastic Housing",
+    description: `• 2200W PROFESSIONAL MOTOR: High-velocity ionic hair drying with 3 heat settings and 2 speed controls.
+• FLAME-RETARDANT PLASTIC HOUSING: Lightweight ergonomic polymer enclosure engineered for salon and home grooming.
+• IONIC CONDITIONING TECHNOLOGY: Discharges negative ions to eliminate hair frizz and lock in natural moisture.
+• SAFETY OVERHEAT PROTECTION: Built-in thermal safety cutout prevents heating element from exceeding safe limits.
+• AC 220-240V 50/60HZ: Designed for household mains electrical sockets with 2.5m power cord.`,
+    brand_name: "ProDry Appliances",
+    category: "electronics",
+    price: 45.00,
+    currency: "USD",
+    country_of_origin: "China",
+    source_url: "https://www.amazon.com/dp/B0HAIRDRYER06",
   }
 ];

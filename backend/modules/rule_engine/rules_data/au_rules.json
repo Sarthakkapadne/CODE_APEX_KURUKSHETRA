@@ -1,48 +1,311 @@
 {
   "country_code": "AU",
   "country_name": "Australia",
-  "regulatory_bodies": ["TGA (Therapeutic Goods Administration)", "ACCC", "Australian Border Force (ABF)"],
+  "regulatory_bodies": [
+    "TGA (Therapeutic Goods Administration)",
+    "ACCC (Australian Competition and Consumer Commission)",
+    "Australian Border Force (ABF)",
+    "AICIS (Australian Industrial Chemicals Introduction Scheme)"
+  ],
   "rules": [
     {
       "rule_code": "AU-CHEM-01",
+      "rule_id": "AU-CHEM-01",
+      "market": "Australia",
+      "country_code": "AU",
+      "name": "TGA Prescription-Only Classification for Hydroquinone > 2%",
+      "title": "TGA Prescription-Only Classification for Hydroquinone > 2%",
+      "directive_code": "Poisons Standard (SUSMP) Schedule 4 / Therapeutic Goods Act 1989",
+      "statute_citation": "Poisons Standard (SUSMP) Schedule 4 / Therapeutic Goods Act 1989",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Poisons Standard (SUSMP) Schedule 4 / Therapeutic Goods Act 1989",
-      "title": "TGA Prescription-Only Classification for Hydroquinone > 2%",
       "condition_type": "concentration_limit",
-      "ingredient_name": "hydroquinone",
-      "max_concentration": 2.0,
+      "target_categories": [
+        "cosmetics"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
       "expected_requirement": "Hydroquinone concentrations exceeding 2.0% are classified as Schedule 4 Prescription Only Medicines and cannot be sold OTC in Australia.",
       "explanation": "Australian Therapeutic Goods Administration strictly restricts hydroquinone in cosmetics. Over 2% requires an Australian Register of Therapeutic Goods (ARTG) inclusion and prescription dispensation.",
-      "fix_suggestion": "Cap hydroquinone concentration at <= 2.0% or register as a prescription medicine on the ARTG."
+      "fix_suggestion": "Cap hydroquinone concentration at <= 2.0% or register as a prescription medicine on the ARTG.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Australia",
+          "AU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-HYDROQUINONE-AU",
+          "name": "TGA Poisons Standard Assay",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Hydroquinone <= 2.0%.",
+          "standards": [
+            "SUSMP Schedule 4"
+          ]
+        }
+      ],
+      "ingredient_name": "hydroquinone",
+      "max_concentration": 2.0
     },
     {
       "rule_code": "AU-LBL-01",
+      "rule_id": "AU-LBL-01",
+      "market": "Australia",
+      "country_code": "AU",
+      "name": "Mandatory Australian INCI Ingredient Labeling Standard",
+      "title": "Mandatory Australian INCI Ingredient Labeling Standard",
+      "directive_code": "Competition and Consumer Act 2010 - Consumer Protection Notice No. 1 of 2020",
+      "statute_citation": "Competition and Consumer Act 2010 - Consumer Protection Notice No. 1 of 2020",
       "category": "Mandatory Labeling",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Competition and Consumer Act 2010 - Consumer Protection Notice No. 1 of 2020",
-      "title": "Mandatory Australian INCI Ingredient Labeling Standard",
       "condition_type": "mandatory_field",
-      "required_field": "ingredients",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty",
+        "creams",
+        "personal_care",
+        "haircare",
+        "body"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
       "expected_requirement": "All cosmetic ingredients must be clearly listed on the product container or packaging using INCI nomenclature in descending order of volume/weight.",
       "explanation": "ACCC mandatory standard for cosmetics ingredient labeling requires complete disclosure of all ingredients on retail packaging.",
-      "fix_suggestion": "Provide a complete list of ingredients in descending order of prominence using standard INCI names."
+      "fix_suggestion": "Provide a complete list of ingredients in descending order of prominence using standard INCI names.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Australia",
+          "AU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-INCI-AU",
+          "name": "ACCC INCI Labeling",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Mandatory ingredient declaration.",
+          "standards": [
+            "CPN No. 1 of 2020"
+          ]
+        }
+      ],
+      "required_field": "inci_ingredients_list"
     },
     {
       "rule_code": "AU-CLAIM-01",
+      "rule_id": "AU-CLAIM-01",
+      "market": "Australia",
+      "country_code": "AU",
+      "name": "Prohibited Therapeutic Disease Treatment Claims",
+      "title": "Prohibited Therapeutic Disease Treatment Claims",
+      "directive_code": "Therapeutic Goods Advertising Code (No. 2) 2018, Section 9",
+      "statute_citation": "Therapeutic Goods Advertising Code (No. 2) 2018, Section 9",
       "category": "Claim Wording",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Therapeutic Goods Advertising Code (No. 2) 2018, Section 9",
-      "title": "Prohibited Therapeutic Disease Treatment Claims",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare", "wellness"],
-      "trigger_terms": ["cures arthritis", "cures cancer", "treats eczema", "medicinal cure", "therapeutic cure"],
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "cures arthritis",
+        "cures cancer",
+        "treats eczema",
+        "medicinal cure",
+        "therapeutic cure"
+      ],
       "severity": "violation",
       "expected_requirement": "Therapeutic representations cannot be made on cosmetic goods without formal TGA ARTG registration.",
       "explanation": "Claiming to cure or treat arthritis or serious medical conditions reclassifies the cosmetic as an unapproved therapeutic good under Australian federal law.",
-      "fix_suggestion": "Change curative claims to soothing or cosmetic structure/function claims, or secure ARTG inclusion."
+      "fix_suggestion": "Change curative claims to soothing or cosmetic structure/function claims, or secure ARTG inclusion.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Australia",
+          "AU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-ARTG",
+          "name": "TGA ARTG Inclusion Certificate",
+          "type": "registration",
+          "mandatory": true,
+          "description": "Australian Register of Therapeutic Goods listing.",
+          "standards": [
+            "TG Act 1989"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "AU-TOY-01",
+      "rule_id": "AU-TOY-01",
+      "market": "Australia",
+      "country_code": "AU",
+      "name": "Mandatory Safety Standard for Toys for Children up to 36 Months",
+      "title": "Mandatory Safety Standard for Toys for Children up to 36 Months",
+      "directive_code": "Consumer Goods (Toys for Children up to and including 36 Months of Age) Safety Standard 2023 / AS/NZS ISO 8124.1",
+      "statute_citation": "Consumer Goods (Toys for Children up to and including 36 Months of Age) Safety Standard 2023 / AS/NZS ISO 8124.1",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "toys",
+        "children's products"
+      ],
+      "trigger_terms": [
+        "small parts choking hazard au",
+        "detachable parts toddler au",
+        "sharp toy edge au"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Toys for children under 3 must not pose choking hazards, small parts, or sharp edges under AS/NZS ISO 8124.1.",
+      "explanation": "Supplying non-compliant toys in Australia breaches Section 106 of the Australian Consumer Law, attracting heavy penalties up to AUD $10M for corporations.",
+      "fix_suggestion": "Ensure toys undergo mechanical safety testing against AS/NZS ISO 8124.1 and do not liberate small parts.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Australia",
+          "AU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-ASNZS8124",
+          "name": "AS/NZS ISO 8124.1 Mechanical Safety Test",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "No small parts liberation.",
+          "standards": [
+            "AS/NZS ISO 8124.1"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "AU-BAN-01",
+      "rule_id": "AU-BAN-01",
+      "market": "Australia",
+      "country_code": "AU",
+      "name": "Mandatory Safety Standard for Baby Walkers (Stair Fall Prevention)",
+      "title": "Mandatory Safety Standard for Baby Walkers (Stair Fall Prevention)",
+      "directive_code": "Consumer Protection Notice No. 1 of 2013 / AS 4684:2009",
+      "statute_citation": "Consumer Protection Notice No. 1 of 2013 / AS 4684:2009",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "certification_check",
+      "target_categories": [
+        "baby_walker",
+        "infant_walker",
+        "toys"
+      ],
+      "trigger_terms": [
+        "baby walker",
+        "infant walker",
+        "activity walker"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Baby walkers must be fitted with friction gripping mechanisms to stop the walker at a step or drop-off under AS 4684.",
+      "explanation": "While not banned outright like in Canada, baby walkers in Australia must strictly comply with stair-fall prevention mechanism testing.",
+      "fix_suggestion": "Provide test report showing compliance with AS 4684:2009 friction pad and stair drop-off tests.",
+      "conditions": {
+        "category": "baby_walker",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Australia",
+          "AU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-AS4684",
+          "name": "AS 4684 Baby Walker Safety Test",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Stair fall friction test.",
+          "standards": [
+            "AS 4684:2009"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "AU-HAZ-01",
+      "rule_id": "AU-HAZ-01",
+      "market": "Australia",
+      "country_code": "AU",
+      "name": "Regulatory Compliance Mark (RCM) for Electrical Equipment",
+      "title": "Regulatory Compliance Mark (RCM) for Electrical Equipment",
+      "directive_code": "Electrical Safety Act / AS/NZS 4417 (EESS)",
+      "statute_citation": "Electrical Safety Act / AS/NZS 4417 (EESS)",
+      "category": "Hazmat/Shipping",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "hazmat_check",
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Rechargeable electronic consumer products must comply with Australian electrical safety and EMC standards and bear the RCM mark.",
+      "explanation": "Supplying in-scope electrical equipment without registration on the national EESS database or without the RCM mark is unlawful.",
+      "fix_suggestion": "Test against relevant AS/NZS standards, register with EESS, and affix the RCM mark.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "Australia",
+          "AU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-MARK-RCM",
+          "name": "Regulatory Compliance Mark (RCM)",
+          "type": "marking",
+          "mandatory": true,
+          "description": "RCM mark on device and packaging.",
+          "standards": [
+            "AS/NZS 4417"
+          ]
+        }
+      ]
     }
   ]
 }

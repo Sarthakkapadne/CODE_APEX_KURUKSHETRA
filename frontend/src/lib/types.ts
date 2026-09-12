@@ -10,9 +10,11 @@ export interface ListingInput {
   source_url?: string;
   image_base64?: string;
   image_url?: string;
+  front_image_base64?: string;
+  back_image_base64?: string;
+  barcode_raw?: string;
   images?: string[];
 }
-
 
 export interface ExtractedAttributes {
   category: string;
@@ -229,6 +231,9 @@ export interface AuditResponse {
   trade_economics: TradeEconomicsItem[];
   citations: string[];
   is_hash_valid: boolean;
+  required_documents?: RequiredDocumentItem[];
+  barcode_analysis?: BarcodeAnalysisResult;
+  iso_symbols_detected?: ISOSymbolItem[];
 }
 
 export interface PresetListing {
@@ -242,3 +247,233 @@ export interface PresetListing {
   country_of_origin: string;
   source_url?: string;
 }
+
+export interface BarcodeAnalysisResult {
+  raw_barcode?: string;
+  barcode_type: string;
+  is_valid_gs1: boolean;
+  gs1_check_digit?: number;
+  country_of_registration?: string;
+  warning_message?: string;
+}
+
+export interface ISOSymbolItem {
+  symbol_code: string;
+  symbol_name: string;
+  status: string;
+  statutory_requirement: string;
+}
+
+export interface RequiredDocumentItem {
+  id?: string;
+  doc_code?: string;
+  country_code: string;
+  title?: string;
+  doc_name?: string;
+  category?: string;
+  is_mandatory: boolean;
+  citation?: string;
+  statutory_citation?: string;
+  description?: string;
+  seller_action_needed?: string;
+  governing_agency?: string;
+  issuing_authority?: string;
+  status?: 'verified' | 'missing' | 'in_review';
+  seller_status?: string;
+}
+
+// ── Compliance Confidence Meter & Dependency Graph Types ──
+export interface FactorScore {
+  name: string;
+  score: number;
+  weight: number;
+  weighted_score: number;
+  status: 'optimal' | 'warning' | 'critical';
+  details: Record<string, any>;
+  explanation: string;
+}
+
+export interface FactorBreakdown {
+  rule_coverage: FactorScore;
+  evidence_verification: FactorScore;
+  product_data_completeness: FactorScore;
+  dependency_health: FactorScore;
+}
+
+export interface DependencyNode {
+  id: string;
+  type: 'product' | 'product_info' | 'market' | 'regulation' | 'requirement' | 'document' | 'action';
+  label: string;
+  category: string;
+  status: 'verified' | 'partial' | 'missing' | 'blocked' | 'pending';
+  severity?: 'normal' | 'warning' | 'violation' | 'critical';
+  statute_citation?: string;
+  description?: string;
+  score_impact?: number;
+  is_simulated?: boolean;
+  affected_by?: string[];
+  position: { x: number; y: number };
+}
+
+export interface DependencyEdge {
+  id: string;
+  source: string;
+  target: string;
+  label?: string;
+  status: 'healthy' | 'blocked' | 'warning';
+  animated?: boolean;
+}
+
+export interface DependencyGraphPayload {
+  nodes: DependencyNode[];
+  edges: DependencyEdge[];
+  total_nodes: number;
+  verified_nodes: number;
+  blocked_nodes: number;
+  missing_nodes: number;
+  dependency_health_score: number;
+}
+
+export interface ImpactItem {
+  id: string;
+  node_id: string;
+  title: string;
+  category: string;
+  priority_rank: number;
+  current_status: string;
+  confidence_gain_pct: number;
+  downstream_nodes_unlocked: number;
+  affected_markets: string[];
+  statutory_citation?: string;
+  action_directive: string;
+  effort_level: string;
+  is_simulated: boolean;
+}
+
+export interface TopScoreReducer {
+  node_id: string;
+  label: string;
+  category: string;
+  penalty_pct: number;
+  citation: string;
+  directive: string;
+  status: string;
+}
+
+export interface ImpactAnalysisResult {
+  top_recommended_action?: ImpactItem;
+  all_actions: ImpactItem[];
+  top_score_reducers: TopScoreReducer[];
+  total_potential_gain_pct: number;
+}
+
+export interface ConfidenceResponse {
+  product_id?: string;
+  target_market?: string;
+  confidence_score: number;
+  confidence_tier: 'HIGH' | 'MEDIUM' | 'LOW';
+  confidence_label: string;
+  tier_color: 'emerald' | 'amber' | 'rose';
+  verdict_summary: string;
+  factors: FactorBreakdown;
+  graph: DependencyGraphPayload;
+  impact_analysis: ImpactAnalysisResult;
+  is_simulated: boolean;
+  simulated_nodes: string[];
+}
+
+// ── Rule-by-Rule Compliance Verification Engine Types ──
+
+export interface DecisionTraceStep {
+  step_number: number;
+  title: string;
+  description: string;
+  status: 'pass' | 'fail' | 'warning' | 'missing' | 'info';
+}
+
+export interface RuleEvaluationResult {
+  rule_id: string;
+  rule_name: string;
+  market: string;
+  applicable: boolean;
+  applicability_reason: string;
+  status: 'pass' | 'fail' | 'missing_information' | 'needs_review';
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  statute_citation: string;
+  statutory_authority: string;
+  expected_requirement: string;
+  reason: string;
+  required_evidence: string[];
+  provided_evidence: string[];
+  missing_fields: string[];
+  recommended_action?: string;
+  confidence: number;
+  decision_trace: DecisionTraceStep[];
+}
+
+export interface VerificationSummary {
+  total_applicable_rules: number;
+  passed: number;
+  failed: number;
+  missing_information: number;
+  needs_review: number;
+}
+
+export interface PriorityIssueItem {
+  rule_id: string;
+  rule_name: string;
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  status: string;
+  issue_summary: string;
+  recommended_action: string;
+  affected_field?: string;
+}
+
+export interface NextBestAction {
+  action_title: string;
+  field_or_doc_to_fix: string;
+  reason: string;
+  affected_rules_count: number;
+  expected_result: string;
+  priority_level: string;
+  action_button_label: string;
+}
+
+export interface ProductComplianceVerificationResponse {
+  product_id?: string;
+  product_name: string;
+  category: string;
+  target_market: string;
+  overall_status: 'COMPLIANT' | 'NEEDS_ACTION' | 'CRITICAL_FAILURE' | 'INSUFFICIENT_INFORMATION';
+  overall_status_label: string;
+  summary: VerificationSummary;
+  rule_results: RuleEvaluationResult[];
+  priority_issues: PriorityIssueItem[];
+  next_best_actions: NextBestAction[];
+  next_best_action?: NextBestAction;
+  normalized_product_data: Record<string, any>;
+}
+
+export interface VerificationPreset {
+  id: string;
+  product_name: string;
+  category: string;
+  materials?: string[];
+  ingredients?: string[];
+  intended_use?: string;
+  manufacturer_name?: string;
+  manufacturer_address?: string;
+  country_of_origin?: string;
+  target_market: string;
+  contains_battery?: boolean;
+  battery_type?: string;
+  description?: string;
+  marketing_claims?: string[];
+  documents?: Array<{
+    type: string;
+    name: string;
+    status: string;
+    standards?: string[];
+  }>;
+}
+

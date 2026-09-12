@@ -1,0 +1,371 @@
+{
+  "country_code": "IN",
+  "country_name": "India",
+  "regulatory_bodies": [
+    "CDSCO (Central Drugs Standard Control Organisation)",
+    "BIS (Bureau of Indian Standards)",
+    "FSSAI (Food Safety and Standards Authority of India)",
+    "Ministry of Consumer Affairs (Legal Metrology)",
+    "CCPA",
+    "WPC",
+    "CPCB"
+  ],
+  "rules": [
+    {
+      "rule_code": "IN-COSM-01",
+      "rule_id": "IN-COSM-01",
+      "market": "India",
+      "country_code": "IN",
+      "name": "Mandatory CDSCO Cosmetics Import Registration (Form 42 / COS-2)",
+      "title": "Mandatory CDSCO Cosmetics Import Registration (Form 42 / COS-2)",
+      "directive_code": "Drugs and Cosmetics Act, 1940 / Cosmetics Rules, 2020 (Rule 12)",
+      "statute_citation": "Drugs and Cosmetics Act, 1940 / Cosmetics Rules, 2020 (Rule 12)",
+      "category": "Classification Status",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty",
+        "creams",
+        "personal_care",
+        "haircare",
+        "body"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Every imported cosmetic product must hold a valid Import Registration Certificate issued by CDSCO in Form COS-2.",
+      "explanation": "Commercial import of cosmetics into India without CDSCO registration certificate is prohibited under Rule 12. Indian Customs will seize unregistered consignments at port of entry.",
+      "fix_suggestion": "File application in Form COS-1 via CDSCO Sugam portal to obtain registration certificate COS-2 prior to shipment.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "India",
+          "IN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LIC-CDSCO",
+          "name": "CDSCO Registration Certificate (Form COS-2)",
+          "type": "registration",
+          "mandatory": true,
+          "description": "Form COS-2 import authorization.",
+          "standards": [
+            "Cosmetics Rules 2020"
+          ]
+        }
+      ],
+      "required_field": "cdsco_registration"
+    },
+    {
+      "rule_code": "IN-CLAIM-01",
+      "rule_id": "IN-CLAIM-01",
+      "market": "India",
+      "country_code": "IN",
+      "name": "Drugs and Magic Remedies Act Disease Treatment Prohibition",
+      "title": "Drugs and Magic Remedies Act Disease Treatment Prohibition",
+      "directive_code": "Drugs and Magic Remedies (Objectionable Advertisements) Act, 1954, Section 3",
+      "statute_citation": "Drugs and Magic Remedies (Objectionable Advertisements) Act, 1954, Section 3",
+      "category": "Claim Wording",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "ayurvedic",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "cures arthritis",
+        "cures chronic joint pain",
+        "cures rheumatism",
+        "permanent cure arthritis",
+        "eliminates arthritis"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Prohibition of advertisements suggesting diagnosis, cure, mitigation, treatment or prevention of specified diseases (including arthritis, rheumatism, cancer, hypertension).",
+      "explanation": "Claiming that an Ayurvedic, herbal, or cosmetic preparation permanently cures arthritis or chronic joint disease is a cognizable offense punishable by imprisonment.",
+      "fix_suggestion": "Remove all curative and disease treatment claims. Advertise strictly for general wellness, traditional topical comfort, or massage.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "India",
+          "IN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-AYUSH",
+          "name": "AYUSH Manufacturing License (if drug)",
+          "type": "document",
+          "mandatory": true,
+          "description": "State AYUSH licensing for therapeutic Ayurvedic drugs.",
+          "standards": [
+            "Drugs & Cosmetics Act 1940"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "IN-TOY-01",
+      "rule_id": "IN-TOY-01",
+      "market": "India",
+      "country_code": "IN",
+      "name": "Toys (Quality Control) Order Mandatory BIS Certification & ISI Mark",
+      "title": "Toys (Quality Control) Order Mandatory BIS Certification & ISI Mark",
+      "directive_code": "Toys (Quality Control) Order, 2020 / Bureau of Indian Standards Act, 2016",
+      "statute_citation": "Toys (Quality Control) Order, 2020 / Bureau of Indian Standards Act, 2016",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "toys",
+        "children's products"
+      ],
+      "trigger_terms": [
+        "unmarked toy india",
+        "non-bis toy",
+        "toy without isi mark"
+      ],
+      "severity": "violation",
+      "expected_requirement": "All toys imported or sold in India must conform to IS 9873 (Safety of Toys) and bear the Standard ISI Mark under a valid BIS license.",
+      "explanation": "Importing toys without BIS certification and ISI mark is illegal. Custom authorities conduct 100% sampling at Indian ports, and uncertified toys are confiscated or returned.",
+      "fix_suggestion": "Obtain BIS certification through Foreign Manufacturers Certification Scheme (FMCS) and affix the ISI mark with valid CM/L number.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "India",
+          "IN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-MARK-ISI",
+          "name": "BIS ISI Mark License (IS 9873)",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Valid BIS license number and ISI mark on product.",
+          "standards": [
+            "IS 9873",
+            "IS 15644"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "IN-LBL-01",
+      "rule_id": "IN-LBL-01",
+      "market": "India",
+      "country_code": "IN",
+      "name": "Legal Metrology (Packaged Commodities) Mandatory Declarations",
+      "title": "Legal Metrology (Packaged Commodities) Mandatory Declarations",
+      "directive_code": "Legal Metrology (Packaged Commodities) Rules, 2011, Rule 6",
+      "statute_citation": "Legal Metrology (Packaged Commodities) Rules, 2011, Rule 6",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "cosmetics",
+        "toys",
+        "kitchenware",
+        "electronics",
+        "household"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Mandatory declarations: Maximum Retail Price (MRP inclusive of all taxes), Month and Year of Manufacture/Import, Country of Origin, Net Quantity in standard SI metric units, and Consumer Care contact details.",
+      "explanation": "Selling imported consumer packaged goods without complete Legal Metrology declarations attracts penalties and product seizure under the Legal Metrology Act, 2009.",
+      "fix_suggestion": "Affix compliant Indian importer label containing MRP, origin, net quantity in metric, and consumer care email/phone.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "India",
+          "IN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-LEGAL-METROLOGY",
+          "name": "Legal Metrology Importer Label",
+          "type": "marking",
+          "mandatory": true,
+          "description": "Complete Indian MRP and importer sticker.",
+          "standards": [
+            "LMR 2011 Rule 6"
+          ]
+        }
+      ],
+      "required_field": "legal_metrology_declarations"
+    },
+    {
+      "rule_code": "IN-FOOD-01",
+      "rule_id": "IN-FOOD-01",
+      "market": "India",
+      "country_code": "IN",
+      "name": "FSSAI Packaging Regulations for Food Contact Kitchenware",
+      "title": "FSSAI Packaging Regulations for Food Contact Kitchenware",
+      "directive_code": "Food Safety and Standards (Packaging) Regulations, 2018",
+      "statute_citation": "Food Safety and Standards (Packaging) Regulations, 2018",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "kitchenware",
+        "cutting_boards"
+      ],
+      "trigger_terms": [
+        "toxic varnish kitchenware india",
+        "lead wood coating india"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Articles and wooden/bamboo utensils in contact with food must be food-grade, smooth, free from cracks, and not release contaminants exceeding limits under IS 9845.",
+      "explanation": "Kitchen cutting boards coated with toxic finishes or toxic adhesives violate FSSAI standards for food contact articles.",
+      "fix_suggestion": "Ensure cutting boards comply with IS 9845 overall migration standards and are finished with food-grade non-toxic oils.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "India",
+          "IN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-IS9845",
+          "name": "IS 9845 Migration Testing",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Overall migration within FSSAI limits.",
+          "standards": [
+            "FSSAI Regs 2018",
+            "IS 9845"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "IN-ELEC-01",
+      "rule_id": "IN-ELEC-01",
+      "market": "India",
+      "country_code": "IN",
+      "name": "WPC Equipment Type Approval (ETA) & BIS Compulsory Registration Scheme",
+      "title": "WPC Equipment Type Approval (ETA) & BIS Compulsory Registration Scheme",
+      "directive_code": "Wireless Telegraphy Act / BIS Electronics & IT Goods (CRO) Order",
+      "statute_citation": "Wireless Telegraphy Act / BIS Electronics & IT Goods (CRO) Order",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "certification_check",
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Wireless/Bluetooth consumer devices require Equipment Type Approval (ETA) from WPC, and rechargeable lithium power supplies require BIS CRS registration under IS 16046.",
+      "explanation": "Customs clearance of electronic devices with wireless transmitters or lithium batteries requires proof of WPC ETA and BIS CRS registration.",
+      "fix_suggestion": "Obtain WPC ETA approval for Bluetooth/RF modules and ensure battery conforms to IS 16046 with BIS CRS mark.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "India",
+          "IN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-WPC-ETA",
+          "name": "WPC ETA Approval & BIS CRS",
+          "type": "document",
+          "mandatory": true,
+          "description": "WPC ETA certificate and BIS IS 16046 registration.",
+          "standards": [
+            "IS 16046",
+            "ETA Rules"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "IN-HAZ-01",
+      "rule_id": "IN-HAZ-01",
+      "market": "India",
+      "country_code": "IN",
+      "name": "CPCB Extended Producer Responsibility (EPR) for E-Waste & Batteries",
+      "title": "CPCB Extended Producer Responsibility (EPR) for E-Waste & Batteries",
+      "directive_code": "E-Waste (Management) Rules, 2022 / Battery Waste Management Rules, 2022",
+      "statute_citation": "E-Waste (Management) Rules, 2022 / Battery Waste Management Rules, 2022",
+      "category": "Hazmat/Shipping",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "hazmat_check",
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Importers of electronic and electrical equipment and rechargeable batteries must be registered on the Central Pollution Control Board (CPCB) EPR portal.",
+      "explanation": "Customs authorities require valid EPR registration certificate from CPCB before clearing commercial consignments of electronics or batteries.",
+      "fix_suggestion": "Register as an importer on the CPCB EPR portal and fulfill annual recycling targets.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "India",
+          "IN"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-REG-CPCB-EPR",
+          "name": "CPCB EPR Importer Registration",
+          "type": "registration",
+          "mandatory": true,
+          "description": "CPCB EPR portal certificate.",
+          "standards": [
+            "E-Waste Rules 2022"
+          ]
+        }
+      ]
+    }
+  ]
+}

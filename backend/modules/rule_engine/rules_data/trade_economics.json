@@ -71,6 +71,54 @@
       "estimated_duty_rate": "0% duty under $1,000 AUD (Duty-free entry)",
       "entry_friction_rank": 3,
       "recommendation_summary": "Very attractive expansion market. High $1,000 AUD customs duty de minimis threshold allows seamless duty-free entry for consumer e-commerce orders, with 10% GST handled directly by marketplaces."
+    },
+    "IN": {
+      "country_code": "IN",
+      "country_name": "India",
+      "de_minimis_threshold": 0.0,
+      "de_minimis_currency": "INR (Gift exemption limited to personal consignments under ₹1,000)",
+      "vat_gst_rate": "18% standard IGST (Integrated Goods and Services Tax)",
+      "simplification_scheme": "ICEGATE Indian Customs Electronic Data Interchange Gateway",
+      "customs_complexity_score": 8,
+      "estimated_duty_rate": "Avg 10-20% Basic Customs Duty + 18% IGST + 10% Social Welfare Surcharge",
+      "entry_friction_rank": 6,
+      "recommendation_summary": "High friction market for direct consumer import. Formal customs clearance through ICEGATE, mandatory Legal Metrology declarations, and strict BIS/CDSCO compliance for toys and cosmetics."
+    },
+    "CN": {
+      "country_code": "CN",
+      "country_name": "China",
+      "de_minimis_threshold": 50.0,
+      "de_minimis_currency": "CNY (Duty waiver if total tariff is under 50 RMB)",
+      "vat_gst_rate": "13% standard VAT (9.1% preferential comprehensive tax for CBEC cross-border channel)",
+      "simplification_scheme": "Cross-Border E-Commerce (CBEC) Positive List Scheme (Bonded Warehouse / Direct Mail)",
+      "customs_complexity_score": 7,
+      "estimated_duty_rate": "0% tariff + 70% of standard VAT/Consumption Tax (Effective 9.1% rate for CBEC transactions up to ¥5,000)",
+      "entry_friction_rank": 5,
+      "recommendation_summary": "Attractive through designated CBEC channels (Tmall Global, JD Worldwide) with reduced 9.1% integrated tax and exemption from initial NMPA cosmetic filing, but general trade incurs full CCC and GB standard inspections."
+    },
+    "DE": {
+      "country_code": "DE",
+      "country_name": "Germany",
+      "de_minimis_threshold": 0.0,
+      "de_minimis_currency": "EUR (Commercial imports incur VAT from €0)",
+      "vat_gst_rate": "19% standard German Mehrwertsteuer (MwSt)",
+      "simplification_scheme": "EU Import One-Stop Shop (IOSS) for shipments up to €150",
+      "customs_complexity_score": 6,
+      "estimated_duty_rate": "0% duty under €150; 19% import VAT collected at checkout via IOSS",
+      "entry_friction_rank": 4,
+      "recommendation_summary": "Robust e-commerce hub within the EU single market. Strict environmental compliance enforcement (VerpackG LUCID registration and ElektroG WEEE compliance are mandatory for all marketplace sellers)."
+    },
+    "VN": {
+      "country_code": "VN",
+      "country_name": "Vietnam",
+      "de_minimis_threshold": 1000000.0,
+      "de_minimis_currency": "VND (~$40 USD)",
+      "vat_gst_rate": "8% - 10% standard VAT",
+      "simplification_scheme": "VNACCS/VCIS Vietnam Automated Cargo and Port Consolidated System",
+      "customs_complexity_score": 6,
+      "estimated_duty_rate": "Duty-free under 1,000,000 VND; standard tariffs (15-30%) and 10% VAT above threshold",
+      "entry_friction_rank": 4,
+      "recommendation_summary": "Rapidly growing e-commerce destination with a 1,000,000 VND de minimis exemption. Consignments above threshold require formal import clearance, Vietnamese sub-labeling, and CR marks for children's goods."
     }
   }
 }

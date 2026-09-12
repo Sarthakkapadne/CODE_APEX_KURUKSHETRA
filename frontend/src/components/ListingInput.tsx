@@ -132,8 +132,9 @@ export default function ListingInput({ onAudit, isLoading, onScrape }: ListingIn
           <span className="text-[11px] text-slate-500 font-medium">Select a case study to stress-test LexPort</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
           {[
+            { id: 'preset-hair-dryer', icon: '💨', label: 'Hair Dryer', sub: 'EU LVD & REACH Plastic' },
             { id: 'preset-ayurvedic-cream', icon: '🌿', label: 'Ayurvedic Cream', sub: 'US FDA Drug vs Cosmetic' },
             { id: 'preset-baby-walker', icon: '🚼', label: 'Baby Walker', sub: 'Canada Criminal Ban vs US/UK' },
             { id: 'preset-cutting-board', icon: '🔪', label: 'Bamboo Board', sub: 'US EPA Pesticide Trap' },

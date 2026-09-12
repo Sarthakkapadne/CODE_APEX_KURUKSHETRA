@@ -1,0 +1,89 @@
+{
+  "country_code": "EU",
+  "country_name": "European Union",
+  "regulatory_bodies": ["European Commission", "ECHA", "EMA", "EU Customs"],
+  "rules": [
+    {
+      "rule_code": "EU-ING-01",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Regulation (EC) No 1223/2009, Annex III, Entry 12",
+      "title": "Strict 0.1% Consumer Cap on Hydrogen Peroxide",
+      "condition_type": "concentration_limit",
+      "ingredient_name": "hydrogen peroxide",
+      "max_concentration": 0.1,
+      "severity": "violation",
+      "expected_requirement": "Maximum 0.1% w/w hydrogen peroxide present or released in cosmetic products sold directly to consumers.",
+      "explanation": "Unlike the US (which allows up to 14% OTC), EU Regulation (EC) No 1223/2009 strictly limits consumer oral hygiene and cosmetic products to 0.1% hydrogen peroxide. Concentrations between 0.1% and 6% can only be sold to registered dental practitioners.",
+      "fix_suggestion": "Reformulate formulation to <= 0.1% hydrogen peroxide, or use approved alternative whitening agents (e.g., PAP - Phthalimidoperoxycaproic acid)."
+    },
+    {
+      "rule_code": "EU-CLASS-01",
+      "category": "Claim Wording",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Regulation (EU) No 655/2013 / Medical Device Regulation (EU) 2017/745",
+      "title": "Cosmetic Claim Substantiation & Medical Borderline Prohibition",
+      "condition_type": "banned_claim_terms",
+      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
+      "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "eliminates disease", "anti-inflammatory medicine"],
+      "severity": "violation",
+      "expected_requirement": "Claims must adhere to common criteria (legal compliance, truthfulness, evidence, honesty, fairness). No therapeutic or curative claims allowed for cosmetics.",
+      "explanation": "Claiming that a cosmetic product cures or treats a medical condition triggers reclassification as a Class I/II Medical Device under MDR 2017/745, requiring Notified Body CE audit and clinical evaluation.",
+      "fix_suggestion": "Rephrase to compliant cosmetic claims: 'formulated to soothe and refresh skin' or 'comforting massage balm'."
+    },
+    {
+      "rule_code": "EU-LBL-01",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Regulation (EC) No 1223/2009, Article 4 & Article 19(1)(a)",
+      "title": "Mandatory EU Responsible Person (RP) Contact & Address",
+      "condition_type": "mandatory_field",
+      "required_field": "eu_responsible_person",
+      "severity": "violation",
+      "expected_requirement": "Name and address of an EU-established Responsible Person (RP) printed on primary packaging.",
+      "explanation": "Article 4 mandates that non-EU brands must appoint an EU-based Responsible Person who holds the Product Information File (PIF) and Safety Assessment (CPSR). Without an EU RP address on the pack, customs will detain the shipment.",
+      "fix_suggestion": "Contract an EU Responsible Person service provider and print their legal EU address on label declarations."
+    },
+    {
+      "rule_code": "EU-LBL-02",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "statute_citation": "Regulation (EC) No 1223/2009, Article 19(1)(g)",
+      "title": "Mandatory INCI Ingredient Nomenclature & PAO Symbol",
+      "condition_type": "mandatory_field",
+      "required_field": "inci_ingredients_list",
+      "severity": "warning",
+      "expected_requirement": "Ingredient list prefaced by the word 'INGREDIENTS' using standard INCI nomenclature, plus Period After Opening (PAO) open-jar symbol.",
+      "explanation": "EU requires standardized INCI naming for all chemical/botanical substances, listed in descending order of weight. Informal botanical names without INCI format are non-compliant.",
+      "fix_suggestion": "Provide ingredient listing in full INCI format (e.g. 'Aqua, Sesamum Indicum Seed Oil, Cinnamomum Camphora Bark Oil') with PAO open-jar icon."
+    },
+    {
+      "rule_code": "EU-CERT-01",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 3 Escalation",
+      "statute_citation": "EN 1273:2020 / General Product Safety Directive 2001/95/EC",
+      "title": "EU Safety Standard for Baby Walkers (EN 1273 Compliance Check)",
+      "condition_type": "certification_check",
+      "target_categories": ["baby_walker", "infant_walker", "toys"],
+      "trigger_terms": ["baby walker", "infant walker", "activity walker"],
+      "severity": "escalation",
+      "expected_requirement": "Technical file and test report proving compliance with European Standard EN 1273:2020 (stair-fall prevention and stability requirements).",
+      "explanation": "Baby walkers are permitted in the EU provided they have laboratory certification proving conformity to EN 1273:2020. This requires accredited testing lab documentation.",
+      "fix_suggestion": "Provide accredited test report confirming compliance with EN 1273:2020 safety specifications."
+    },
+    {
+      "rule_code": "EU-HAZ-01",
+      "category": "Hazmat/Shipping",
+      "trust_tier": "Tier 3 Escalation",
+      "statute_citation": "Directives 2011/65/EU (RoHS) & 2012/19/EU (WEEE) / CE Marking",
+      "title": "CE Mark, RoHS & WEEE Compliance for Electrical Goods",
+      "condition_type": "hazmat_check",
+      "target_categories": ["electronics", "heated_devices", "rechargeable"],
+      "trigger_terms": ["lithium", "rechargeable battery", "li-ion", "heated wand", "electrical"],
+      "severity": "escalation",
+      "expected_requirement": "Affixed CE mark, EU Declaration of Conformity (DoC), RoHS hazardous substance testing, and WEEE crossed-out wheelie bin symbol.",
+      "explanation": "All powered consumer devices imported into the EU must bear the CE mark, satisfy RoHS limits for lead/mercury, and register for WEEE recycling compliance.",
+      "fix_suggestion": "Prepare EU Declaration of Conformity and compile CE Technical File before import."
+    }
+  ]
+}

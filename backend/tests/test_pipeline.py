@@ -64,13 +64,14 @@ async def run_e2e():
     ca_camphor = [c for c in res.matrix["CA"] if c.check_code == "CA-ING-01"]
     assert len(ca_camphor) > 0 and ca_camphor[0].status == "violation", "CA-ING-01 should be a violation!"
 
-    print("\n[3/5] Validating Adversarial Debate Engine...")
-    assert res.debate is not None
-    print(f"      - Topic: {res.debate.debate_topic}")
-    print(f"      - Rounds: {len(res.debate.turns)}")
-    for t in res.debate.turns:
-        print(f"        [{t.speaker}]: {t.argument[:80]}...")
-    print(f"      - Consensus Verdict: {res.debate.consensus_verdict[:90]}...")
+    print("\n[3/5] Validating Customs Seizure Radar & Risk Analysis...")
+    assert res.customs_radar is not None, "Customs Seizure Radar result should be present!"
+    print(f"      - Threat Level: {res.customs_radar.threat_level}")
+    print(f"      - Seizure Probability: {res.customs_radar.seizure_probability_pct}%")
+    print(f"      - Estimated Financial Exposure: ${res.customs_radar.estimated_financial_exposure_usd:,.2f}")
+    if res.debate:
+        print(f"      - Debate Topic: {res.debate.debate_topic}")
+        print(f"      - Rounds: {len(res.debate.turns)}")
 
     print("\n[4/5] Validating Auto-Rewrite & Diffs...")
     assert res.remediation is not None

@@ -1,161 +1,770 @@
 {
   "country_code": "EU",
   "country_name": "European Union",
-  "regulatory_bodies": ["European Commission", "ECHA", "EMA", "EU Customs"],
+  "regulatory_bodies": [
+    "European Commission",
+    "ECHA (European Chemicals Agency)",
+    "EMA (European Medicines Agency)",
+    "EU Customs Authorities",
+    "Safety Gate (RAPEX)"
+  ],
   "rules": [
     {
       "rule_code": "EU-ING-01",
+      "rule_id": "EU-ING-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Strict 0.1% Consumer Cap on Hydrogen Peroxide",
+      "title": "Strict 0.1% Consumer Cap on Hydrogen Peroxide",
+      "directive_code": "Regulation (EC) No 1223/2009, Annex III, Entry 12",
+      "statute_citation": "Regulation (EC) No 1223/2009, Annex III, Entry 12",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Regulation (EC) No 1223/2009, Annex III, Entry 12",
-      "title": "Strict 0.1% Consumer Cap on Hydrogen Peroxide",
       "condition_type": "concentration_limit",
-      "ingredient_name": "hydrogen peroxide",
-      "max_concentration": 0.1,
+      "target_categories": [
+        "cosmetics"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
       "expected_requirement": "Maximum 0.1% w/w hydrogen peroxide present or released in cosmetic products sold directly to consumers.",
       "explanation": "Unlike the US (which allows up to 14% OTC), EU Regulation (EC) No 1223/2009 strictly limits consumer oral hygiene and cosmetic products to 0.1% hydrogen peroxide. Concentrations between 0.1% and 6% can only be sold to registered dental practitioners.",
-      "fix_suggestion": "Reformulate formulation to <= 0.1% hydrogen peroxide, or use approved alternative whitening agents."
+      "fix_suggestion": "Reformulate formulation to <= 0.1% hydrogen peroxide, or use approved alternative whitening agents.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-H2O2-EU",
+          "name": "EU Peroxide Limit Assay",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Concentration <= 0.1% w/w.",
+          "standards": [
+            "EC 1223/2009 Annex III"
+          ]
+        }
+      ],
+      "ingredient_name": "hydrogen peroxide",
+      "max_concentration": 0.1
     },
     {
       "rule_code": "EU-CHEM-02",
+      "rule_id": "EU-CHEM-02",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Total EU Ban on Hydroquinone in Cosmetics",
+      "title": "Total EU Ban on Hydroquinone in Cosmetics",
+      "directive_code": "Regulation (EC) No 1223/2009 Annex II Item 1339",
+      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 1339",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 1339",
-      "title": "Total EU Ban on Hydroquinone in Cosmetics",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare"],
-      "trigger_terms": ["hydroquinone", "4% hydroquinone"],
+      "target_categories": [
+        "cosmetics",
+        "skincare"
+      ],
+      "trigger_terms": [
+        "hydroquinone",
+        "4% hydroquinone"
+      ],
       "severity": "violation",
       "expected_requirement": "Hydroquinone is completely prohibited in cosmetic products placed on the EU market under Annex II.",
       "explanation": "Hydroquinone causes ochronosis and is classified as a skin-lightening prescription medicine, strictly banned in cosmetics.",
-      "fix_suggestion": "Remove hydroquinone completely and replace with compliant actives such as Alpha Arbutin or Niacinamide."
+      "fix_suggestion": "Remove hydroquinone completely and replace with compliant actives such as Alpha Arbutin or Niacinamide.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-NO-HYDROQUINONE",
+          "name": "Hydroquinone Free Screening",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Zero hydroquinone.",
+          "standards": [
+            "EC 1223/2009 Annex II"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "EU-CHEM-03",
+      "rule_id": "EU-CHEM-03",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Absolute Ban on Lilial / Butylphenyl Methylpropional",
+      "title": "Absolute Ban on Lilial / Butylphenyl Methylpropional",
+      "directive_code": "Commission Regulation (EU) 2021/1902 (Lilial Ban / CMR 1B)",
+      "statute_citation": "Commission Regulation (EU) 2021/1902 (Lilial Ban / CMR 1B)",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Commission Regulation (EU) 2021/1902 (Lilial Ban / CMR 1B)",
-      "title": "Absolute Ban on Lilial / Butylphenyl Methylpropional",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "fragrance", "perfume", "skincare"],
-      "trigger_terms": ["lilial", "butylphenyl methylpropional"],
+      "target_categories": [
+        "cosmetics",
+        "fragrance",
+        "perfume",
+        "skincare"
+      ],
+      "trigger_terms": [
+        "lilial",
+        "butylphenyl methylpropional"
+      ],
       "severity": "violation",
       "expected_requirement": "Strict zero-tolerance ban on Lilial (BMHCA) across all cosmetic formulations.",
       "explanation": "Lilial was reclassified as a Reprotoxic Category 1B substance and added to Annex II prohibited list.",
-      "fix_suggestion": "Reformulate fragrance profile to substitute Lilial with non-CMR aromatic compounds."
+      "fix_suggestion": "Reformulate fragrance profile to substitute Lilial with non-CMR aromatic compounds.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-NO-LILIAL",
+          "name": "BMHCA Lilial Screen",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Absence of Lilial.",
+          "standards": [
+            "EU 2021/1902"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "EU-CHEM-04",
+      "rule_id": "EU-CHEM-04",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Prohibition of Crude and Refined Coal Tar in Cosmetics",
+      "title": "Prohibition of Crude and Refined Coal Tar in Cosmetics",
+      "directive_code": "Regulation (EC) No 1223/2009 Annex II Item 420",
+      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 420",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 420",
-      "title": "Prohibition of Crude and Refined Coal Tar in Cosmetics",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "haircare", "shampoo"],
-      "trigger_terms": ["coal tar", "coal tar 10%"],
+      "target_categories": [
+        "cosmetics",
+        "haircare",
+        "shampoo"
+      ],
+      "trigger_terms": [
+        "coal tar",
+        "coal tar 10%"
+      ],
       "severity": "violation",
       "expected_requirement": "Coal tar is a known carcinogen listed under Annex II and prohibited in cosmetics.",
       "explanation": "Coal tar distillates are classified as Category 1A/1B carcinogens prohibited from cosmetic placement.",
-      "fix_suggestion": "Replace coal tar with compliant antidandruff agents like Piroctone Olamine or Zinc Pyrithione (where permitted)."
+      "fix_suggestion": "Replace coal tar with compliant antidandruff agents like Piroctone Olamine or Zinc Pyrithione (where permitted).",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-NO-COALTAR",
+          "name": "Coal Tar Screen",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Zero coal tar.",
+          "standards": [
+            "EC 1223/2009 Annex II"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "EU-CHEM-05",
+      "rule_id": "EU-CHEM-05",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Total Ban on Mercury and Corticosteroids in Cosmetics",
+      "title": "Total Ban on Mercury and Corticosteroids in Cosmetics",
+      "directive_code": "Regulation (EC) No 1223/2009 Annex II Item 221 & 300",
+      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 221 & 300",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Regulation (EC) No 1223/2009 Annex II Item 221 & 300",
-      "title": "Total Ban on Mercury and Corticosteroids in Cosmetics",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare"],
-      "trigger_terms": ["mercury", "mercurous chloride", "clobetasol", "clobetasol propionate"],
+      "target_categories": [
+        "cosmetics",
+        "skincare"
+      ],
+      "trigger_terms": [
+        "mercury",
+        "mercurous chloride",
+        "clobetasol",
+        "clobetasol propionate"
+      ],
       "severity": "violation",
       "expected_requirement": "Mercury and corticosteroids are prohibited under Annex II items 221 and 300.",
       "explanation": "Cosmetics containing mercury or clobetasol are toxic adulterated goods triggering immediate EU Safety Gate RAPEX recall.",
-      "fix_suggestion": "Immediately discontinue manufacture and export of formulations containing banned mercury or clobetasol."
+      "fix_suggestion": "Immediately discontinue manufacture and export of formulations containing banned mercury or clobetasol.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-MERCURY-EU",
+          "name": "Heavy Metals ICP-MS",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Total absence of mercury & corticosteroids.",
+          "standards": [
+            "EC 1223/2009"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "EU-ROHS-01",
+      "rule_id": "EU-ROHS-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Ban on High Power Consumer Laser Pointers (>1mW / Class 3B)",
+      "title": "Ban on High Power Consumer Laser Pointers (>1mW / Class 3B)",
+      "directive_code": "EN 60825-1 / General Product Safety Directive 2001/95/EC",
+      "statute_citation": "EN 60825-1 / General Product Safety Directive 2001/95/EC",
       "category": "Safety/Certifications",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "EN 60825-1 / General Product Safety Directive 2001/95/EC",
-      "title": "Ban on High Power Consumer Laser Pointers (>1mW / Class 3B)",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["consumer electronics", "electronics", "gadgets"],
-      "trigger_terms": ["class 3b", "laser output power >500mw", "500mw green beam", "500mw"],
+      "target_categories": [
+        "consumer electronics",
+        "electronics",
+        "gadgets"
+      ],
+      "trigger_terms": [
+        "class 3b",
+        "laser output power >500mw",
+        "500mw green beam",
+        "500mw"
+      ],
       "severity": "violation",
       "expected_requirement": "Consumer laser pointers must not exceed Class 2 (<1mW) under European harmonized standard EN 60825-1.",
       "explanation": "Class 3B lasers (>5mW to 500mW) cause irreversible retinal damage and are banned for consumer sale in the EU.",
-      "fix_suggestion": "Cap optical output power strictly below 1mW (Class 2) and provide EN 60825-1 laboratory test report."
+      "fix_suggestion": "Cap optical output power strictly below 1mW (Class 2) and provide EN 60825-1 laboratory test report.",
+      "conditions": {
+        "category": "consumer electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-EN60825",
+          "name": "EN 60825-1 Laser Safety Test",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Laser class <= Class 2.",
+          "standards": [
+            "EN 60825-1"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "EU-CLASS-01",
+      "rule_id": "EU-CLASS-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Cosmetic Claim Substantiation & Medical Borderline Prohibition",
+      "title": "Cosmetic Claim Substantiation & Medical Borderline Prohibition",
+      "directive_code": "Regulation (EU) No 655/2013 / Medical Device Regulation (EU) 2017/745",
+      "statute_citation": "Regulation (EU) No 655/2013 / Medical Device Regulation (EU) 2017/745",
       "category": "Claim Wording",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Regulation (EU) No 655/2013 / Medical Device Regulation (EU) 2017/745",
-      "title": "Cosmetic Claim Substantiation & Medical Borderline Prohibition",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
-      "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "eliminates disease", "anti-inflammatory medicine"],
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "ayurvedic",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "cures",
+        "treats",
+        "cures arthritis",
+        "heals arthritis",
+        "medicinal",
+        "eliminates disease",
+        "anti-inflammatory medicine"
+      ],
       "severity": "violation",
       "expected_requirement": "Claims must adhere to common criteria. No therapeutic or curative claims allowed for cosmetics.",
-      "explanation": "Claiming that a cosmetic product cures or treats a medical condition triggers reclassification as a Medical Device under MDR 2017/745.",
-      "fix_suggestion": "Rephrase to compliant cosmetic claims: 'formulated to soothe and refresh skin' or 'comforting massage balm'."
+      "explanation": "Advertising cosmetic products as arthritis cures or medical remedies breaches Regulation 655/2013.",
+      "fix_suggestion": "Replace medicinal claims with cosmetic beautification/soothing descriptions supported by a Cosmetic Safety Report (CPSR).",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-CPSR",
+          "name": "Cosmetic Product Safety Report (CPSR)",
+          "type": "document",
+          "mandatory": true,
+          "description": "CPSR Article 10 safety evaluation.",
+          "standards": [
+            "EC 1223/2009"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "EU-LBL-01",
+      "rule_id": "EU-LBL-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Mandatory EU Responsible Person (RP) Contact & Address",
+      "title": "Mandatory EU Responsible Person (RP) Contact & Address",
+      "directive_code": "Regulation (EC) No 1223/2009 Article 4",
+      "statute_citation": "Regulation (EC) No 1223/2009 Article 4",
       "category": "Mandatory Labeling",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Regulation (EC) No 1223/2009, Article 4 & Article 19(1)(a)",
-      "title": "Mandatory EU Responsible Person (RP) Contact & Address",
       "condition_type": "mandatory_field",
-      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "personal_care", "haircare", "body"],
-      "required_field": "eu_responsible_person",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty",
+        "creams",
+        "personal_care",
+        "haircare",
+        "body"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
-      "expected_requirement": "Name and address of an EU-established Responsible Person (RP) printed on primary packaging.",
-      "explanation": "Article 4 mandates that non-EU brands must appoint an EU-based Responsible Person who holds the PIF.",
-      "fix_suggestion": "Contract an EU Responsible Person service provider and print their legal EU address on label declarations."
+      "expected_requirement": "Name and address of the EU-established Responsible Person must be printed on primary and secondary packaging.",
+      "explanation": "Imported cosmetics cannot enter the European single market without an EU entity designated as Responsible Person holding the Product Information File (PIF).",
+      "fix_suggestion": "Designate an EU-based Responsible Person and print their legal business name and postal address on packaging.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-EURP",
+          "name": "EU Responsible Person Mandate",
+          "type": "document",
+          "mandatory": true,
+          "description": "Signed RP agreement & address on pack.",
+          "standards": [
+            "EC 1223/2009 Art 4"
+          ]
+        }
+      ],
+      "required_field": "eu_responsible_person"
     },
     {
       "rule_code": "EU-LBL-02",
+      "rule_id": "EU-LBL-02",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Mandatory INCI Ingredient Nomenclature & PAO Symbol",
+      "title": "Mandatory INCI Ingredient Nomenclature & PAO Symbol",
+      "directive_code": "Regulation (EC) No 1223/2009 Article 19",
+      "statute_citation": "Regulation (EC) No 1223/2009 Article 19",
       "category": "Mandatory Labeling",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Regulation (EC) No 1223/2009, Article 19(1)(g)",
-      "title": "Mandatory INCI Ingredient Nomenclature & PAO Symbol",
       "condition_type": "mandatory_field",
-      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "personal_care", "haircare", "body"],
-      "required_field": "inci_ingredients_list",
-      "severity": "warning",
-      "expected_requirement": "Ingredient list prefaced by the word 'INGREDIENTS' using standard INCI nomenclature, plus Period After Opening (PAO) open-jar symbol.",
-      "explanation": "EU requires standardized INCI naming for all chemical/botanical substances, listed in descending order of weight.",
-      "fix_suggestion": "Provide ingredient listing in full INCI format with PAO open-jar icon."
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty",
+        "creams",
+        "personal_care",
+        "haircare",
+        "body"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Complete ingredient list utilizing International Nomenclature of Cosmetic Ingredients (INCI) names and Period After Opening (PAO) open-jar symbol.",
+      "explanation": "Cosmetic packaging omitting INCI ingredient listing or PAO shelf-life symbols violates mandatory consumer disclosure rules.",
+      "fix_suggestion": "Print complete ingredient breakdown in INCI format and display standard open jar symbol with month indication (e.g. 12M).",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-LBL-INCI-EU",
+          "name": "INCI Ingredients & PAO Marking",
+          "type": "marking",
+          "mandatory": true,
+          "description": "INCI list & PAO open jar symbol.",
+          "standards": [
+            "EC 1223/2009 Art 19"
+          ]
+        }
+      ],
+      "required_field": "inci_ingredients_list"
     },
     {
       "rule_code": "EU-CERT-01",
+      "rule_id": "EU-CERT-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "EU Safety Standard for Baby Walkers (EN 1273 Compliance Check)",
+      "title": "EU Safety Standard for Baby Walkers (EN 1273 Compliance Check)",
+      "directive_code": "Directive 2001/95/EC / EN 1273:2020 Standard",
+      "statute_citation": "Directive 2001/95/EC / EN 1273:2020 Standard",
       "category": "Safety/Certifications",
       "trust_tier": "Tier 3 Escalation",
-      "statute_citation": "EN 1273:2020 / General Product Safety Directive 2001/95/EC",
-      "title": "EU Safety Standard for Baby Walkers (EN 1273 Compliance Check)",
       "condition_type": "certification_check",
-      "target_categories": ["baby_walker", "infant_walker", "toys"],
-      "trigger_terms": ["baby walker", "infant walker", "activity walker"],
+      "target_categories": [
+        "baby_walker",
+        "infant_walker",
+        "toys"
+      ],
+      "trigger_terms": [
+        "baby walker",
+        "infant walker",
+        "activity walker"
+      ],
       "severity": "escalation",
-      "expected_requirement": "Technical file and test report proving compliance with European Standard EN 1273:2020.",
-      "explanation": "Baby walkers are permitted in the EU provided they have laboratory certification proving conformity to EN 1273:2020.",
-      "fix_suggestion": "Provide accredited test report confirming compliance with EN 1273:2020 safety specifications."
+      "expected_requirement": "CE Declaration of Conformity and accredited test report to European Standard EN 1273:2020 (stair fall and tip testing).",
+      "explanation": "Unlike Canada, the EU permits baby walkers provided they undergo strict laboratory stair-fall prevention testing under EN 1273.",
+      "fix_suggestion": "Provide laboratory certificate proving compliance with EN 1273:2020 and verify base-width stability.",
+      "conditions": {
+        "category": "baby_walker",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-EN1273",
+          "name": "EN 1273:2020 Lab Test Report",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Stair fall and stability testing.",
+          "standards": [
+            "EN 1273:2020"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "EU-HAZ-01",
+      "rule_id": "EU-HAZ-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "CE Mark, RoHS & WEEE Compliance for Electrical Goods",
+      "title": "CE Mark, RoHS & WEEE Compliance for Electrical Goods",
+      "directive_code": "Directives 2014/30/EU (EMC), 2011/65/EU (RoHS), 2012/19/EU (WEEE)",
+      "statute_citation": "Directives 2014/30/EU (EMC), 2011/65/EU (RoHS), 2012/19/EU (WEEE)",
       "category": "Hazmat/Shipping",
       "trust_tier": "Tier 3 Escalation",
-      "statute_citation": "Directives 2011/65/EU (RoHS) & 2012/19/EU (WEEE) / CE Marking",
-      "title": "CE Mark, RoHS & WEEE Compliance for Electrical Goods",
       "condition_type": "hazmat_check",
-      "target_categories": ["electronics", "heated_devices", "rechargeable"],
-      "trigger_terms": ["lithium", "rechargeable battery", "li-ion", "heated wand", "electrical"],
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand",
+        "electrical"
+      ],
       "severity": "escalation",
-      "expected_requirement": "Affixed CE mark, EU Declaration of Conformity (DoC), RoHS hazardous substance testing, and WEEE crossed-out wheelie bin symbol.",
-      "explanation": "All powered consumer devices imported into the EU must bear the CE mark, satisfy RoHS limits for lead/mercury, and register for WEEE recycling compliance.",
-      "fix_suggestion": "Prepare EU Declaration of Conformity and compile CE Technical File before import."
+      "expected_requirement": "CE marking on device, EU Declaration of Conformity (DoC), RoHS substance testing, and WEEE crossed-out wheelie bin symbol.",
+      "explanation": "Electronic beauty wands and appliances must satisfy electromagnetic compatibility (EMC), RoHS restricted substance caps, and WEEE disposal marking.",
+      "fix_suggestion": "Affix CE mark, WEEE wheelie bin symbol, and compile technical dossier including RoHS test reports.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-CE-DOC",
+          "name": "CE Declaration of Conformity (DoC)",
+          "type": "document",
+          "mandatory": true,
+          "description": "Signed EU DoC citing EMC, RoHS.",
+          "standards": [
+            "2014/30/EU",
+            "2011/65/EU"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "EU-GPSR-01",
+      "rule_id": "EU-GPSR-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "General Product Safety Regulation (GPSR) EU Economic Operator Requirement",
+      "title": "General Product Safety Regulation (GPSR) EU Economic Operator Requirement",
+      "directive_code": "Regulation (EU) 2023/988 (GPSR)",
+      "statute_citation": "Regulation (EU) 2023/988 (GPSR)",
+      "category": "Mandatory Labeling",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "mandatory_field",
+      "target_categories": [
+        "toys",
+        "electronics",
+        "kitchenware",
+        "household"
+      ],
+      "trigger_terms": [],
+      "severity": "violation",
+      "expected_requirement": "Every consumer product placed on the EU market must have an EU-based Responsible Economic Operator whose name and physical/electronic contact details appear on the product or packaging.",
+      "explanation": "Effective December 2024, GPSR mandates that online and offline non-food consumer goods without an EU Economic Operator cannot be lawfully imported or sold on European marketplaces.",
+      "fix_suggestion": "Appoint an EU Authorized Representative or importer and print their name, postal address, and email on packaging.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-GPSR-OPERATOR",
+          "name": "EU Responsible Economic Operator Mandate",
+          "type": "document",
+          "mandatory": true,
+          "description": "Verification of EU Economic Operator.",
+          "standards": [
+            "Regulation (EU) 2023/988"
+          ]
+        }
+      ],
+      "required_field": "eu_responsible_person"
+    },
+    {
+      "rule_code": "EU-FCM-01",
+      "rule_id": "EU-FCM-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Framework Regulation (EC) No 1935/2004 for Food Contact Materials",
+      "title": "Framework Regulation (EC) No 1935/2004 for Food Contact Materials",
+      "directive_code": "Regulation (EC) No 1935/2004 / Directive 84/500/EEC",
+      "statute_citation": "Regulation (EC) No 1935/2004 / Directive 84/500/EEC",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "kitchenware",
+        "cutting_boards"
+      ],
+      "trigger_terms": [
+        "formaldehyde resin finish",
+        "melamine bamboo mix",
+        "toxic lacquer cutting board"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Food contact kitchenware must not transfer chemical components to food in quantities that endanger human health, and must bear the Glass-and-Fork symbol or 'for food contact'.",
+      "explanation": "Bamboo cutting boards using toxic urea-formaldehyde adhesives or unapproved plastics violate EU food contact migration standards and trigger RAPEX border recalls.",
+      "fix_suggestion": "Conduct overall and specific chemical migration testing according to EN 1186 and ensure cutting board bears the Glass-and-Fork symbol.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-EN1186",
+          "name": "EN 1186 Global Migration Test",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Overall migration <= 10 mg/dm2.",
+          "standards": [
+            "EC 1935/2004",
+            "EN 1186"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "EU-LVD-01",
+      "rule_id": "EU-LVD-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "Low Voltage Directive & Hair Care Appliance Safety (EN 60335-2-23)",
+      "title": "Low Voltage Directive & Hair Care Appliance Safety (EN 60335-2-23)",
+      "directive_code": "Directive 2014/35/EU (LVD) / EN 60335-2-23",
+      "statute_citation": "Directive 2014/35/EU (LVD) / EN 60335-2-23",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "certification_check",
+      "target_categories": [
+        "electronics",
+        "hair_dryer",
+        "appliances",
+        "grooming",
+        "heated_devices"
+      ],
+      "trigger_terms": [
+        "hair dryer",
+        "blow dryer",
+        "hair styler",
+        "dryer"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Electric grooming appliances operating at 50-1000V AC must hold an accredited safety test report under EN 60335-1 and EN 60335-2-23 verifying thermal cutout protection and CE marking.",
+      "explanation": "Electric hair dryers combine high heat with electrical power. Without verified EN 60335-2-23 laboratory testing and thermal overheat protection, products present severe fire and shock hazards.",
+      "fix_suggestion": "Obtain an ISO 17025 accredited laboratory safety test report according to EN 60335-1 and EN 60335-2-23 and affix the CE mark on product rating plate.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-EN60335",
+          "name": "EN 60335-2-23 Electrical Hair Care Safety Report",
+          "type": "test_report",
+          "mandatory": true,
+          "description": "LVD Safety test report.",
+          "standards": [
+            "EN 60335-1",
+            "EN 60335-2-23"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "EU-REACH-PLASTIC-01",
+      "rule_id": "EU-REACH-PLASTIC-01",
+      "market": "European Union",
+      "country_code": "EU",
+      "name": "REACH Restriction on Phthalates in Plastic Consumer Enclosures (Annex XVII)",
+      "title": "REACH Restriction on Phthalates in Plastic Consumer Enclosures (Annex XVII)",
+      "directive_code": "Regulation (EC) No 1907/2006 (REACH) Annex XVII Entries 51 & 52",
+      "statute_citation": "Regulation (EC) No 1907/2006 (REACH) Annex XVII Entries 51 & 52",
+      "category": "Banned Ingredients",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "concentration_limit",
+      "target_categories": [
+        "electronics",
+        "plastic_goods",
+        "appliances"
+      ],
+      "ingredient_name": "phthalates",
+      "max_concentration": 0.1,
+      "severity": "violation",
+      "expected_requirement": "Plasticized components and polymer housings must not contain cumulative DEHP, DBP, BBP, or DIBP phthalates exceeding 0.1% by weight.",
+      "explanation": "REACH Annex XVII Entry 51 strictly restricts toxic phthalate plasticizers in plastic enclosures. Non-compliant plastic housings trigger immediate RAPEX border detention and customs destruction.",
+      "fix_suggestion": "Submit a REACH SVHC / Phthalates Certificate of Analysis (CoA) proving cumulative phthalates <= 0.1% w/w in plastic casing.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": [
+          "plastic",
+          "polymer"
+        ],
+        "risk_indicators_any": null,
+        "markets_any": [
+          "European Union",
+          "EU"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-REACH-PLASTIC",
+          "name": "REACH Phthalates Test Certificate (Annex XVII)",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "Cumulative phthalates <= 0.1% w/w.",
+          "standards": [
+            "Regulation (EC) No 1907/2006"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,77 +1,367 @@
 {
   "country_code": "UK",
   "country_name": "United Kingdom",
-  "regulatory_bodies": ["OPSS", "MHRA", "HSE", "Trading Standards", "HMRC"],
+  "regulatory_bodies": [
+    "OPSS (Office for Product Safety and Standards)",
+    "MHRA (Medicines and Healthcare products Regulatory Agency)",
+    "HSE (Health and Safety Executive)",
+    "Trading Standards",
+    "HMRC"
+  ],
   "rules": [
     {
       "rule_code": "UK-ING-01",
+      "rule_id": "UK-ING-01",
+      "market": "United Kingdom",
+      "country_code": "UK",
+      "name": "UK 0.1% Direct-to-Consumer Hydrogen Peroxide Limit",
+      "title": "UK 0.1% Direct-to-Consumer Hydrogen Peroxide Limit",
+      "directive_code": "Cosmetic Products Enforcement Regulations 2013 / Schedule 34",
+      "statute_citation": "Cosmetic Products Enforcement Regulations 2013 / Schedule 34",
       "category": "Banned Ingredients",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "Cosmetic Products Enforcement Regulations 2013 / Schedule 34",
-      "title": "UK 0.1% Direct-to-Consumer Hydrogen Peroxide Limit",
       "condition_type": "concentration_limit",
-      "ingredient_name": "hydrogen peroxide",
-      "max_concentration": 0.1,
+      "target_categories": [
+        "cosmetics"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
       "expected_requirement": "Maximum 0.1% w/w hydrogen peroxide in consumer cosmetic/whitening products.",
       "explanation": "Post-Brexit UK retained the EU Annex III limit. Products exceeding 0.1% cannot be sold OTC to UK consumers without a dentist's prescription.",
-      "fix_suggestion": "Formulate with <= 0.1% hydrogen peroxide or non-peroxide alternative whitening formulations."
+      "fix_suggestion": "Formulate with <= 0.1% hydrogen peroxide or non-peroxide alternative whitening formulations.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United Kingdom",
+          "UK"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-H2O2-UK",
+          "name": "UK Peroxide Assay",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "H2O2 concentration <= 0.1%.",
+          "standards": [
+            "CPER 2013"
+          ]
+        }
+      ],
+      "ingredient_name": "hydrogen peroxide",
+      "max_concentration": 0.1
     },
     {
       "rule_code": "UK-LBL-01",
+      "rule_id": "UK-LBL-01",
+      "market": "United Kingdom",
+      "country_code": "UK",
+      "name": "Mandatory UK-Established Responsible Person (GB Address)",
+      "title": "Mandatory UK-Established Responsible Person (GB Address)",
+      "directive_code": "UK Product Safety and Metrology Regulations 2019 / SCPN Portal",
+      "statute_citation": "UK Product Safety and Metrology Regulations 2019 / SCPN Portal",
       "category": "Mandatory Labeling",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "UK Product Safety and Metrology Regulations 2019 / SCPN Portal",
-      "title": "Mandatory UK-Established Responsible Person (GB Address)",
       "condition_type": "mandatory_field",
-      "target_categories": ["cosmetics", "skincare", "beauty", "creams", "personal_care", "haircare", "body"],
-      "required_field": "uk_responsible_person",
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "beauty",
+        "creams",
+        "personal_care",
+        "haircare",
+        "body"
+      ],
+      "trigger_terms": [],
       "severity": "violation",
       "expected_requirement": "Name and Great Britain (England, Scotland, Wales) physical address of the UK Responsible Person.",
       "explanation": "Following Brexit, an EU Responsible Person address is no longer valid in the UK. Products must have a UK RP and be notified on the Submit Cosmetic Product Notifications (SCPN) portal prior to marketing.",
-      "fix_suggestion": "Appoint a UK-based Responsible Person and print their GB address on packaging."
+      "fix_suggestion": "Appoint a UK-based Responsible Person and print their GB address on packaging.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United Kingdom",
+          "UK"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-UKRP",
+          "name": "UK Responsible Person Appointment",
+          "type": "document",
+          "mandatory": true,
+          "description": "UK RP GB address & SCPN notification.",
+          "standards": [
+            "UK PSMR 2019"
+          ]
+        }
+      ],
+      "required_field": "uk_responsible_person"
     },
     {
       "rule_code": "UK-CLAIM-01",
+      "rule_id": "UK-CLAIM-01",
+      "market": "United Kingdom",
+      "country_code": "UK",
+      "name": "Medicinal Claim Prohibition for Non-Medicinal Products",
+      "title": "Medicinal Claim Prohibition for Non-Medicinal Products",
+      "directive_code": "CAP Code Rule 12.1 / MHRA Borderline Guidance Note 8",
+      "statute_citation": "CAP Code Rule 12.1 / MHRA Borderline Guidance Note 8",
       "category": "Claim Wording",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "CAP Code Rule 12.1 / MHRA Borderline Guidance Note 8",
-      "title": "Medicinal Claim Prohibition for Non-Medicinal Products",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["cosmetics", "skincare", "supplements", "ayurvedic", "wellness"],
-      "trigger_terms": ["cures", "treats", "cures arthritis", "heals arthritis", "medicinal", "eliminates pain"],
+      "target_categories": [
+        "cosmetics",
+        "skincare",
+        "supplements",
+        "ayurvedic",
+        "wellness"
+      ],
+      "trigger_terms": [
+        "cures",
+        "treats",
+        "cures arthritis",
+        "heals arthritis",
+        "medicinal",
+        "eliminates pain"
+      ],
       "severity": "violation",
       "expected_requirement": "Claims must not aver or imply prevention, treatment, or cure of human disease unless holding an MHRA Marketing Authorisation.",
       "explanation": "The MHRA rigorously enforces Borderline Note 8. Claims to cure arthritis or eliminate joint pain will trigger Trading Standards seizures and ASA advertising bans.",
-      "fix_suggestion": "Replace medicinal wording with descriptive lifestyle phrasing: 'designed for soothing massage and muscle relaxation'."
+      "fix_suggestion": "Replace medicinal wording with descriptive lifestyle phrasing: 'designed for soothing massage and muscle relaxation'.",
+      "conditions": {
+        "category": "cosmetics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United Kingdom",
+          "UK"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-MHRA",
+          "name": "MHRA Marketing Authorisation (if medicinal)",
+          "type": "document",
+          "mandatory": true,
+          "description": "MHRA authorization for disease treatment.",
+          "standards": [
+            "Human Medicines Regulations 2012"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "UK-CERT-01",
+      "rule_id": "UK-CERT-01",
+      "market": "United Kingdom",
+      "country_code": "UK",
+      "name": "UK Safety Standard for Baby Walkers (BS EN 1273 Check)",
+      "title": "UK Safety Standard for Baby Walkers (BS EN 1273 Check)",
+      "directive_code": "BS EN 1273:2020 / UK General Product Safety Regulations 2005",
+      "statute_citation": "BS EN 1273:2020 / UK General Product Safety Regulations 2005",
       "category": "Safety/Certifications",
       "trust_tier": "Tier 3 Escalation",
-      "statute_citation": "BS EN 1273:2020 / UK General Product Safety Regulations 2005",
-      "title": "UK Safety Standard for Baby Walkers (BS EN 1273 Check)",
       "condition_type": "certification_check",
-      "target_categories": ["baby_walker", "infant_walker", "toys"],
-      "trigger_terms": ["baby walker", "infant walker", "activity walker"],
+      "target_categories": [
+        "baby_walker",
+        "infant_walker",
+        "toys"
+      ],
+      "trigger_terms": [
+        "baby walker",
+        "infant walker",
+        "activity walker"
+      ],
       "severity": "escalation",
       "expected_requirement": "Technical file and test certificate demonstrating compliance with British Standard BS EN 1273:2020.",
       "explanation": "Baby walkers are fully lawful in the UK if they pass BS EN 1273 stair safety testing. Testing documentation must be verified.",
-      "fix_suggestion": "Provide test certificate from a UKAS-accredited laboratory confirming BS EN 1273 compliance."
+      "fix_suggestion": "Provide test certificate from a UKAS-accredited laboratory confirming BS EN 1273 compliance.",
+      "conditions": {
+        "category": "baby_walker",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United Kingdom",
+          "UK"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-TEST-BSEN1273",
+          "name": "BS EN 1273 Test Report",
+          "type": "lab_test",
+          "mandatory": true,
+          "description": "UKAS accredited lab report.",
+          "standards": [
+            "BS EN 1273:2020"
+          ]
+        }
+      ]
     },
     {
       "rule_code": "UK-CLASS-01",
+      "rule_id": "UK-CLASS-01",
+      "market": "United Kingdom",
+      "country_code": "UK",
+      "name": "UK Classification of Antimicrobial Treated Articles",
+      "title": "UK Classification of Antimicrobial Treated Articles",
+      "directive_code": "GB Biocidal Products Regulation (GB BPR) / HSE Guidance",
+      "statute_citation": "GB Biocidal Products Regulation (GB BPR) / HSE Guidance",
       "category": "Classification Status",
       "trust_tier": "Tier 1 Deterministic",
-      "statute_citation": "GB Biocidal Products Regulation (GB BPR) / HSE Guidance",
-      "title": "UK Classification of Antimicrobial Treated Articles",
       "condition_type": "banned_claim_terms",
-      "target_categories": ["kitchenware", "household", "cleaning", "cutting_boards"],
-      "trigger_terms": ["antibacterial", "kills germs", "kills 99.9%", "antimicrobial"],
+      "target_categories": [
+        "kitchenware",
+        "household",
+        "cleaning",
+        "cutting_boards"
+      ],
+      "trigger_terms": [
+        "antibacterial",
+        "kills germs",
+        "kills 99.9%",
+        "antimicrobial"
+      ],
       "severity": "warning",
       "expected_requirement": "Treated article claim permitted if active substance is on GB Article 95 approved list; requires active substance name on label.",
       "explanation": "In the UK, cutting boards with antimicrobial properties are regulated as 'treated articles' under GB BPR, NOT as pesticides. While lawful, the label must name the active substance.",
-      "fix_suggestion": "Ensure active antimicrobial substance is listed on the UK Article 95 approved list and declare its chemical name on the pack."
+      "fix_suggestion": "Ensure active antimicrobial substance is listed on the UK Article 95 approved list and declare its chemical name on the pack.",
+      "conditions": {
+        "category": "kitchenware",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United Kingdom",
+          "UK"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-GBBPR",
+          "name": "GB Article 95 Active Substance Proof",
+          "type": "document",
+          "mandatory": true,
+          "description": "Verification of GB active substance listing.",
+          "standards": [
+            "GB BPR Article 58"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "UK-TOY-01",
+      "rule_id": "UK-TOY-01",
+      "market": "United Kingdom",
+      "country_code": "UK",
+      "name": "Toys (Safety) Regulations 2011 & UKCA Marking",
+      "title": "Toys (Safety) Regulations 2011 & UKCA Marking",
+      "directive_code": "Toys (Safety) Regulations 2011 / Designated Standard BS EN 71",
+      "statute_citation": "Toys (Safety) Regulations 2011 / Designated Standard BS EN 71",
+      "category": "Safety/Certifications",
+      "trust_tier": "Tier 1 Deterministic",
+      "condition_type": "banned_claim_terms",
+      "target_categories": [
+        "toys",
+        "children's products"
+      ],
+      "trigger_terms": [
+        "banned toy chemical",
+        "heavy metals toys gb",
+        "flammable toy fabric"
+      ],
+      "severity": "violation",
+      "expected_requirement": "Toys placed on the GB market must satisfy safety requirements, bear UKCA mark, and have a UK Declaration of Conformity citing designated BS EN 71 standards.",
+      "explanation": "Placing non-compliant toys without UKCA marking or omitting manufacturer and UK importer details is an offence under the Toys (Safety) Regulations 2011.",
+      "fix_suggestion": "Affix UKCA mark, compile UK Declaration of Conformity, and test against BS EN 71-1, 71-2, and 71-3.",
+      "conditions": {
+        "category": "toys",
+        "target_user": "Children",
+        "age_group": "<14",
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United Kingdom",
+          "UK"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-UKCA-TOY",
+          "name": "UKCA Declaration of Conformity (Toys)",
+          "type": "document",
+          "mandatory": true,
+          "description": "UK DoC citing BS EN 71.",
+          "standards": [
+            "SI 2011/1881"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_code": "UK-HAZ-01",
+      "rule_id": "UK-HAZ-01",
+      "market": "United Kingdom",
+      "country_code": "UK",
+      "name": "UK Restriction of Hazardous Substances (RoHS) in Electrical Equipment",
+      "title": "UK Restriction of Hazardous Substances (RoHS) in Electrical Equipment",
+      "directive_code": "Restriction of the Use of Certain Hazardous Substances in EEE Regulations 2012",
+      "statute_citation": "Restriction of the Use of Certain Hazardous Substances in EEE Regulations 2012",
+      "category": "Hazmat/Shipping",
+      "trust_tier": "Tier 3 Escalation",
+      "condition_type": "hazmat_check",
+      "target_categories": [
+        "electronics",
+        "heated_devices",
+        "rechargeable"
+      ],
+      "trigger_terms": [
+        "lithium",
+        "rechargeable battery",
+        "li-ion",
+        "heated wand"
+      ],
+      "severity": "escalation",
+      "expected_requirement": "Electrical appliances must comply with UK RoHS limits on 10 hazardous substances and bear the UKCA mark and WEEE crossed-wheelie bin.",
+      "explanation": "Beauty wands and electrical consumer devices sold in Great Britain must meet hazardous substance restrictions under SI 2012/3032.",
+      "fix_suggestion": "Compile UK RoHS technical documentation, affix UKCA mark, and register with the Environment Agency for WEEE compliance.",
+      "conditions": {
+        "category": "electronics",
+        "target_user": "General",
+        "age_group": null,
+        "materials_any": null,
+        "risk_indicators_any": null,
+        "markets_any": [
+          "United Kingdom",
+          "UK"
+        ]
+      },
+      "requirements": [
+        {
+          "requirement_id": "REQ-DOC-UKCA-ELEC",
+          "name": "UK RoHS / EMC Technical Dossier",
+          "type": "document",
+          "mandatory": true,
+          "description": "Technical file and UKCA marking.",
+          "standards": [
+            "SI 2012/3032"
+          ]
+        }
+      ]
     }
   ]
 }
