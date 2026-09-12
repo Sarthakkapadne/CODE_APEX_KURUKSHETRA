@@ -85,6 +85,7 @@ class RemediationRewriterAgent:
         if not api_key:
             return None
 
+        models_to_try = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
         try:
             client = genai.Client(api_key=api_key)
             flagged_clauses = [
@@ -100,27 +101,32 @@ class RemediationRewriterAgent:
                 f"Flagged Compliance Issues & Fix Suggestions:\n" + "\n".join(flagged_clauses)
             )
 
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=REWRITE_SYSTEM_PROMPT,
-                    temperature=0.2,
-                    response_mime_type="application/json"
-                ),
-            )
+            for model_name in models_to_try:
+                try:
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            system_instruction=REWRITE_SYSTEM_PROMPT,
+                            temperature=0.2,
+                            response_mime_type="application/json"
+                        ),
+                    )
 
-            if response and response.text:
-                data = json.loads(response.text.strip())
-                return RemediationResult(
-                    original_title=title,
-                    compliant_title=data.get("compliant_title", title),
-                    original_description=description,
-                    compliant_description=data.get("compliant_description", description),
-                    diff_items=[DiffItem(**d) for d in data.get("diff_items", [])],
-                    ready_to_paste_bullets=data.get("ready_to_paste_bullets", []),
-                    escalation_checklist=data.get("escalation_checklist", []),
-                )
+                    if response and response.text:
+                        data = json.loads(response.text.strip())
+                        return RemediationResult(
+                            original_title=title,
+                            compliant_title=data.get("compliant_title", title),
+                            original_description=description,
+                            compliant_description=data.get("compliant_description", description),
+                            diff_items=[DiffItem(**d) for d in data.get("diff_items", [])],
+                            ready_to_paste_bullets=data.get("ready_to_paste_bullets", []),
+                            escalation_checklist=data.get("escalation_checklist", []),
+                        )
+                except Exception as me:
+                    logger.debug(f"[REWRITER] Gemini model {model_name} error: {me}")
+                    continue
         except Exception as e:
             logger.warning(f"[REWRITER] Gemini rewrite error: {e}. Using deterministic rewriter.")
         return None

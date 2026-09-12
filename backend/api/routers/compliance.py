@@ -154,3 +154,51 @@ async def list_inspections(db: AsyncSession = Depends(get_db)):
         }
         for i in inspections
     ]
+
+
+@router.get("/heatmap", summary="Get global risk heat map data")
+async def get_heatmap_data(db: AsyncSession = Depends(get_db)):
+    from sqlalchemy import text
+    query = text("""
+        SELECT country_code, status, COUNT(id) as count 
+        FROM compliance_results 
+        GROUP BY country_code, status
+    """)
+    result = await db.execute(query)
+    rows = result.mappings().all()
+
+    # Base regions
+    regions = {
+        "nam": {"id": "nam", "name": "North America", "risk": "low", "score": 95, "alerts": 0, "trend": "+2%"},
+        "eur": {"id": "eur", "name": "Europe", "risk": "low", "score": 90, "alerts": 0, "trend": "-1%"},
+        "apac": {"id": "apac", "name": "Asia Pacific", "risk": "low", "score": 92, "alerts": 0, "trend": "+1%"},
+        "latam": {"id": "latam", "name": "Latin America", "risk": "low", "score": 85, "alerts": 0, "trend": "0%"},
+        "mena": {"id": "mena", "name": "Middle East", "risk": "low", "score": 80, "alerts": 0, "trend": "0%"},
+    }
+
+    # Map country codes to regions
+    country_to_region = {
+        "US": "nam", "CA": "nam",
+        "EU": "eur", "UK": "eur",
+        "JP": "apac"
+    }
+
+    alerts_by_region = {"nam": 0, "eur": 0, "apac": 0, "latam": 0, "mena": 0}
+
+    for row in rows:
+        c = row["country_code"]
+        r_id = country_to_region.get(c, "latam")
+        if row["status"] in ("violation", "escalation"):
+            alerts_by_region[r_id] += row["count"]
+
+    for r_id in regions:
+        alerts = alerts_by_region[r_id]
+        regions[r_id]["alerts"] = alerts
+        if alerts > 10:
+            regions[r_id]["risk"] = "high"
+            regions[r_id]["score"] = max(40, 95 - (alerts * 3))
+        elif alerts > 0:
+            regions[r_id]["risk"] = "medium"
+            regions[r_id]["score"] = max(70, 95 - (alerts * 2))
+
+    return list(regions.values())

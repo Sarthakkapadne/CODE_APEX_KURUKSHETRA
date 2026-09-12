@@ -99,21 +99,27 @@ class ComplianceSQLAgent:
         if not api_key:
             return None
 
+        models_to_try = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
         try:
             client = genai.Client(api_key=api_key)
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=query_text,
-                config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_PROMPT,
-                    temperature=0.0,
-                    response_mime_type="application/json"
-                ),
-            )
-            if response and response.text:
-                return json.loads(response.text.strip())
+            for model_name in models_to_try:
+                try:
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=query_text,
+                        config=types.GenerateContentConfig(
+                            system_instruction=SYSTEM_PROMPT,
+                            temperature=0.0,
+                            response_mime_type="application/json"
+                        ),
+                    )
+                    if response and response.text:
+                        return json.loads(response.text.strip())
+                except Exception as me:
+                    logger.debug(f"[SQL_COPILOT] Gemini model {model_name} error: {me}")
+                    continue
         except Exception as e:
-            logger.warning(f"[SQL_COPILOT] Gemini error: {e}")
+            logger.warning(f"[SQL_COPILOT] Gemini client error: {e}")
         return None
 
     def _fallback_sql_plan(self, query: str) -> Dict[str, Any]:
