@@ -27,6 +27,7 @@ from backend.modules.agents.triangulation_engine import TriangulationEngine
 from backend.modules.agents.customs_risk_radar import CustomsRiskRadar
 from backend.modules.agents.remediation_rewriter import RemediationRewriterAgent
 from backend.modules.agents.escalation_handler import EscalationHandler
+from backend.modules.agents.unified_audit_engine import UnifiedAuditReasoningEngine
 from backend.modules.economics.trade_advisor import TradeEconomicsAdvisor
 from backend.modules.economics.hs_tariff_engine import HSTariffEngine
 from backend.modules.exports.export_pack_generator import ExportPackGenerator
@@ -42,6 +43,7 @@ class ComplianceSupervisor:
         self.settings = get_settings()
         self.rule_engine = rule_engine or DeterministicRuleEngine()
         self.simulator = simulator or RegulatorySimulator()
+        self.unified_engine = UnifiedAuditReasoningEngine()
         self.extractor = AttributeExtractorAgent()
         self.ocr_engine = MultiModalOCREngine()
         self.triangulation_engine = TriangulationEngine()
@@ -66,24 +68,36 @@ class ComplianceSupervisor:
         target_markets = listing.destination_markets or ["US", "EU", "UK", "CA", "JP"]
         full_text = f"{listing.title}\n{listing.description}"
 
-        # 1. Attribute Extraction (informal text -> structured technical parameters)
-        extracted: ExtractedAttributes = await self.extractor.extract(
-            title=listing.title,
-            description=listing.description,
-            raw_text=full_text
-        )
-
-        # 1b. Multi-Modal Vision OCR & Multi-Lingual Rosetta Stone Packaging Inspection
-        packaging_analysis: PackagingAnalysisResult = await self.ocr_engine.inspect_packaging(
-            image_base64=listing.image_base64,
-            image_url=listing.image_url,
-            front_image_base64=listing.front_image_base64,
-            back_image_base64=listing.back_image_base64,
-            barcode_raw=listing.barcode_raw,
-            listing_title=listing.title,
-            category_hint=listing.category_hint or "cosmetics",
+        # 0. Single Consolidated Gemini Prompt (Attribute Extraction + Vision OCR + Remediation Rewrite)
+        u_extracted, u_packaging, u_remediation = await self.unified_engine.execute_unified_reasoning(
+            listing=listing,
             target_markets=target_markets
         )
+
+        # 1. Attribute Extraction (informal text -> structured technical parameters)
+        if u_extracted:
+            extracted: ExtractedAttributes = u_extracted
+        else:
+            extracted: ExtractedAttributes = await self.extractor.extract(
+                title=listing.title,
+                description=listing.description,
+                raw_text=full_text
+            )
+
+        # 1b. Multi-Modal Vision OCR & Multi-Lingual Rosetta Stone Packaging Inspection
+        if u_packaging:
+            packaging_analysis: PackagingAnalysisResult = u_packaging
+        else:
+            packaging_analysis: PackagingAnalysisResult = await self.ocr_engine.inspect_packaging(
+                image_base64=listing.image_base64,
+                image_url=listing.image_url,
+                front_image_base64=listing.front_image_base64,
+                back_image_base64=listing.back_image_base64,
+                barcode_raw=listing.barcode_raw,
+                listing_title=listing.title,
+                category_hint=listing.category_hint or "cosmetics",
+                target_markets=target_markets
+            )
 
         # 1c. 3-Way Triangulation (Listing Copy vs Physical Packaging Reality vs Destination Law)
         discrepancies = self.triangulation_engine.reconcile(
@@ -235,13 +249,16 @@ class ComplianceSupervisor:
         )
 
         # 9. Remediation / Auto-Rewrite Engine
-        remediation_result: RemediationResult = await self.rewriter.rewrite(
-            title=listing.title,
-            description=listing.description,
-            extracted=extracted,
-            violations=critical_violations,
-            target_markets=target_markets,
-        )
+        if u_remediation:
+            remediation_result: RemediationResult = u_remediation
+        else:
+            remediation_result: RemediationResult = await self.rewriter.rewrite(
+                title=listing.title,
+                description=listing.description,
+                extracted=extracted,
+                violations=critical_violations,
+                target_markets=target_markets,
+            )
 
         # 10. Trade Economics Advisor (De minimis, VAT/GST OSS, Market Entry Ranking)
         trade_economics: List[TradeEconomicsItem] = self.economics_advisor.evaluate_markets(
