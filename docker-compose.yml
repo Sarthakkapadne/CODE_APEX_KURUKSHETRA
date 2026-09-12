@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: lexport-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-AIzaSyC6ouS240qFV4e8sw7XTlKWVgxgSTuRVQ4}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash}
+      - DATABASE_URL=${DATABASE_URL:-sqlite+aiosqlite:////app/lexport.db}
+      - CORS_ORIGINS=*
+    volumes:
+      - ./lexport.db:/app/lexport.db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: lexport-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_MAPTILER_API_KEY=CTTf1GnjFmqpYI0cPqIC
+    depends_on:
+      - backend
+    restart: unless-stopped

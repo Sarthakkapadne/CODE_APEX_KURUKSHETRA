@@ -23,6 +23,14 @@ interface AdvisorMessage {
   profitData?: any;
   documents?: any[];
   citations?: string[];
+  analyticsChart?: {
+    chart_type: string;
+    x_axis: string;
+    y_axis: string;
+    summary: string;
+    sql: string;
+    data: any[];
+  };
   isError?: boolean;
 }
 
@@ -131,12 +139,26 @@ export default function UnifiedChatPage() {
       });
 
       const replyContent = res.reply || res.response || 'I evaluated your query against cross-border statutory rules.';
+      
+      // Auto-detect if user requested analytics, comparison, or charts
+      let analyticsChart = undefined;
+      const isChartIntent = /(?:chart|graph|plot|visualize|compare|highest|most|lowest|ranking|stats|statistics|analytics|count|rates|percentage)/i.test(text);
+      if (isChartIntent) {
+        try {
+          const sqlRes = await queryIntelligence(text);
+          if (sqlRes && sqlRes.data && sqlRes.data.length > 0) {
+            analyticsChart = sqlRes;
+          }
+        } catch {}
+      }
+
       const assistantMsg: AdvisorMessage = {
         id: `a-${Date.now()}`,
         role: 'assistant',
         content: replyContent,
         profitData: res.profit_calculation,
         documents: res.document_checklist,
+        analyticsChart: analyticsChart,
         timestamp: new Date(),
       };
 
@@ -310,6 +332,76 @@ export default function UnifiedChatPage() {
                                 <span className="text-slate-600">{d.seller_action_needed || d.issuing_authority}</span>
                               </div>
                             ))}
+                          </div>
+                        )}
+
+                        {/* Inline Interactive Financial Breakdown Bar Chart */}
+                        {msg.profitData && (
+                          <div className="mt-3.5 p-3 bg-white rounded-xl border border-slate-200 shadow-2xs">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                                <BarChart2 className="w-3.5 h-3.5 text-primary-600" /> Financial Distribution Chart ($ USD)
+                              </span>
+                              <span className="text-[10px] font-mono text-slate-400">
+                                Retail MSRP: ${msg.profitData.selling_price_usd}
+                              </span>
+                            </div>
+                            <div className="h-36 w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                  data={[
+                                    { name: 'COGS', amount: msg.profitData.unit_cost_usd || 0, fill: '#3B82F6' },
+                                    { name: 'Shipping', amount: msg.profitData.shipping_cost_usd || 0, fill: '#6366F1' },
+                                    { name: 'Duty', amount: msg.profitData.duty_amount_usd || 0, fill: '#F59E0B' },
+                                    { name: 'VAT/GST', amount: msg.profitData.estimated_tax_usd || 0, fill: '#EC4899' },
+                                    { name: 'Net Profit', amount: Math.max(0, msg.profitData.net_profit_usd || 0), fill: '#10B981' },
+                                  ]}
+                                  margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
+                                >
+                                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748B' }} />
+                                  <YAxis tick={{ fontSize: 10, fill: '#64748B' }} />
+                                  <RechartsTooltip
+                                    formatter={(value: any) => [`$${Number(value).toFixed(2)} USD`, 'Amount']}
+                                    contentStyle={{ fontSize: '11px', borderRadius: '8px', border: '1px solid #E2E8F0' }}
+                                  />
+                                  <Bar dataKey="amount" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                              </ResponsiveContainer>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Inline Interactive NL-to-SQL Analytics Chart */}
+                        {msg.analyticsChart && msg.analyticsChart.data && msg.analyticsChart.data.length > 0 && (
+                          <div className="mt-3.5 p-3.5 bg-white rounded-xl border border-indigo-200/80 shadow-2xs space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-black text-indigo-900 flex items-center gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> AI Visual Analytics: {msg.analyticsChart.summary}
+                              </span>
+                              <span className="text-[10px] font-mono bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-100">
+                                Live Database
+                              </span>
+                            </div>
+                            <div className="h-44 w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={msg.analyticsChart.data.slice(0, 8)} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                                  <XAxis dataKey={msg.analyticsChart.x_axis} tick={{ fontSize: 10, fill: '#64748B' }} />
+                                  <YAxis tick={{ fontSize: 10, fill: '#64748B' }} />
+                                  <RechartsTooltip
+                                    contentStyle={{ fontSize: '11px', borderRadius: '8px', border: '1px solid #E2E8F0' }}
+                                  />
+                                  <Bar dataKey={msg.analyticsChart.y_axis} fill="#4F46E5" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                              </ResponsiveContainer>
+                            </div>
+                            <details className="text-[10px] text-slate-400 font-mono pt-1">
+                              <summary className="cursor-pointer hover:text-indigo-600 font-sans font-semibold">
+                                View Generated SQL Query
+                              </summary>
+                              <pre className="mt-1 p-2 bg-slate-900 text-slate-200 rounded-lg overflow-x-auto text-[9px]">
+                                {msg.analyticsChart.sql}
+                              </pre>
+                            </details>
                           </div>
                         )}
                       </div>
